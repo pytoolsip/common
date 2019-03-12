@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-04-19 14:22:56
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-09 16:39:22
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-12 20:49:14
 
 import wx;
 import os;
 import sys;
+# 当前文件位置
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__));
 # 添加搜索路径
-if os.getcwd() + "\\common" not in sys.path:
-	sys.path.append(os.getcwd() + "\\common");
-if os.getcwd() + "\\common\\core" not in sys.path:
-	sys.path.append(os.getcwd() + "\\common\\core");
+if os.path.join(CURRENT_PATH, "common") not in sys.path:
+	sys.path.append(os.path.join(CURRENT_PATH, "common"));
+if os.path.join(CURRENT_PATH, "common", "core") not in sys.path:
+	sys.path.append(os.path.join(CURRENT_PATH, "common", "core"));
 
+# 加载工程
 import _Global as _G;
 from window.WindowLoader import WindowLoader;
 from behaviorCore.BaseBehavior import BaseBehavior;
