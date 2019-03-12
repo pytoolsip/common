@@ -2,7 +2,7 @@
 # @Author: JimDreamHeart
 # @Date:   2019-02-23 21:36:25
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-11 21:43:51
+# @Last Modified time: 2019-03-13 00:48:43
 import wx,json,threading;
 
 import grpc;
@@ -16,7 +16,7 @@ class CommonClient(object):
 		super(CommonClient, self).__init__();
 		conf = _GG("ClientConfig").Config();
 		_HOST, _PORT = conf.Get("server", "host"), conf.Get("server", "port");
-		print(_HOST+':'+_PORT)
+		print("channel =>", _HOST+':'+_PORT);
 		self.__client = common_pb2_grpc.CommonStub(channel = grpc.insecure_channel(_HOST+':'+_PORT)); #客户端建立连接
 		pass;
 
@@ -26,7 +26,7 @@ class CommonClient(object):
 			try:
 				resp = getattr(self.__client, methodName)(req);
 			except Exception as e:
-				print("Failed to request server !", e);
+				print("Failed to request server by key[{}] !".format(methodName), e);
 		else:
 			print("Invalid caller[{}] in client !".format(methodName));
 		if callable(asynCallback):

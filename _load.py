@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-04-19 14:22:56
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-12 20:49:14
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-13 00:47:43
 
 import wx;
 import os;
@@ -10,10 +10,10 @@ import sys;
 # 当前文件位置
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__));
 # 添加搜索路径
-if os.path.join(CURRENT_PATH, "common") not in sys.path:
-	sys.path.append(os.path.join(CURRENT_PATH, "common"));
-if os.path.join(CURRENT_PATH, "common", "core") not in sys.path:
-	sys.path.append(os.path.join(CURRENT_PATH, "common", "core"));
+if CURRENT_PATH not in sys.path:
+	sys.path.append(CURRENT_PATH);
+if os.path.join(CURRENT_PATH, "core") not in sys.path:
+	sys.path.append(os.path.join(CURRENT_PATH, "core"));
 
 # 加载工程
 import _Global as _G;
