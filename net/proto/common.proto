@@ -1,0 +1,90 @@
+syntax="proto3";
+
+package pbcommon;
+
+service Common {
+	rpc Request(Req) returns (Res);
+	rpc Login(LoginReq) returns (LoginRes);
+	rpc Register(RegisterReq) returns (Res);
+	rpc Upload(UploadReq) returns (UploadRes);
+	rpc Uploaded(UploadedReq) returns (Res);
+	rpc Download(DownloadReq) returns (DownloadRes);
+	rpc Update(UpdateReq) returns (UpdateRes);
+};
+
+// 通用请求
+message Req{
+	string key = 1; // 请求键值
+	bytes data = 2; // 请求内容
+}
+
+// 通用回应
+message Res{
+	bool isSuccess = 1; // 返回请求是否成功
+	bytes data = 2; // 返回内容
+}
+
+// 登录请求
+message LoginReq{
+	string name = 1; // 用户名
+	string password = 2; // 密码
+}
+
+// 登录回应
+message LoginRes{
+	bool isSuccess = 1; // 是否登录成功
+	int32 id = 2; // 用户ID
+	string name = 3; // 用户名
+	string email = 4; // 用户邮箱
+}
+
+// 注册请求
+message RegisterReq{
+	string name = 1; // 用户名
+	string password = 2; // 密码
+	string email = 3; // 用户邮箱
+}
+
+// 上传请求
+message UploadReq{
+	string name = 1; // 工具名
+	string version = 2; // 工具版本号
+}
+
+// 上传回应
+message UploadRes{
+	bool isPermit = 1; // 是否允许上传
+	bytes token = 2; // 上传口令
+}
+
+// 下载请求
+message DownloadReq{
+	string name = 1; // 工具名
+	string version = 2; // common版本号
+}
+
+// 下载回应
+message DownloadRes{
+	bool isExist = 1; // 是否存在
+	string url = 2; // 下载地址
+	int64 totalSize = 3; // 下载文件总大小
+}
+
+// 更新请求
+message UpdateReq{
+	string name = 1; // common或工具名
+	string version = 2; // 当前版本号
+}
+
+// 更新回应
+message UpdateRes{
+	bool isUpToDate = 1; // 是否为最新版本
+	DownloadRes updateInfo = 2; // 更新信息
+}
+
+// 上传完成请求
+message UploadedReq {
+	int32 uid = 1; // 用户ID
+	string name = 2; // 工具名
+	string version = 3; // 工具版本号
+}

@@ -1,0 +1,40 @@
+<tree>
+	<treeItem name="首页">
+		<pageData>
+			<id>0</id>
+			<path trunk="common">view\HomePageView</path>
+		</pageData>
+	</treeItem>
+	<treeItem name="开发级工具">
+		<treeItem name="日志解压及过滤">
+			<pageData>
+				<id>1</id>
+				<path trunk="tools" branch="template">view\TestView</path>
+			</pageData>
+		</treeItem>
+		<treeItem name="lua文件函数修改">
+			<pageData>
+				<id>2</id>
+				<path trunk="tools" branch="template">view\TestView</path>
+			</pageData>
+		</treeItem>
+	</treeItem>
+	<treeItem name="产品级工具">
+		<treeItem name="excel及csv文件数据处理">
+			<pageData>
+				<id>3</id>
+				<path trunk="tools" branch="template">view\TestView</path>
+			</pageData>
+		</treeItem>
+	</treeItem>
+	<treeItem name="娱乐工具">
+		<treeItem name="小游戏">
+			<treeItem name="华容道">
+				<pageData>
+					<id>4</id>
+					<path trunk="tools" branch="games/klotskiGame">MainView</path>
+				</pageData>
+			</treeItem>
+		</treeItem>
+	</treeItem>
+</tree>
