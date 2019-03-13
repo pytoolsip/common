@@ -17,37 +17,47 @@ class CommonStub(object):
     self.Request = channel.unary_unary(
         '/pbcommon.Common/Request',
         request_serializer=proto_dot_common__pb2.Req.SerializeToString,
-        response_deserializer=proto_dot_common__pb2.Res.FromString,
+        response_deserializer=proto_dot_common__pb2.Resp.FromString,
         )
     self.Login = channel.unary_unary(
         '/pbcommon.Common/Login',
         request_serializer=proto_dot_common__pb2.LoginReq.SerializeToString,
-        response_deserializer=proto_dot_common__pb2.LoginRes.FromString,
+        response_deserializer=proto_dot_common__pb2.LoginResp.FromString,
         )
     self.Register = channel.unary_unary(
         '/pbcommon.Common/Register',
         request_serializer=proto_dot_common__pb2.RegisterReq.SerializeToString,
-        response_deserializer=proto_dot_common__pb2.Res.FromString,
+        response_deserializer=proto_dot_common__pb2.Resp.FromString,
         )
     self.Upload = channel.unary_unary(
         '/pbcommon.Common/Upload',
         request_serializer=proto_dot_common__pb2.UploadReq.SerializeToString,
-        response_deserializer=proto_dot_common__pb2.UploadRes.FromString,
+        response_deserializer=proto_dot_common__pb2.UploadResp.FromString,
         )
     self.Uploaded = channel.unary_unary(
         '/pbcommon.Common/Uploaded',
-        request_serializer=proto_dot_common__pb2.UploadedReq.SerializeToString,
-        response_deserializer=proto_dot_common__pb2.Res.FromString,
+        request_serializer=proto_dot_common__pb2.UploadReq.SerializeToString,
+        response_deserializer=proto_dot_common__pb2.Resp.FromString,
         )
     self.Download = channel.unary_unary(
         '/pbcommon.Common/Download',
         request_serializer=proto_dot_common__pb2.DownloadReq.SerializeToString,
-        response_deserializer=proto_dot_common__pb2.DownloadRes.FromString,
+        response_deserializer=proto_dot_common__pb2.DownloadResp.FromString,
         )
     self.Update = channel.unary_unary(
         '/pbcommon.Common/Update',
         request_serializer=proto_dot_common__pb2.UpdateReq.SerializeToString,
-        response_deserializer=proto_dot_common__pb2.UpdateRes.FromString,
+        response_deserializer=proto_dot_common__pb2.UpdateResp.FromString,
+        )
+    self.Comment = channel.unary_unary(
+        '/pbcommon.Common/Comment',
+        request_serializer=proto_dot_common__pb2.CommentReq.SerializeToString,
+        response_deserializer=proto_dot_common__pb2.Resp.FromString,
+        )
+    self.Collect = channel.unary_unary(
+        '/pbcommon.Common/Collect',
+        request_serializer=proto_dot_common__pb2.CollectReq.SerializeToString,
+        response_deserializer=proto_dot_common__pb2.Resp.FromString,
         )
 
 
@@ -56,50 +66,64 @@ class CommonServicer(object):
   pass
 
   def Request(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
+    """通用请求
+    """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
   def Login(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
+    """登录请求
+    """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
   def Register(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
+    """注册请求
+    """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
   def Upload(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
+    """上传请求
+    """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
   def Uploaded(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
+    """通知上传完成
+    """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
   def Download(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
+    """下载请求
+    """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
   def Update(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
+    """更新请求
+    """
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def Comment(self, request, context):
+    """评论
+    """
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def Collect(self, request, context):
+    """收藏
+    """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
@@ -110,37 +134,47 @@ def add_CommonServicer_to_server(servicer, server):
       'Request': grpc.unary_unary_rpc_method_handler(
           servicer.Request,
           request_deserializer=proto_dot_common__pb2.Req.FromString,
-          response_serializer=proto_dot_common__pb2.Res.SerializeToString,
+          response_serializer=proto_dot_common__pb2.Resp.SerializeToString,
       ),
       'Login': grpc.unary_unary_rpc_method_handler(
           servicer.Login,
           request_deserializer=proto_dot_common__pb2.LoginReq.FromString,
-          response_serializer=proto_dot_common__pb2.LoginRes.SerializeToString,
+          response_serializer=proto_dot_common__pb2.LoginResp.SerializeToString,
       ),
       'Register': grpc.unary_unary_rpc_method_handler(
           servicer.Register,
           request_deserializer=proto_dot_common__pb2.RegisterReq.FromString,
-          response_serializer=proto_dot_common__pb2.Res.SerializeToString,
+          response_serializer=proto_dot_common__pb2.Resp.SerializeToString,
       ),
       'Upload': grpc.unary_unary_rpc_method_handler(
           servicer.Upload,
           request_deserializer=proto_dot_common__pb2.UploadReq.FromString,
-          response_serializer=proto_dot_common__pb2.UploadRes.SerializeToString,
+          response_serializer=proto_dot_common__pb2.UploadResp.SerializeToString,
       ),
       'Uploaded': grpc.unary_unary_rpc_method_handler(
           servicer.Uploaded,
-          request_deserializer=proto_dot_common__pb2.UploadedReq.FromString,
-          response_serializer=proto_dot_common__pb2.Res.SerializeToString,
+          request_deserializer=proto_dot_common__pb2.UploadReq.FromString,
+          response_serializer=proto_dot_common__pb2.Resp.SerializeToString,
       ),
       'Download': grpc.unary_unary_rpc_method_handler(
           servicer.Download,
           request_deserializer=proto_dot_common__pb2.DownloadReq.FromString,
-          response_serializer=proto_dot_common__pb2.DownloadRes.SerializeToString,
+          response_serializer=proto_dot_common__pb2.DownloadResp.SerializeToString,
       ),
       'Update': grpc.unary_unary_rpc_method_handler(
           servicer.Update,
           request_deserializer=proto_dot_common__pb2.UpdateReq.FromString,
-          response_serializer=proto_dot_common__pb2.UpdateRes.SerializeToString,
+          response_serializer=proto_dot_common__pb2.UpdateResp.SerializeToString,
+      ),
+      'Comment': grpc.unary_unary_rpc_method_handler(
+          servicer.Comment,
+          request_deserializer=proto_dot_common__pb2.CommentReq.FromString,
+          response_serializer=proto_dot_common__pb2.Resp.SerializeToString,
+      ),
+      'Collect': grpc.unary_unary_rpc_method_handler(
+          servicer.Collect,
+          request_deserializer=proto_dot_common__pb2.CollectReq.FromString,
+          response_serializer=proto_dot_common__pb2.Resp.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
