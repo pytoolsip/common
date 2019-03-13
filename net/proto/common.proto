@@ -3,15 +3,15 @@ syntax="proto3";
 package pbcommon;
 
 service Common {
-	rpc Request(Req) returns (Resp); // 通用请求
-	rpc Login(LoginReq) returns (LoginResp); // 登录请求
-	rpc Register(RegisterReq) returns (Resp); // 注册请求
-	rpc Upload(UploadReq) returns (UploadResp); // 上传请求
-	rpc Uploaded(UploadReq) returns (Resp); // 通知上传完成
-	rpc Download(DownloadReq) returns (DownloadResp); // 下载请求
-	rpc Update(UpdateReq) returns (UpdateResp); // 更新请求
-	rpc Comment(CommentReq) returns (Resp); // 评论
-	rpc Collect(CollectReq) returns (Resp); // 收藏
+	rpc Request(Req) returns (Resp);
+	rpc Login(LoginReq) returns (LoginResp);
+	rpc Register(RegisterReq) returns (Resp);
+	rpc Upload(UploadReq) returns (UploadResp);
+	rpc Uploaded(UploadReq) returns (Resp);
+	rpc Download(DownloadReq) returns (DownloadResp);
+	rpc Update(UpdateReq) returns (UpdateResp);
+	rpc Comment(CommentReq) returns (Resp);
+	rpc Collect(CollectReq) returns (Resp);
 };
 
 // 通用请求
