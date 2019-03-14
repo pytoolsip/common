@@ -2,7 +2,7 @@
 # @Author: JimDreamHeart
 # @Date:   2018-08-25 03:33:52
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:30:23
+# @Last Modified time: 2019-03-14 18:25:01
 
 from behaviorCore.BehaviorBinder import BehaviorBinder;
 
@@ -34,7 +34,7 @@ class BehaviorManager(object):
 			behaviorObj = require("/".join(behaviorPathList), behaviorFileName, behaviorFileName);
 			return behaviorObj();
 		except Exception as e:
-			print("Require behavior fail! =>", e);
+			_GG("Log").w("Require behavior fail! [{}] =>".format(path), e);
 
 	# require组件实例
 	def requireBehavior(self, path, basePath = None):
@@ -51,7 +51,7 @@ class BehaviorManager(object):
 			if hasattr(behaviorConfig, "behaviorId_"):
 				behavior = behaviorConfig;
 			else:
-				print("Bind behavior fail ! Because of no behaviorId_ .");
+				_GG("Log").w("Bind behavior fail ! Because of no behaviorId_ .");
 		elif isinstance(behaviorConfig, str):
 			behavior = self.requireBehavior(behaviorConfig);
 			if not hasattr(behavior, "behaviorId_"):
@@ -92,11 +92,11 @@ class BehaviorManager(object):
 					# 保存所绑定组件实例到对象的behaviorDict__
 					obj.behaviorDict__[behavior.getBehaviorId()] = behavior;
 				else:
-					print("Bind behavior fail ! Because of existing behavior[{}] in obj .".format(behavior.getBehaviorId()));
+					_GG("Log").w("Bind behavior fail ! Because of existing behavior[name:{},id:{}] in obj .".format(behavior.getBehaviorName(), behavior.getBehaviorId()));
 			else:
-				print("Bind behavior fail ! Because of failing to require behavior by param : {} .".format(behaviorConfig));
+				_GG("Log").w("Bind behavior fail ! Because of failing to require behavior by param : {} .".format(behaviorConfig));
 		except Exception as e:
-			print("Bind behavior fail! =>", e);
+			_GG("Log").w("Bind behavior fail! [{}] =>".format(behaviorConfig), e);
 		return behavior;
 
 	# 解绑组件
@@ -107,9 +107,9 @@ class BehaviorManager(object):
 				self.BehaviorBinder.unbindBehaviorToObj(behavior, obj);
 				return True;
 			else:
-				print("UnBind behavior fail ! Because behavior is not base on BaseBehavior .");
+				_GG("Log").w("UnBind behavior[name:{},id:{}] fail ! Because behavior is not base on BaseBehavior .".format(behavior.getBehaviorName()));
 		except Exception as e:
-			print("UnBind behavior fail! =>", e);
+			_GG("Log").w("UnBind behavior fail! =>", e);
 		return False;
 
 	# 绑定依赖组件

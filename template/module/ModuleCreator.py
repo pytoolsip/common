@@ -2,7 +2,7 @@
 # @Author: JimDreamHeart
 # @Date:   2018-04-05 13:08:49
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:31:56
+# @Last Modified time: 2019-03-14 18:00:54
 
 
 import linecache;
@@ -143,7 +143,7 @@ class CreateModuleObj(object):
 		except Exception:
 			with open(targetFileFullName, "wb+") as f:
 				f.writelines(data);
-		print("It is finish to create \"{0}\" by module named \"{1}\".".format(targetFileName, moduleFileName));
+		_GG("Log").i("It is finish to create \"{0}\" by module named \"{1}\".".format(targetFileName, moduleFileName));
 		pass;
 
 	def checkAndShowQuestionMsg(self, title, msg):

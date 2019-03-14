@@ -2,7 +2,7 @@
 # @Author: JimDreamHeart
 # @Date:   2018-03-21 22:31:37
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:29:55
+# @Last Modified time: 2019-03-14 18:11:34
 
 import sys;
 import os;
@@ -60,8 +60,6 @@ def CreateCtr(path, parent, params = {}, isReload = False, isReserve = False):
 		path = path[:-1];
 	ctrName = path.split("/")[-1] + "Ctr";
 	Ctr = require(path, ctrName, ctrName, isReload, isReserve);
-	if not callable(Ctr):
-		print(path, ctrName)
 	return Ctr(parent, params = params);
 
 # 销毁控制类【需先销毁UI】（视图或窗口）

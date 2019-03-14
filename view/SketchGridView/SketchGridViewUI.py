@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-11-03 17:07:37
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 16:50:44
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 18:00:13
 
 import wx;
 import math;
@@ -141,7 +141,7 @@ class SketchGridViewUI(wx.Panel):
 			self.updateItemBgColorTimer.Stop();
 
 	def onClickItem(self, item, event):
-		print("SketchGridView -> onClickItem")
+		_GG("Log").d("SketchGridView -> onClickItem")
 
 	def addGridView(self, gridData):
 		self.createItems(gridData, self.GetSizer().GetRows());

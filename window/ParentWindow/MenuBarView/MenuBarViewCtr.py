@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:35:12
+# @Last Modified time: 2019-03-14 18:12:44
 import os;
 import wx;
 
@@ -131,7 +131,7 @@ class MenuBarViewCtr(object):
 		try:
 			curTabPage = _GG("WindowObject").MainWindowCtr.getCtrByKey("WindowRightViewCtr").getCtrByKey("NoteBookViewCtr").getCurrentPage();
 		except Exception as e:
-			print(e);
+			_GG("Log").w(e);
 		# 尝试打开文件浏览器
 		if curTabPage and hasattr(curTabPage, "curPath"):
 			os.system("explorer " + curTabPage.curPath);
@@ -162,7 +162,7 @@ class MenuBarViewCtr(object):
 		self.getUIByKey("LoginDialogCtr").resetView();
 		if self.getUIByKey("LoginDialogCtr").ShowModal() == wx.ID_OK:
 			retData = _GG("CommonClient").callService("Login", "LoginReq", self.getUIByKey("LoginDialogCtr").getLoginInfo());
-			print(u"玩家信息：", retData)
+			_GG("Log").d(u"玩家信息：", retData)
 
 	def onClickRegister(self, event):
 		def onBlurName(name, callback):
@@ -203,7 +203,7 @@ class MenuBarViewCtr(object):
 				},
 			});
 		if self.getUIByKey("RegisterDialogCtr").ShowModal() == wx.ID_OK:
-			print(u"确认注册信息：", self.getUIByKey("RegisterDialogCtr").getRegisterInfo());
+			_GG("Log").d(u"确认注册信息：", self.getUIByKey("RegisterDialogCtr").getRegisterInfo());
 
 	def onUploadTool(self, event):
 		pass;

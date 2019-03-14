@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-03-24 12:24:07
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2018-12-08 11:16:00
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 18:04:49
 
 from enum import Enum, unique;
 from _Global import _GG;
@@ -23,7 +23,7 @@ class BaseBehavior(object):
 
 	# 打印obj绑定的组件名称【obj为绑定该组件的对象，argList和argDict为可变参数】
 	def printBehaviorName(self, obj, *argList, **argDict):
-		print(self.getBehaviorName());
+		_GG("Log").i(self.getBehaviorName());
 		pass;
 
 	# 设置组件Id

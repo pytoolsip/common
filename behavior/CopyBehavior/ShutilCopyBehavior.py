@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-10-29 22:06:46
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2018-10-29 22:37:18
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 18:03:57
 
 import os;
 import shutil;
@@ -47,7 +47,7 @@ class ShutilCopyBehavior(BaseBehavior):
 					shutil.copytree(srcPath, dstPath);
 					return True;
 				else:
-					print("The source path named '" + srcPath + "' is not file or dir !!");
+					_GG("Log").w("The source path named '" + srcPath + "' is not file or dir !!");
 			else:
-				print("There is not source path named '" + srcPath + "' !!");
+				_GG("Log").w("There is not source path named '" + srcPath + "' !!");
 		return False;

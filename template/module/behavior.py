@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-03-29 22:19:40
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2018-12-01 12:35:00
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 18:01:00
 
 from _Global import _GG;
 from function.base import *;
@@ -31,6 +31,6 @@ class TemplateBehavior(_GG("BaseBehavior")):
 
 	# 默认方法【obj为绑定该组件的对象，argList和argDict为可变参数，_retTuple为该组件的前个函数返回值】
 	# def defaultFun(self, obj, *argList, _retTuple = None, **argDict):
-	# 	print(obj.className_);
+	# 	_GG("Log").i(obj.className_);
 	# 	pass;
 

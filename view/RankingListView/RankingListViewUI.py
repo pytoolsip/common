@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-11-08 22:49:10
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 16:50:40
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 18:00:25
 
 import wx;
 
@@ -143,7 +143,7 @@ class RankingListViewUI(wx.ScrolledWindow):
 		item.onEnter = self.onEnterItem; # 设置Item的鼠标进入回调函数
 
 	def onClickItem(self, item, event):
-		print("----onClickItem----");
+		_GG("Log").d("----onClickItem----");
 		pass;
 
 	def onEnterItem(self, item, event):

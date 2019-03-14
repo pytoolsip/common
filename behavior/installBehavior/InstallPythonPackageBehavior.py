@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-04-23 22:18:59
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:26:51
+# @Last Modified time: 2019-03-14 18:02:15
 
 import os;
 import imp;
@@ -74,7 +74,7 @@ class InstallPythonPackageBehavior(_GG("BaseBehavior")):
 		return isInstalled;
 
 	def installPipByEasyInstall(self, obj, pythonPath = None, _retTuple = None):
-		print(pythonPath);
+		_GG("Log").i(pythonPath);
 		if pythonPath and len(pythonPath) > 0:
 			if os.system(pythonPath.replace("\\", "/") + "/Scripts/easy_install.exe pip") == 0:
 				return True;

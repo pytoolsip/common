@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-09-26 22:05:03
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2018-09-26 22:44:08
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 18:11:45
 
 import inspect;
 import ctypes;
@@ -22,5 +22,5 @@ def stopThread(thread):
 				ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, None);
 				raise SystemError("PyThreadState_SetAsyncExc failed !");
 	except Exception as e:
-		print("stop thread failed !", e);
+		_GG("Log").e("stop thread failed !", e);
 	

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-06-06 22:52:21
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2018-08-25 05:13:58
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 18:03:14
 
 from _Global import _GG;
 from function.base import *;
@@ -36,6 +36,6 @@ class XmlConfigParseBehavior(BaseBehavior):
 	# 根据文件路径，获取元素树对象
 	def getElementTreesByFilePath(self, obj, filePath, _retTuple = None):
 		if not re.search(r".+\.xml$", filePath):
-			print("The params of filePath has error!");
+			_GG("Log").e("The params of filePath has error!");
 		else:
 			return ET.parse(filePath);

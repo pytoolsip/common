@@ -2,11 +2,9 @@
 # @Author: JimDreamHeart
 # @Date:   2018-04-19 14:22:56
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:25:25
-
+# @Last Modified time: 2019-03-14 18:26:55
 import wx;
-import os;
-import sys;
+import os,sys,time;
 # 当前文件位置
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__));
 # 添加搜索路径
@@ -24,6 +22,7 @@ from eventDispatchCore.EventDispatcher import EventDispatcher;
 from eventDispatchCore.EventId import EVENT_ID;
 from hotKeyCore.HotKeyManager import HotKeyManager;
 from timerCore.TimerManager import TimerManager;
+from logCore.Logger import Logger;
 
 from net import CommonClient;
 from config import AppConfig;
@@ -57,7 +56,7 @@ class Loader(object):
 		self.loadObjects(); # 加载全局对象变量
 		self.loadConfigs(); # 加载全局配置变量
 		self.loadResources(); # 加载全局资源变量
-		self.loadCommonClient(); # 加载客户端->服务端连接变量
+		self.loadGClass(); # 加载全局类变量
 		self.lockGlobal_G(); # 锁定全局变量
 		pass;
 
@@ -103,6 +102,21 @@ class Loader(object):
 		print("Loading resources......");
 		print("Loaded resources!");
 		pass;
+
+	def loadGClass(self):
+		self.loadLogger(); # 加载日志类变量
+		self.loadCommonClient(); # 加载客户端->服务端连接变量
+		pass;
+
+	def loadLogger(self):
+		cliConf = _G._GG("ClientConfig").Config(); # 服务配置
+		path = cliConf.Get("log", "path", "").replace("\\", "/");
+		name = cliConf.Get("log", "name", "pytoolsip-client");
+		curTimeStr = time.strftime("%Y_%m_%d", time.localtime());
+		logger = Logger("Common", isLogFile = True, logFileName = os.path.join(_G._GG("g_ProjectPath"), path, name+("_%s.log"%curTimeStr)),
+			maxBytes = int(cliConf.Get("log", "maxBytes")), backupCount = int(cliConf.Get("log", "backupCount")));
+		_G.setGlobalVarTo_Global("Log", logger); # 设置日志类的全局变量
+		return logger;
 
 	# 加载客户端->服务端连接变量
 	def loadCommonClient(self):

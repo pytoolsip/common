@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-24 22:31:21
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 10:20:07
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 18:05:24
 
 from behaviorCore.BaseBehavior import DoType;
 
@@ -114,7 +114,7 @@ class BehaviorBinder(object):
 				frontBehaviorInfoList, overrideBehaviorInfoList, rearBehaviorInfoList = self.splitBehaviorInfosByMethodType(methodInfo["behaviorInfos"]);
 				# 判断是否有覆写函数
 				if len(overrideBehaviorInfoList) > 0:
-					print("The behavior(id : \"{0}\") would override the method key of \"{1}\"!".format(overrideBehaviorInfoList[0]["behaviorId"], obj.className_));
+					_GG("Log").w("The behavior(id : \"{0}\") would override the method key of \"{1}\"!".format(overrideBehaviorInfoList[0]["behaviorId"], obj.className_));
 					return overrideBehaviorInfoList[0]["function"](obj, *argList, **argDict);
 				# 返回值
 				_retTuple = None;
@@ -135,7 +135,7 @@ class BehaviorBinder(object):
 	def setNewDataByDataKey(self, obj, dataKey):
 		dataInfo = obj.behavior_exposeDataDict__[dataKey];
 		if len(dataInfo["behaviorInfos"]) > 0:
-			print("The behavior(id : \"{0}\") is setting the data key of \"{1}\"!".format(dataInfo["behaviorInfos"][-1]["behaviorId"], obj.className_));
+			_GG("Log").w("The behavior(id : \"{0}\") is setting the data key of \"{1}\"!".format(dataInfo["behaviorInfos"][-1]["behaviorId"], obj.className_));
 			setattr(obj, dataKey, dataInfo["behaviorInfos"][-1]["data"]);
 			obj.behavior_exposeDataDict__[dataKey]["curBehaviorId"] = dataInfo["behaviorInfos"][-1]["behaviorId"];
 

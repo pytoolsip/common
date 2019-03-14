@@ -2,7 +2,7 @@
 # @Author: JimDreamHeart
 # @Date:   2018-04-01 10:11:02
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-01-14 13:01:12
+# @Last Modified time: 2019-03-14 18:10:12
 
 from eventDispatchCore import EventId as G_EVENT;
 
@@ -113,7 +113,7 @@ class EventDispatcher(object):
 						else:
 							raise Exception("It calls the function(\"{0}\") of object(id:\"{1}\") in recursion !".format(listener["callbackName"], id(targetObj)));
 			else:
-				print("It has not event(\"{0}\") to dispatch !".format(eventId));
+				_GG("Log").w("It has not event(\"{0}\") to dispatch !".format(eventId));
 			self.__dispatchDepth -= 1;
 			pass;
 		except Exception as e:

@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-11-10 15:59:49
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:33:14
+# @Last Modified time: 2019-03-14 18:00:40
 
 import wx;
 
@@ -105,4 +105,4 @@ class PageGridsViewUI(wx.Panel):
 		self.Layout();
 
 	def onChangeIndex(self, index):
-		print(index)
+		_GG("Log").d(index)

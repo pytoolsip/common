@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-11-24 02:42:20
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2018-11-24 02:44:29
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 18:02:11
 
 from _Global import _GG;
 from function.base import *;
@@ -33,7 +33,7 @@ class JsonConfigBehavior(BaseBehavior):
 
 	# 默认方法【obj为绑定该组件的对象，argList和argDict为可变参数，_retTuple为该组件的前个函数返回值】
 	# def defaultFun(self, obj, *argList, _retTuple = None, **argDict):
-	# 	print(obj.className_);
+	# 	_GG("Log").i(obj.className_);
 	# 	pass;
 
 	def writeJsonFile(self, obj, filePath, data, _retTuple = None):
