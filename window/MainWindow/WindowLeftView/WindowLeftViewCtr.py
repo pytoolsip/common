@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:34:34
+# @Last Modified time: 2019-03-14 19:03:54
 
 import wx;
 
@@ -20,7 +20,7 @@ class WindowLeftViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(WindowLeftViewCtr, self).__init__();
 		self.className_ = WindowLeftViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view/WindowLeftView/";
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.registerEventMap(); # 注册事件
 		self.bindBehaviors(); # 绑定组件
@@ -46,11 +46,11 @@ class WindowLeftViewCtr(object):
 
 	def initUI(self, parent):
 		# 创建视图UI类
-		self.UI = WindowLeftViewUI(parent, curPath = self.curPath, viewCtr = self);
-		self.UI.initView();
+		self.__ui = WindowLeftViewUI(parent, curPath = self._curPath, viewCtr = self);
+		self.__ui.initView();
 
 	def getUI(self):
-		return self.UI;
+		return self.__ui;
 
 	"""
 		key : 索引所创建控制类的key值
@@ -90,7 +90,7 @@ class WindowLeftViewCtr(object):
 		pass;
 			
 	def updateView(self, data):
-		self.UI.updateView(data);
+		self.__ui.updateView(data);
 
 	def setTreeItemDictByItem(self, treeItem, itemDict):
 		for treeElem in treeItem.getchildren():

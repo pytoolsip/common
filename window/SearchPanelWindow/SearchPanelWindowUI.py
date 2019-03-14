@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-05 21:14:16
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:35:36
+# @Last Modified time: 2019-03-14 19:01:50
 
 import threading;
 import wx;
@@ -15,11 +15,11 @@ class SearchPanelWindowUI(wx.MDIChildFrame):
 	def __init__(self, parent, id = -1, title = "", pos = (0,0), size = (0,0), style = wx.DEFAULT_FRAME_STYLE, curPath = "", windowCtr = None):
 		super(SearchPanelWindowUI, self).__init__(parent, id, title = title, pos = pos, size = size, style = style); #^(wx.RESIZE_BORDER|wx.CAPTION)
 		self.className_ = SearchPanelWindowUI.__name__;
-		self.curPath = curPath;
-		self.windowCtr = windowCtr;
+		self._curPath = curPath;
+		self.__windowCtr = windowCtr;
 
 	def getCtr(self):
-		return self.windowCtr;
+		return self.__windowCtr;
 
 	def initWindow(self):
 		self.createViewCtrs();

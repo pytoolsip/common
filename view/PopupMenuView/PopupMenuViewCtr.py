@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 18:59:05
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:33:21
+# @Last Modified time: 2019-03-14 19:03:42
 
 import wx;
 
@@ -20,7 +20,7 @@ class PopupMenuViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(PopupMenuViewCtr, self).__init__();
 		self.className_ = PopupMenuViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view/PopupMenuView/";
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
@@ -49,11 +49,11 @@ class PopupMenuViewCtr(object):
 
 	def initUI(self, parent):
 		# 创建视图UI类
-		self.UI = PopupMenuViewUI(parent, curPath = self.curPath, viewCtr = self);
-		self.UI.initView();
+		self.__ui = PopupMenuViewUI(parent, curPath = self._curPath, viewCtr = self);
+		self.__ui.initView();
 
 	def getUI(self):
-		return self.UI;
+		return self.__ui;
 
 	"""
 		key : 索引所创建控制类的key值
@@ -92,18 +92,18 @@ class PopupMenuViewCtr(object):
 		pass;
 			
 	def updateView(self, data):
-		self.UI.updateView(data);
+		self.__ui.updateView(data);
 
 	def appendNormalMenuItem(self, key, title, callback, itemId = None, params = {}):
-		self.UI.appendMenuItem(key, "normal", title, callback, itemId = itemId, params = params);
+		self.__ui.appendMenuItem(key, "normal", title, callback, itemId = itemId, params = params);
 		pass;
 
 	def appendSeparatorMenuItem(self, key):
-		self.UI.appendMenuItem(key, "separator");
+		self.__ui.appendMenuItem(key, "separator");
 		pass;
 
 	def createNewMenu(self, key, data):
-		self.UI.createMenuByKey(key);
+		self.__ui.createMenuByKey(key);
 		if "itemsData" in data:
 			for itemData in data["itemsData"]:
 				if "isSeparator" in itemData and itemData["isSeparator"] == True:
@@ -119,4 +119,4 @@ class PopupMenuViewCtr(object):
 		pass;
 
 	def getMenu(self, key):
-		return self.UI.getMenuByKey(key);
+		return self.__ui.getMenuByKey(key);

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-03-29 22:19:40
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-01-12 09:45:37
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 19:00:09
 
 import wx;
 
@@ -15,8 +15,8 @@ class TemplateViewUI(wx.Panel):
 		self.initParams(params);
 		super(TemplateViewUI, self).__init__(parent, id, pos = self.__params["pos"], size = self.__params["size"], style = self.__params["style"]);
 		self.className_ = TemplateViewUI.__name__;
-		self.curPath = curPath;
-		self.viewCtr = viewCtr;
+		self._curPath = curPath;
+		self.__viewCtr = viewCtr;
 
 	def initParams(self, params):
 		# 初始化参数
@@ -29,14 +29,14 @@ class TemplateViewUI(wx.Panel):
 			self.__params[k] = v;
 
 	def getCtr(self):
-		return self.viewCtr;
+		return self.__viewCtr;
 
 	def initView(self):
 		self.createControls(); # 创建控件
 		self.initViewLayout(); # 初始化布局
 
 	def createControls(self):
-		# self.getCtr().createCtrByKey("key", self.curPath + "***View"); # , parent = self, params = {}
+		# self.getCtr().createCtrByKey("key", self._curPath + "***View"); # , parent = self, params = {}
 		pass;
 		
 	def initViewLayout(self):

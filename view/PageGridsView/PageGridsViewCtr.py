@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-11-10 15:59:49
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:33:05
+# @Last Modified time: 2019-03-14 19:03:41
 
 import wx;
 
@@ -20,7 +20,7 @@ class PageGridsViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(PageGridsViewCtr, self).__init__();
 		self.className_ = PageGridsViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view/PageGridsView/";
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
@@ -46,11 +46,11 @@ class PageGridsViewCtr(object):
 
 	def initUI(self, parent, params):
 		# 创建视图UI类
-		self.UI = PageGridsViewUI(parent, curPath = self.curPath, viewCtr = self, params = params);
-		self.UI.initView();
+		self.__ui = PageGridsViewUI(parent, curPath = self._curPath, viewCtr = self, params = params);
+		self.__ui.initView();
 
 	def getUI(self):
-		return self.UI;
+		return self.__ui;
 
 	"""
 		key : 索引所创建控制类的key值
@@ -89,7 +89,7 @@ class PageGridsViewCtr(object):
 		pass;
 			
 	def updateView(self, data):
-		self.UI.updateView(data);
+		self.__ui.updateView(data);
 
 
 	def updateViewByDefaultData(self):

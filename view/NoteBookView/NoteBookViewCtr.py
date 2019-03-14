@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 18:27:07
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:32:49
+# @Last Modified time: 2019-03-14 19:03:40
 
 from enum import Enum, unique;
 
@@ -29,7 +29,7 @@ class NoteBookViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(NoteBookViewCtr, self).__init__();
 		self.className_ = NoteBookViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view/NoteBookView/";
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
@@ -59,12 +59,12 @@ class NoteBookViewCtr(object):
 
 	def initUI(self, parent):
 		# 创建视图UI类
-		self.UI = NoteBookViewUI(parent, curPath = self.curPath, viewCtr = self);
-		self.UI.initView();
-		self.UI.Bind(wx.EVT_RIGHT_DOWN, self.onMouseRightDown);
+		self.__ui = NoteBookViewUI(parent, curPath = self._curPath, viewCtr = self);
+		self.__ui.initView();
+		self.__ui.Bind(wx.EVT_RIGHT_DOWN, self.onMouseRightDown);
 
 	def getUI(self):
-		return self.UI;
+		return self.__ui;
 
 	"""
 		key : 索引所创建控制类的key值
@@ -103,7 +103,7 @@ class NoteBookViewCtr(object):
 		pass;
 			
 	def updateView(self, data):
-		self.UI.updateView(data);
+		self.__ui.updateView(data);
 
 	def initPopupMenus(self):
 		self.createNewMenu(PageType.Fix, {"itemsData" : self.getFixedPopupMenuItemsData()});
@@ -127,26 +127,26 @@ class NoteBookViewCtr(object):
 		pass;
 
 	def setCurrentPageInt(self, curPageInt):
-		self.UI.SetSelection(curPageInt);
+		self.__ui.SetSelection(curPageInt);
 		pass;
 
 	def getCurrentPageInt(self):
-		return self.UI.GetSelection();
+		return self.__ui.GetSelection();
 
 	def getCurrentPage(self):
-		return self.UI.GetCurrentPage();
+		return self.__ui.GetCurrentPage();
 
 	def createPageViewCtr(self, path):
-		return CreateCtr(path, self.UI);
+		return CreateCtr(path, self.__ui);
 
 	def addPageToNoteBook(self, pageId = -1, pageInfo = None):
 		if not pageInfo:
 			pageInfo = self.pageInfoDict[pageId];
-		return self.UI.addPage(pageInfo["pageViewCtr"].getUI(), pageInfo["title"]);
+		return self.__ui.addPage(pageInfo["pageViewCtr"].getUI(), pageInfo["title"]);
 
 	def setPageTitle(self, pageId, pageInt):
 		pageInfo = self.pageInfoDict[pageId];
-		return self.UI.SetPageText(pageInt, pageInfo["title"]);
+		return self.__ui.SetPageText(pageInt, pageInfo["title"]);
 
 	def adjustPageTitle(self, pageId = -1, pageInfo = None):
 		if not pageInfo:

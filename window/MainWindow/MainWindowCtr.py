@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-07-29 10:53:54
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:34:26
+# @Last Modified time: 2019-03-14 19:03:52
 
 import wx;
 
@@ -21,7 +21,7 @@ class MainWindowCtr(object):
 	def __init__(self, parent = None, params = {}):
 		super(MainWindowCtr, self).__init__();
 		self.className_ = MainWindowCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "window/MainWindow/";
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.toolWinSizeEventDict = {}; # 窗口大小事件字典
 		self.initUI(parent, params);
@@ -54,11 +54,11 @@ class MainWindowCtr(object):
 		if "windowSize" in params:
 			windowSize = params["windowSize"];
 		windowStyle = wx.DEFAULT_FRAME_STYLE^(wx.RESIZE_BORDER|wx.CAPTION); # wx.DEFAULT_FRAME_STYLE^(wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.CLOSE_BOX);
-		self.UI = MainWindowUI(parent, id = -1, pos = windowPos, size = windowSize, style = windowStyle, curPath = self.curPath, windowCtr = self);
-		self.UI.initWindow();
+		self.__ui = MainWindowUI(parent, id = -1, pos = windowPos, size = windowSize, style = windowStyle, curPath = self._curPath, windowCtr = self);
+		self.__ui.initWindow();
 
 	def getUI(self):
-		return self.UI;
+		return self.__ui;
 			
 	"""
 		key : 索引所创建控制类的key值
@@ -91,7 +91,7 @@ class MainWindowCtr(object):
 			_GG("EventDispatcher").unregister(eventId, self, callbackName);
 			
 	def updateWindow(self, data):
-		self.UI.updateWindow(data);
+		self.__ui.updateWindow(data);
 
 	def bindEvents(self):
 		_GG("WindowObject").ParentWindowCtr.bindEventToClientWinSize(self, self.onClientWinSize);
@@ -104,7 +104,7 @@ class MainWindowCtr(object):
 		PreUISize = _GG("WindowObject").ParentWindowCtr.PreUISize;
 		parentWindowUI = _GG("WindowObject").ParentWindowCtr.getUI();
 		curSize = parentWindowUI.GetSize();
-		self.UI.Size = (self.UI.Size[0] + curSize[0] - PreUISize[0], self.UI.Size[1] + curSize[1] - PreUISize[1]);
+		self.__ui.Size = (self.__ui.Size[0] + curSize[0] - PreUISize[0], self.__ui.Size[1] + curSize[1] - PreUISize[1]);
 
 	def createHomePage(self):
 		self.getCtrByKey("WindowRightViewCtr").createPageToNoteBook({"id" : 0, "pagePath" : _GG("g_CommonPath") + "view/HomePageView", "title" : "首页"});
@@ -150,7 +150,7 @@ class MainWindowCtr(object):
 		self.PreToolUISize = curToolUISize;
 
 	def getMainWindowCenterPoint(self, isToScreen = True):
-		pos = self.UI.GetPosition();
+		pos = self.__ui.GetPosition();
 		if isToScreen == True:
-			pos = self.UI.ClientToScreen(pos);
-		return wx.Point(pos[0] + self.UI.GetSize().x/2, pos[1] + self.UI.GetSize().y/2);
+			pos = self.__ui.ClientToScreen(pos);
+		return wx.Point(pos[0] + self.__ui.GetSize().x/2, pos[1] + self.__ui.GetSize().y/2);

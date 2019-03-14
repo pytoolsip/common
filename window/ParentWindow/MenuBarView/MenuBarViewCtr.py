@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 18:12:44
+# @Last Modified time: 2019-03-14 19:03:56
 import os;
 import wx;
 
@@ -20,7 +20,7 @@ class MenuBarViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(MenuBarViewCtr, self).__init__();
 		self.className_ = MenuBarViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view/MenuBarView/";
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
@@ -46,11 +46,11 @@ class MenuBarViewCtr(object):
 
 	def initUI(self, parent):
 		# 创建视图UI类
-		self.UI = MenuBarViewUI(parent, curPath = self.curPath, viewCtr = self);
-		self.UI.initView();
+		self.__ui = MenuBarViewUI(parent, curPath = self._curPath, viewCtr = self);
+		self.__ui.initView();
 
 	def getUI(self):
-		return self.UI;
+		return self.__ui;
 
 	"""
 		key : 索引所创建控制类的key值
@@ -90,7 +90,7 @@ class MenuBarViewCtr(object):
 		pass;
 			
 	def updateView(self, data):
-		self.UI.updateView(data);
+		self.__ui.updateView(data);
 
 	def showMessageDialog(self, message, caption = "提示", style = wx.OK):
 		wx.MessageDialog(self.getUI(), message, caption = caption, style = style).ShowModal();
@@ -134,7 +134,7 @@ class MenuBarViewCtr(object):
 			_GG("Log").w(e);
 		# 尝试打开文件浏览器
 		if curTabPage and hasattr(curTabPage, "curPath"):
-			os.system("explorer " + curTabPage.curPath);
+			os.system("explorer " + curTabPage._curPath);
 		else:
 			self.showMessageDialog("打开当前标签页目录失败！", "提示", style = wx.OK|wx.ICON_INFORMATION);
 

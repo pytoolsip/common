@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-11-08 22:49:10
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 18:00:25
+# @Last Modified time: 2019-03-14 19:00:34
 
 import wx;
 
@@ -16,8 +16,8 @@ class RankingListViewUI(wx.ScrolledWindow):
 		self.initParams(params);
 		super(RankingListViewUI, self).__init__(parent, id, pos = self.__params["pos"], size = self.__params["size"], style = self.__params["style"]);
 		self.className_ = RankingListViewUI.__name__;
-		self.curPath = curPath;
-		self.viewCtr = viewCtr;
+		self._curPath = curPath;
+		self.__viewCtr = viewCtr;
 		self.listDataList = [];
 		self.currentItem = None;
 		self.SetScrollbars(1, 1, *self.__params["size"]); # 初始化滚动条参数
@@ -54,7 +54,7 @@ class RankingListViewUI(wx.ScrolledWindow):
 			self.__params[k] = v;
 
 	def getCtr(self):
-		return self.viewCtr;
+		return self.__viewCtr;
 
 	def initView(self):
 		self.createControls(); # 创建控件
@@ -62,7 +62,7 @@ class RankingListViewUI(wx.ScrolledWindow):
 		self.SetBackgroundColour(self.__params["itemBlurColor"]); # 设置背景颜色
 
 	def createControls(self):
-		# self.getCtr().createCtrByKey("key", self.curPath + "***View"); # , parent = self, params = {}
+		# self.getCtr().createCtrByKey("key", self._curPath + "***View"); # , parent = self, params = {}
 		pass;
 		
 	def initViewLayout(self):

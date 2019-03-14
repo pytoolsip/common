@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 18:09:36
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:34:53
+# @Last Modified time: 2019-03-14 19:03:55
 
 import wx;
 
@@ -20,7 +20,7 @@ class WindowRightViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(WindowRightViewCtr, self).__init__();
 		self.className_ = WindowRightViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view/WindowRightView/";
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
@@ -46,11 +46,11 @@ class WindowRightViewCtr(object):
 
 	def initUI(self, parent):
 		# 创建视图UI类
-		self.UI = WindowRightViewUI(parent, curPath = self.curPath, viewCtr = self);
-		self.UI.initView();
+		self.__ui = WindowRightViewUI(parent, curPath = self._curPath, viewCtr = self);
+		self.__ui.initView();
 
 	def getUI(self):
-		return self.UI;
+		return self.__ui;
 
 	"""
 		key : 索引所创建控制类的key值
@@ -89,7 +89,7 @@ class WindowRightViewCtr(object):
 		pass;
 			
 	def updateView(self, data):
-		# self.UI.updateView(data);
+		# self.__ui.updateView(data);
 		if "creatPage" in data and data["creatPage"] == True:
 			self.createPageToNoteBook(data);
 		pass;

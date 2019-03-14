@@ -2,7 +2,7 @@
 # @Author: JimDreamHeart
 # @Date:   2018-03-21 22:31:37
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 18:11:34
+# @Last Modified time: 2019-03-14 19:05:07
 
 import sys;
 import os;
@@ -64,7 +64,7 @@ def CreateCtr(path, parent, params = {}, isReload = False, isReserve = False):
 
 # 销毁控制类【需先销毁UI】（视图或窗口）
 def DelCtr(ctr):
-	Del(ctr.UI);
+	Del(ctr.getUI());
 	Del(ctr);
 
 # 主动销毁类

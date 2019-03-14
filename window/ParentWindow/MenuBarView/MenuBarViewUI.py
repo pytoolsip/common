@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-01-14 12:16:06
+# @Last Modified time: 2019-03-14 19:00:46
 
 import wx;
 
@@ -14,13 +14,13 @@ class MenuBarViewUI(wx.Panel):
 	def __init__(self, parent, id = -1, curPath = "", viewCtr = None):
 		super(MenuBarViewUI, self).__init__(parent, id);
 		self.className_ = MenuBarViewUI.__name__;
-		self.curPath = curPath;
-		self.viewCtr = viewCtr;
+		self._curPath = curPath;
+		self.__viewCtr = viewCtr;
 		self.parent = parent;
 		self.itemCallbackDict = {}; # 菜单项回调函数【key值对应菜单项ID】
 
 	def getCtr(self):
-		return self.viewCtr;
+		return self.__viewCtr;
 
 	def initView(self):
 		self.createControls(); # 创建控件
@@ -38,7 +38,7 @@ class MenuBarViewUI(wx.Panel):
 		self.TopMenu = wx.MenuBar();
 		self.parent.SetMenuBar(self.TopMenu); # 创建菜单条
 		self.parent.Bind(wx.EVT_MENU, self.onMenu); # 绑定菜单事件
-		data = {"itemsData" : self.viewCtr.getMenuItemsData()};
+		data = {"itemsData" : self.__viewCtr.getMenuItemsData()};
 		self.updateView(data);
 		pass;
 

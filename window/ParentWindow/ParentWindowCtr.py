@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 10:49:59
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:35:21
+# @Last Modified time: 2019-03-14 19:03:58
 
 import wx;
 
@@ -22,7 +22,7 @@ class ParentWindowCtr(object):
 	def __init__(self, parent = None, params = {}):
 		super(ParentWindowCtr, self).__init__();
 		self.className_ = ParentWindowCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "window/ParentWindow/";
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent);
 		self.registerEventMap(); # 注册事件
@@ -54,11 +54,11 @@ class ParentWindowCtr(object):
 		windowTitle = _GG("AppConfig")["AppTitle"];
 		windowSize = _GG("AppConfig")["AppSize"];
 		windowStyle = wx.DEFAULT_FRAME_STYLE|wx.FRAME_NO_WINDOW_MENU; # wx.DEFAULT_FRAME_STYLE^(wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.CLOSE_BOX);
-		self.UI = ParentWindowUI(parent, id = -1, title = windowTitle, size = windowSize, style = windowStyle, curPath = self.curPath, windowCtr = self);
-		self.UI.initWindow();
+		self.__ui = ParentWindowUI(parent, id = -1, title = windowTitle, size = windowSize, style = windowStyle, curPath = self._curPath, windowCtr = self);
+		self.__ui.initWindow();
 
 	def getUI(self):
-		return self.UI;
+		return self.__ui;
 		
 	"""
 		key : 索引所创建控制类的key值
@@ -91,15 +91,15 @@ class ParentWindowCtr(object):
 			_GG("EventDispatcher").unregister(eventId, self, callbackName);
 			
 	def updateWindow(self, data):
-		self.UI.updateWindow(data);
+		self.__ui.updateWindow(data);
 
 	def bindEvents(self):
-		self.UI.Bind(wx.EVT_SIZE, self.onWinSize);
+		self.__ui.Bind(wx.EVT_SIZE, self.onWinSize);
 		self.bindClientWinSizeEvents();
 		pass;
 
 	def onWinSize(self, event):
-		self.UI.ClientWindow.Size = self.UI.Size;
+		self.__ui.ClientWindow.Size = self.__ui.Size;
 
 	# 客户（父）窗口大小变化事件回调
 	def onClientWinSize(self, event):
@@ -108,12 +108,12 @@ class ParentWindowCtr(object):
 				for funcId in self.clientWinSizeEventDict[objId]["funcDict"]:
 					self.clientWinSizeEventDict[objId]["funcDict"][funcId](event);
 		# 重置PreUISize
-		self.PreUISize = self.UI.Size;
+		self.PreUISize = self.__ui.Size;
 
 	# 绑定客户（父）窗口大小变化事件
 	def bindClientWinSizeEvents(self):
-		self.PreUISize = self.UI.Size;
-		self.UI.ClientWindow.Bind(wx.EVT_SIZE, self.onClientWinSize);
+		self.PreUISize = self.__ui.Size;
+		self.__ui.ClientWindow.Bind(wx.EVT_SIZE, self.onClientWinSize);
 
 	# 绑定事件到客户（父）窗口大小变化事件列表中
 	def bindEventToClientWinSize(self, obj, func):
@@ -136,30 +136,30 @@ class ParentWindowCtr(object):
 
 	# 根据ID设置当前窗口（设置成功则返回True）
 	def SetActiveChildById(self, wID):
-		curActiveChild = self.UI.GetActiveChild();
+		curActiveChild = self.__ui.GetActiveChild();
 		# 判断是否有当前节点
 		if curActiveChild:
 			if curActiveChild.GetId() == wID:
 				return False; # 如果当前的窗口ID与wID相同，则直接return
 			while True:
 				# 循环遍历并更新当前窗口
-				self.UI.ActivateNext();
-				if self.UI.GetActiveChild().GetId() == wID:
+				self.__ui.ActivateNext();
+				if self.__ui.GetActiveChild().GetId() == wID:
 					return True;
-				elif self.UI.GetActiveChild().GetId() == curActiveChild.GetId():
+				elif self.__ui.GetActiveChild().GetId() == curActiveChild.GetId():
 					break;
 		return False;
 
 	# 显示搜索面板窗口
 	def showSearchPanelWindow(self, data):
-		curActiveChild = self.UI.GetActiveChild();
+		curActiveChild = self.__ui.GetActiveChild();
 		if not hasattr(self, "SearchPanelWindowCtr"):
 			if curActiveChild:
 				self.appendEventToEscDown(self.SetActiveChildById, curActiveChild.GetId());
 			# 创建搜索面板
-			self.SearchPanelWindowCtr = CreateCtr(_GG("g_CommonPath") + "window/SearchPanelWindow", self.UI);
+			self.SearchPanelWindowCtr = CreateCtr(_GG("g_CommonPath") + "window/SearchPanelWindow", self.__ui);
 			# 根据父窗口大小获取中心位置
-			centerPos = self.SearchPanelWindowCtr.getCenterPosByParentSize(self.UI.GetSize());
+			centerPos = self.SearchPanelWindowCtr.getCenterPosByParentSize(self.__ui.GetSize());
 			self.SearchPanelWindowCtr.getUI().SetPosition((centerPos[0], 0)); # 重置窗口的位置
 		else:
 			self.SearchPanelWindowCtr.clearWindow(); # 清除窗口内容

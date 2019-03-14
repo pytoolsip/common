@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-03-29 22:19:40
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 17:08:04
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 19:03:35
 import os;
 import wx;
 
@@ -21,7 +21,7 @@ class TemplateWindowCtr(object):
 	def __init__(self, parent = None, params = {}):
 		super(TemplateWindowCtr, self).__init__();
 		self.className_ = TemplateWindowCtr.__name__;
-		self.curPath = os.path.dirname(os.path.realpath(__file__));
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent);
 		self.registerEventMap(); # 注册事件
@@ -49,11 +49,11 @@ class TemplateWindowCtr(object):
 		windowTitle = "TemplateWindow标题";
 		windowSize = (960,640); # _GG("AppConfig")["AppSize"];
 		windowStyle = wx.DEFAULT_FRAME_STYLE; # wx.DEFAULT_FRAME_STYLE^(wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.CLOSE_BOX);
-		self.UI = TemplateWindowUI(parent, id = -1, title = windowTitle, size = windowSize, style = windowStyle, curPath = self.curPath, windowCtr = self);
-		self.UI.initWindow();
+		self.__ui = TemplateWindowUI(parent, id = -1, title = windowTitle, size = windowSize, style = windowStyle, curPath = self._curPath, windowCtr = self);
+		self.__ui.initWindow();
 
 	def getUI(self):
-		return self.UI;
+		return self.__ui;
 		
 	"""
 		key : 索引所创建控制类的key值
@@ -86,4 +86,4 @@ class TemplateWindowCtr(object):
 			_GG("EventDispatcher").unregister(eventId, self, callbackName);
 			
 	def updateWindow(self, data):
-		self.UI.updateWindow(data);
+		self.__ui.updateWindow(data);

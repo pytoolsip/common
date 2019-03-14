@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-03-29 22:19:40
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 17:06:47
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 19:03:34
 import os;
 import wx;
 
@@ -20,7 +20,7 @@ class TemplateViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(TemplateViewCtr, self).__init__();
 		self.className_ = TemplateViewCtr.__name__;
-		self.curPath = os.path.dirname(os.path.realpath(__file__));
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
@@ -46,11 +46,11 @@ class TemplateViewCtr(object):
 
 	def initUI(self, parent, params):
 		# 创建视图UI类
-		self.UI = TemplateViewUI(parent, curPath = self.curPath, viewCtr = self, params = params);
-		self.UI.initView();
+		self.__ui = TemplateViewUI(parent, curPath = self._curPath, viewCtr = self, params = params);
+		self.__ui.initView();
 
 	def getUI(self):
-		return self.UI;
+		return self.__ui;
 
 	"""
 		key : 索引所创建控制类的key值
@@ -89,4 +89,4 @@ class TemplateViewCtr(object):
 		pass;
 			
 	def updateView(self, data):
-		self.UI.updateView(data);
+		self.__ui.updateView(data);

@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-11-13 23:07:38
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:30:43
+# @Last Modified time: 2019-03-14 19:03:24
 
 import wx;
 
@@ -20,7 +20,7 @@ class AboutIPDialogCtr(object):
 	def __init__(self, parent, params = {}):
 		super(AboutIPDialogCtr, self).__init__();
 		self.className_ = AboutIPDialogCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "Dialog/AboutIPDialog/";
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
@@ -46,11 +46,11 @@ class AboutIPDialogCtr(object):
 
 	def initUI(self, parent, params):
 		# 创建视图UI类
-		self.UI = AboutIPDialogUI(parent, curPath = self.curPath, viewCtr = self, params = params);
-		self.UI.initDialog();
+		self.__ui = AboutIPDialogUI(parent, curPath = self._curPath, viewCtr = self, params = params);
+		self.__ui.initDialog();
 
 	def getUI(self):
-		return self.UI;
+		return self.__ui;
 
 	"""
 		key : 索引所创建控制类的key值
@@ -89,7 +89,7 @@ class AboutIPDialogCtr(object):
 		pass;
 			
 	def updateDialog(self, data):
-		self.UI.updateDialog(data);
+		self.__ui.updateDialog(data);
 
 	def openUrl(self, url):
 		wx.LaunchDefaultBrowser(url);

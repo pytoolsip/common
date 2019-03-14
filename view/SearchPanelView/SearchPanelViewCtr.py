@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-26 14:05:42
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:33:37
+# @Last Modified time: 2019-03-14 19:03:44
 
 import wx;
 
@@ -20,7 +20,7 @@ class SearchPanelViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(SearchPanelViewCtr, self).__init__();
 		self.className_ = SearchPanelViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view/SearchPanelView/";
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
@@ -49,13 +49,13 @@ class SearchPanelViewCtr(object):
 		size = (0,0);
 		if "size" in params:
 			size = params["size"];
-		self.UI = SearchPanelViewUI(parent, curPath = self.curPath, viewCtr = self, size = size);
+		self.__ui = SearchPanelViewUI(parent, curPath = self._curPath, viewCtr = self, size = size);
 		if "bgColor" in params:
-			self.UI.SetBackgroundColour(params["bgColor"]);
-		self.UI.initView();
+			self.__ui.SetBackgroundColour(params["bgColor"]);
+		self.__ui.initView();
 
 	def getUI(self):
-		return self.UI;
+		return self.__ui;
 
 	"""
 		key : 索引所创建控制类的key值
@@ -94,7 +94,7 @@ class SearchPanelViewCtr(object):
 		pass;
 			
 	def updateView(self, data):
-		self.UI.updateView(data);
+		self.__ui.updateView(data);
 
 	def clearView(self):
-		self.UI.clearView();
+		self.__ui.clearView();

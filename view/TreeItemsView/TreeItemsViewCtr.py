@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:34:09
+# @Last Modified time: 2019-03-14 19:03:49
 
 import wx;
 
@@ -20,7 +20,7 @@ class TreeItemsViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(TreeItemsViewCtr, self).__init__();
 		self.className_ = TreeItemsViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view/TreeItemsView/";
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
@@ -49,11 +49,11 @@ class TreeItemsViewCtr(object):
 
 	def initUI(self, parent):
 		# 创建视图UI类
-		self.UI = TreeItemsViewUI(parent, curPath = self.curPath, viewCtr = self);
-		self.UI.initView();
+		self.__ui = TreeItemsViewUI(parent, curPath = self._curPath, viewCtr = self);
+		self.__ui.initView();
 
 	def getUI(self):
-		return self.UI;
+		return self.__ui;
 
 	"""
 		key : 索引所创建控制类的key值
@@ -96,7 +96,7 @@ class TreeItemsViewCtr(object):
 		if self.type and ("type" in data):
 			if data["type"] != self.type:
 				return; # 若不需要更新当前视图，则直接返回，不执行更新逻辑
-		self.UI.updateView(data);
+		self.__ui.updateView(data);
 
 	def initParams(self, params):
 		# 树节点的页面数据字典

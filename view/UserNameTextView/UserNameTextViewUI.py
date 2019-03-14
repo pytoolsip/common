@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 22:27:47
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2018-11-10 23:27:31
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 19:00:41
 
 import wx;
 
@@ -14,11 +14,11 @@ class UserNameTextViewUI(wx.Panel):
 	def __init__(self, parent, id = -1, curPath = "", viewCtr = None):
 		super(UserNameTextViewUI, self).__init__(parent, id);
 		self.className_ = UserNameTextViewUI.__name__;
-		self.curPath = curPath;
-		self.viewCtr = viewCtr;
+		self._curPath = curPath;
+		self.__viewCtr = viewCtr;
 
 	def getCtr(self):
-		return self.viewCtr;
+		return self.__viewCtr;
 
 	def initView(self):
 		self.createControls(); # 创建控件

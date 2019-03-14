@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-07 20:49:03
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-09 01:42:24
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 19:00:02
 
 import wx;
 import time;
@@ -16,8 +16,8 @@ class DownloadDialogUI(wx.Dialog):
 		self.initParams(params);
 		super(DownloadDialogUI, self).__init__(parent, id, title = self.__params["title"], pos = self.__params.get("pos", (0,0)), size = self.__params["size"], style = self.__params["style"]);
 		self.className_ = DownloadDialogUI.__name__;
-		self.curPath = curPath;
-		self.viewCtr = viewCtr;
+		self._curPath = curPath;
+		self.__viewCtr = viewCtr;
 		self.Bind(wx.EVT_CLOSE, self.onClose); # 绑定关闭事件
 		self.__startTime = time.time(); # 开始下载时间
 		self.createTimer();
@@ -40,7 +40,7 @@ class DownloadDialogUI(wx.Dialog):
 			self.__params[k] = v;
 
 	def getCtr(self):
-		return self.viewCtr;
+		return self.__viewCtr;
 
 	def initDialog(self):
 		self.createControls(); # 创建控件
@@ -48,7 +48,7 @@ class DownloadDialogUI(wx.Dialog):
 		self.updatePosition(); # 更新位置
 
 	def createControls(self):
-		# self.getCtr().createCtrByKey("key", self.curPath + "***Dialog"); # , parent = self, params = {}
+		# self.getCtr().createCtrByKey("key", self._curPath + "***Dialog"); # , parent = self, params = {}
 		self.createGauge();
 		self.createSpeed();
 		self.createSchedule();

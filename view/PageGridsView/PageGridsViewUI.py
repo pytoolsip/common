@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-11-10 15:59:49
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 18:00:40
+# @Last Modified time: 2019-03-14 19:00:31
 
 import wx;
 
@@ -17,8 +17,8 @@ class PageGridsViewUI(wx.Panel):
 		self.initParams(params);
 		super(PageGridsViewUI, self).__init__(parent, id, pos = self.__params["pos"], size = self.__params["size"], style = self.__params["style"]);
 		self.className_ = PageGridsViewUI.__name__;
-		self.curPath = curPath;
-		self.viewCtr = viewCtr;
+		self._curPath = curPath;
+		self.__viewCtr = viewCtr;
 		self.__randomPool = RandomPool();
 
 	def initParams(self, params):
@@ -42,7 +42,7 @@ class PageGridsViewUI(wx.Panel):
 			self.__params["itemRows"] = 1;
 
 	def getCtr(self):
-		return self.viewCtr;
+		return self.__viewCtr;
 
 	def initView(self):
 		self.createControls(); # 创建控件

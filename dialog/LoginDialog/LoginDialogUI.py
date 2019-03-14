@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JinZhang
 # @Date:   2019-01-28 14:23:53
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-09 11:44:20
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 19:00:04
 
 import wx;
 import math;
@@ -16,8 +16,8 @@ class LoginDialogUI(wx.Dialog):
 		self.initParams(params);
 		super(LoginDialogUI, self).__init__(parent, id, title = self.__params["title"], pos = self.__params.get("pos", (0,0)), size = self.__params["size"], style = self.__params["style"]);
 		self.className_ = LoginDialogUI.__name__;
-		self.curPath = curPath;
-		self.viewCtr = viewCtr;
+		self._curPath = curPath;
+		self.__viewCtr = viewCtr;
 		self.__inputInfosList = []; # 输入框列表
 		self.Bind(wx.EVT_CLOSE, self.onClose); # 绑定关闭事件
 
@@ -45,7 +45,7 @@ class LoginDialogUI(wx.Dialog):
 			self.__params[k] = v;
 
 	def getCtr(self):
-		return self.viewCtr;
+		return self.__viewCtr;
 
 	def initDialog(self):
 		self.createControls(); # 创建控件
@@ -53,7 +53,7 @@ class LoginDialogUI(wx.Dialog):
 		self.updatePosition(); # 更新位置
 
 	def createControls(self):
-		# self.getCtr().createCtrByKey("key", self.curPath + "***Dialog"); # , parent = self, params = {}
+		# self.getCtr().createCtrByKey("key", self._curPath + "***Dialog"); # , parent = self, params = {}
 		self.createInputViewsList();
 		self.createOKButton();
 		

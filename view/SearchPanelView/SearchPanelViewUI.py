@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-26 14:05:42
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 16:50:42
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 19:00:36
 
 import wx;
 
@@ -15,8 +15,8 @@ class SearchPanelViewUI(ScrollWindow):
 	def __init__(self, parent, id = -1, curPath = "", viewCtr = None, size = (0,0)):
 		super(SearchPanelViewUI, self).__init__(parent, id = id, params = {"size" : size});
 		self.className_ = SearchPanelViewUI.__name__;
-		self.curPath = curPath;
-		self.viewCtr = viewCtr;
+		self._curPath = curPath;
+		self.__viewCtr = viewCtr;
 		self.currentItem = None;
 
 	def __del__(self):
@@ -31,7 +31,7 @@ class SearchPanelViewUI(ScrollWindow):
 		self.stopAllTimer(isDestroy = True); # 停止所有定时器
 
 	def getCtr(self):
-		return self.viewCtr;
+		return self.__viewCtr;
 
 	def initView(self):
 		self.initContentSizer(); # 初始化内容sizer
@@ -40,7 +40,7 @@ class SearchPanelViewUI(ScrollWindow):
 		self.createTimers(); # 创建定时器
 
 	def createControls(self):
-		# self.getCtr().createCtrByKey("key", self.curPath + "***View"); # , parent = self, params = {}
+		# self.getCtr().createCtrByKey("key", self._curPath + "***View"); # , parent = self, params = {}
 		pass;
 		
 	def initViewLayout(self):

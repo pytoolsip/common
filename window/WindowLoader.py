@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2018-04-19 14:19:46
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:35:47
+# @Last Modified time: 2019-03-14 18:57:13
 
 import wx;
 from ProjectConfig import ProjectConfig;
@@ -14,7 +14,7 @@ class WindowLoader(object):
 	def __init__(self):
 		super(WindowLoader, self).__init__();
 		self.className_ = WindowLoader.__name__;
-		self.curPath = _GG("g_CommonPath") + "window/";
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.MainApp = wx.App(self.checkIsOpenLogWin());
 		self.registerEvent(); # 注册事件
 
@@ -47,14 +47,14 @@ class WindowLoader(object):
 		pass;
 
 	def createParentWindowCtr(self):
-		_GG("WindowObject").ParentWindowCtr = CreateCtr(self.curPath + "ParentWindow", None);
+		_GG("WindowObject").ParentWindowCtr = CreateCtr(self._curPath + "ParentWindow", None);
 		self.parentWindowUI = _GG("WindowObject").ParentWindowCtr.getUI();
 		
 	def createMainWindowCtr(self):
 		params = {
 			"windowSize" : self.parentWindowUI.ClientWindow.Size,
 		};
-		_GG("WindowObject").MainWindowCtr = CreateCtr(self.curPath + "MainWindow", self.parentWindowUI, params = params);
+		_GG("WindowObject").MainWindowCtr = CreateCtr(self._curPath + "MainWindow", self.parentWindowUI, params = params);
 
 	# 初始化窗口对象的公有函数
 	def initWindowMethods(self):
@@ -64,7 +64,7 @@ class WindowLoader(object):
 		_GG("WindowObject").GetMainWindowCenterPoint = _GG("WindowObject").MainWindowCtr.getMainWindowCenterPoint; # 获取主窗口的中心点
 		
 	def createSearchPanelWindowCtr(self):
-		_GG("WindowObject").ParentWindowCtr.SearchPanelWindowCtr = CreateCtr(self.curPath + "SearchPanelWindow", self.parentWindowUI);
+		_GG("WindowObject").ParentWindowCtr.SearchPanelWindowCtr = CreateCtr(self._curPath + "SearchPanelWindow", self.parentWindowUI);
 
 	def initKeyDownEvent(self):
 		self.MainApp.Bind(wx.EVT_CHAR_HOOK, _GG("HotKeyManager").dispatchEvent);

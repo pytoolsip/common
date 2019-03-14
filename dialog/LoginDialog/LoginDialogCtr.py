@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2019-01-28 14:23:53
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-01-28 15:33:10
+# @Last Modified time: 2019-03-14 19:03:27
 import os;
 import wx;
 
@@ -20,7 +20,7 @@ class LoginDialogCtr(object):
 	def __init__(self, parent, params = {}):
 		super(LoginDialogCtr, self).__init__();
 		self.className_ = LoginDialogCtr.__name__;
-		self.curPath = os.path.dirname(os.path.realpath(__file__));
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
@@ -46,11 +46,11 @@ class LoginDialogCtr(object):
 
 	def initUI(self, parent, params):
 		# 创建视图UI类
-		self.UI = LoginDialogUI(parent, curPath = self.curPath, viewCtr = self, params = params);
-		self.UI.initDialog();
+		self.__ui = LoginDialogUI(parent, curPath = self._curPath, viewCtr = self, params = params);
+		self.__ui.initDialog();
 
 	def getUI(self):
-		return self.UI;
+		return self.__ui;
 
 	"""
 		key : 索引所创建控制类的key值
@@ -89,8 +89,8 @@ class LoginDialogCtr(object):
 		pass;
 			
 	def updateDialog(self, data):
-		self.UI.updateDialog(data);
+		self.__ui.updateDialog(data);
 
 	def checkLoginInfo(self):
-		info = self.UI.getLoginInfo();
+		info = self.__ui.getLoginInfo();
 		pass;

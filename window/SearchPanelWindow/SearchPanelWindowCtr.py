@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-05 21:14:16
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:35:29
+# @Last Modified time: 2019-03-14 19:03:59
 
 import wx;
 
@@ -22,7 +22,7 @@ class SearchPanelWindowCtr(object):
 	def __init__(self, parent = None, params = {}):
 		super(SearchPanelWindowCtr, self).__init__();
 		self.className_ = SearchPanelWindowCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "window/SearchPanelWindow/";
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent);
 		self.registerEventMap(); # 注册事件
@@ -50,12 +50,12 @@ class SearchPanelWindowCtr(object):
 		windowTitle = "搜索面板";
 		windowSize = (380,320); # _GG("AppConfig")["AppSize"];
 		windowStyle = wx.DEFAULT_FRAME_STYLE^(wx.RESIZE_BORDER|wx.CAPTION);
-		self.UI = SearchPanelWindowUI(parent, id = -1, title = windowTitle, size = windowSize, style = windowStyle, curPath = self.curPath, windowCtr = self);
-		self.UI.SetBackgroundColour(wx.Colour(210,210,210));
-		self.UI.initWindow();
+		self.__ui = SearchPanelWindowUI(parent, id = -1, title = windowTitle, size = windowSize, style = windowStyle, curPath = self._curPath, windowCtr = self);
+		self.__ui.SetBackgroundColour(wx.Colour(210,210,210));
+		self.__ui.initWindow();
 
 	def getUI(self, parent = None):
-		return self.UI;
+		return self.__ui;
 		
 	"""
 		key : 索引所创建控制类的key值
@@ -88,13 +88,13 @@ class SearchPanelWindowCtr(object):
 			_GG("EventDispatcher").unregister(eventId, self, callbackName);
 			
 	def updateWindow(self, data):
-		self.UI.updateWindow(data);
+		self.__ui.updateWindow(data);
 
 	def clearWindow(self):
-		self.UI.clearWindow();
+		self.__ui.clearWindow();
 
 	def getCenterPosByParentSize(self, pSize):
-		sSize = self.UI.GetSize();
+		sSize = self.__ui.GetSize();
 		return (pSize[0]/2 - sSize[0]/2), (pSize[1]/2 - sSize[1]/2);
 
 	# 搜索文本回调

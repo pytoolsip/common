@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 10:49:59
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2018-11-24 13:07:55
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 19:01:49
 
 import wx;
 
@@ -14,11 +14,11 @@ class ParentWindowUI(wx.MDIParentFrame):
 	def __init__(self, parent, id = -1, title = "", pos = (0,0), size = (0,0), style = wx.DEFAULT_FRAME_STYLE, curPath = "", windowCtr = None):
 		super(ParentWindowUI, self).__init__(parent, id, title = title, pos = pos, size = size, style = style);
 		self.className_ = ParentWindowUI.__name__;
-		self.curPath = curPath;
-		self.windowCtr = windowCtr;
+		self._curPath = curPath;
+		self.__windowCtr = windowCtr;
 
 	def getCtr(self):
-		return self.windowCtr;
+		return self.__windowCtr;
 
 	def initWindow(self):
 		self.createViewCtrs();
@@ -26,7 +26,7 @@ class ParentWindowUI(wx.MDIParentFrame):
 		pass;
 
 	def createViewCtrs(self):
-		self.getCtr().createCtrByKey("MenuBarViewCtr", self.curPath + "MenuBarView"); # , parent = self, params = {}
+		self.getCtr().createCtrByKey("MenuBarViewCtr", self._curPath + "MenuBarView"); # , parent = self, params = {}
 		pass;
 
 	def initWindowLayout(self):

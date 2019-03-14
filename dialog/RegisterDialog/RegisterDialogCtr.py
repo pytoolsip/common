@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-01-26 18:49:31
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-01-28 12:24:57
+# @Last Modified time: 2019-03-14 19:03:29
 import os;
 import wx;
 import re;
@@ -21,7 +21,7 @@ class RegisterDialogCtr(object):
 	def __init__(self, parent, params = {}):
 		super(RegisterDialogCtr, self).__init__();
 		self.className_ = RegisterDialogCtr.__name__;
-		self.curPath = os.path.dirname(os.path.realpath(__file__));
+		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
@@ -47,11 +47,11 @@ class RegisterDialogCtr(object):
 
 	def initUI(self, parent, params):
 		# 创建视图UI类
-		self.UI = RegisterDialogUI(parent, curPath = self.curPath, viewCtr = self, params = params);
-		self.UI.initDialog();
+		self.__ui = RegisterDialogUI(parent, curPath = self._curPath, viewCtr = self, params = params);
+		self.__ui.initDialog();
 
 	def getUI(self):
-		return self.UI;
+		return self.__ui;
 
 	"""
 		key : 索引所创建控制类的key值
@@ -90,7 +90,7 @@ class RegisterDialogCtr(object):
 		pass;
 			
 	def updateDialog(self, data):
-		self.UI.updateDialog(data);
+		self.__ui.updateDialog(data);
 
 	def checkEmailFormat(self, email):
 		if re.match(r"^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$", email):
