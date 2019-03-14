@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JinZhang
 # @Date:   2019-01-28 14:23:53
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:00:04
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-14 21:23:02
 
 import wx;
 import math;
@@ -73,24 +73,23 @@ class LoginDialogUI(wx.Dialog):
 		pass;
 
 	def resetView(self):
-		self.updateNameInput("", "black");
-		self.updatePwdInput("", "black");
+		self.updateNameInput("");
+		self.updatePwdInput("");
 		pass;
 
 	def createInputViewsList(self):
 		# 创建用户名输入框
 		nameParams = self.__params.get("name", {});
 		def checkNameInput(inputView, tipsView):
-			label, color = "", "black";
 			if not inputView.GetValue():
-				self.updateNameInput("必须填写用户名！", "red");
+				self.updateNameInput("必须填写用户名！", False);
 			else:
 				callback = nameParams.get("onBlur", None);
 				if callback:
 					callback(inputView.GetValue(), self.updateNameInput);
 				else:
-					self.updateNameInput("", "black");
-		self.__name = self.createInfoInputView(params = {
+					self.updateNameInput("");
+		self.__name = self.createInfoInputPanel(params = {
 			"size" : (-1, -1),
 			"name" : nameParams.get("label", "用户名"),
 			"blurCallback" : checkNameInput,
@@ -98,18 +97,15 @@ class LoginDialogUI(wx.Dialog):
 		# 创建密码输入框
 		pwdParams = self.__params.get("password", {});
 		def checkPwdInput(inputView, tipsView):
-			label, color = "", "black";
 			if not inputView.GetValue():
-				self.updatePwdInput("必须填写密码！", "red");
+				self.updatePwdInput("必须填写密码！", False);
 			else:
 				callback = pwdParams.get("onBlur", None);
 				if callback:
 					callback(inputView.GetValue(), self.updatePwdInput);
 				else:
-					self.updatePwdInput("", "black");
-			tipsView.SetLabel(label);
-			tipsView.SetForegroundColour(color);
-		self.__pwd = self.createInfoInputView(params = {
+					self.updatePwdInput("");
+		self.__pwd = self.createInfoInputPanel(params = {
 			"size" : (-1, -1),
 			"name" : pwdParams.get("label", "密码"),
 			"inputStyle" : wx.TE_PASSWORD,
@@ -123,16 +119,16 @@ class LoginDialogUI(wx.Dialog):
 	def onOkButton(self, event):
 		self.EndModal(wx.ID_OK);
 
-	def createInfoInputView(self, params = {}):
+	def createInfoInputPanel(self, params = {}):
 		name = wx.StaticText(self, label = params.get("name", ""));
 		self.__inputInfosList.append((name, 0, wx.ALIGN_RIGHT|wx.TOP|wx.LEFT, 8));
-		inputView = self.createInputView(params);
-		self.__inputInfosList.append((inputView, 1, wx.EXPAND|wx.TOP|wx.LEFT, 8));
+		inputPanel = self.createInputPanel(params);
+		self.__inputInfosList.append((inputPanel, 1, wx.EXPAND|wx.TOP|wx.LEFT, 8));
 		tips = wx.StaticText(self, label = params.get("tips", ""));
 		self.__inputInfosList.append((tips, 0, wx.TOP|wx.LEFT, 8));
-		return inputView;
+		return inputPanel;
 
-	def createInputView(self, params):
+	def createInputPanel(self, params):
 		panel = wx.Panel(self);
 		inputView = wx.TextCtrl(panel, -1, "", size = params.get("inputSize", (-1,20)), style = params.get("inputStyle", wx.TE_PROCESS_TAB));
 		tipsText = wx.StaticText(panel, label = params.get("exTips", ""));
@@ -159,11 +155,13 @@ class LoginDialogUI(wx.Dialog):
 		panel.tips = tipsText;
 		return panel;
 
-	def updateNameInput(self, label, color):
+	def updateNameInput(self, label, isOk = True):
+		color = isOk and "black" or "red";
 		self.__name.tips.SetLabel(label);
 		self.__name.tips.SetForegroundColour(color);
 
-	def updatePwdInput(self, label, color):
+	def updatePwdInput(self, label, isOk = True):
+		color = isOk and "black" or "red";
 		self.__pwd.tips.SetLabel(label);
 		self.__pwd.tips.SetForegroundColour(color);
 

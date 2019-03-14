@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-01-26 18:49:31
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:00:05
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-14 21:22:33
 import wx;
 import math;
 
@@ -77,18 +77,18 @@ class RegisterDialogUI(wx.Dialog):
 		def checkEmailInput(inputView, tipsView):
 			label, color = "", "black";
 			if not inputView.GetValue():
-				label, color = "必须填写邮箱！", "red";
+				self.updateTipsView(tipsView, "必须填写邮箱！", False);
 			elif not self.getCtr().checkEmailFormat(inputView.GetValue()):
-				label, color = "邮箱格式错误！", "red";
+				self.updateTipsView(tipsView, "邮箱格式错误！", False);
 			else:
 				callback = emailParams.get("onBlur", None);
 				if callback:
-					label, color = callback(inputView.GetValue());
+					def update(label, isOk = True):
+						self.updateTipsView(tipsView, label, isOk);
+					callback(inputView.GetValue(), update);
 				else:
-					label, color = "邮箱校验通过！", "green";
-			tipsView.SetLabel(label);
-			tipsView.SetForegroundColour(color);
-		self.__email = self.createInfoInputView(params = {
+					self.updateTipsView(tipsView, "邮箱校验通过！");
+		self.__email = self.createInfoInputPanel(params = {
 			"size" : (self.GetSize().x, -1),
 			"name" : emailParams.get("label", "邮箱"),
 			"tips" : "*（必填）",
@@ -99,18 +99,18 @@ class RegisterDialogUI(wx.Dialog):
 		def checkNameInput(inputView, tipsView):
 			label, color = "", "black";
 			if not inputView.GetValue():
-				label, color = "必须填写用户名！", "red";
+				self.updateTipsView(tipsView, "必须填写用户名！", False);
 			elif not self.getCtr().checkNameFormat(inputView.GetValue()):
-				label, color = "用户名格式错误！", "red";
+				self.updateTipsView(tipsView, "用户名格式错误！", False);
 			else:
 				callback = nameParams.get("onBlur", None);
 				if callback:
-					label, color = callback(inputView.GetValue());
+					def update(label, isOk = True):
+						self.updateTipsView(tipsView, label, isOk);
+					callback(inputView.GetValue(), update);
 				else:
-					label, color = "用户名校验通过！", "green";
-			tipsView.SetLabel(label);
-			tipsView.SetForegroundColour(color);
-		self.__name = self.createInfoInputView(params = {
+					self.updateTipsView(tipsView, "用户名校验通过！");
+		self.__name = self.createInfoInputPanel(params = {
 			"size" : (-1, -1),
 			"name" : nameParams.get("label", "用户名"),
 			"tips" : "*（必填）",
@@ -120,14 +120,18 @@ class RegisterDialogUI(wx.Dialog):
 		def checkPwdInput(inputView, tipsView):
 			label, color = "", "black";
 			if not inputView.GetValue():
-				label, color = "必须填写密码！", "red";
-			elif self.getCtr().checkPwdFormat(inputView.GetValue()):
-				label, color = "密码校验通过！", "green";
+				self.updateTipsView(tipsView, "必须填写密码！", False);
+			elif not self.getCtr().checkPwdFormat(inputView.GetValue()):
+				self.updateTipsView(tipsView, "密码必须8-16位，且含数字和字母！", False);
 			else:
-				label, color = "密码必须8-16位，且含数字和字母！", "red";
-			tipsView.SetLabel(label);
-			tipsView.SetForegroundColour(color);
-		self.__pwd = self.createInfoInputView(params = {
+				callback = nameParams.get("onBlur", None);
+				if callback:
+					def update(label, isOk = True):
+						self.updateTipsView(tipsView, label, isOk);
+					callback(inputView.GetValue(), update);
+				else:
+					self.updateTipsView(tipsView, "密码校验通过！");
+		self.__pwd = self.createInfoInputPanel(params = {
 			"size" : (-1, -1),
 			"name" : "密码",
 			"tips" : "*（必填）",
@@ -138,14 +142,12 @@ class RegisterDialogUI(wx.Dialog):
 		def checkConfirmPwdInput(inputView, tipsView):
 			label, color = "", "black";
 			if not inputView.GetValue():
-				label, color = "必须填确认密码！", "red";
-			elif inputView.GetValue() == self.__pwd.GetValue():
-				label, color = "确认密码校验通过！", "green";
+				self.updateTipsView(tipsView, "必须填确认密码！", False);
+			elif inputView.GetValue() == self.__pwd.input.GetValue():
+				self.updateTipsView(tipsView, "确认密码校验通过！");
 			else:
-				label, color = "确认密码错误！", "red";
-			tipsView.SetLabel(label);
-			tipsView.SetForegroundColour(color);
-		self.__confirmPwd = self.createInfoInputView(params = {
+				self.updateTipsView(tipsView, "确认密码错误！", False);
+		self.__confirmPwd = self.createInfoInputPanel(params = {
 			"size" : (-1, -1),
 			"name" : "确认密码",
 			"tips" : "*（必填）",
@@ -160,16 +162,16 @@ class RegisterDialogUI(wx.Dialog):
 	def onOkButton(self, event):
 		self.EndModal(wx.ID_OK);
 
-	def createInfoInputView(self, params = {}):
+	def createInfoInputPanel(self, params = {}):
 		name = wx.StaticText(self, label = params.get("name", "名称"));
 		self.__inputInfosList.append((name, 0, wx.ALIGN_RIGHT|wx.TOP|wx.LEFT, 8));
-		inputView = self.createInputView(params);
-		self.__inputInfosList.append((inputView, 1, wx.EXPAND|wx.TOP|wx.LEFT, 8));
+		inputPanel = self.createInputPanel(params);
+		self.__inputInfosList.append((inputPanel, 1, wx.EXPAND|wx.TOP|wx.LEFT, 8));
 		tips = wx.StaticText(self, label = params.get("tips", ""));
 		self.__inputInfosList.append((tips, 0, wx.TOP|wx.LEFT, 8));
-		return inputView;
+		return inputPanel;
 
-	def createInputView(self, params):
+	def createInputPanel(self, params):
 		panel = wx.Panel(self);
 		inputView = wx.TextCtrl(panel, -1, "", size = params.get("inputSize", (-1,20)), style = params.get("inputStyle", wx.TE_PROCESS_TAB));
 		tipsText = wx.StaticText(panel, label = params.get("exTips", ""));
@@ -195,6 +197,11 @@ class RegisterDialogUI(wx.Dialog):
 		panel.input = inputView;
 		panel.tips = tipsText;
 		return panel;
+
+	def updateTipsView(self, tipsView, label, isOk = True):
+		color = isOk and "green" or "red";
+		tipsView.SetLabel(label);
+		tipsView.SetForegroundColour(color);
 
 	def getRegisterInfo(self):
 		return {

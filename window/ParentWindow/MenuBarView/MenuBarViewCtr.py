@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:03:56
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-14 22:45:05
 import os;
 import wx;
 
@@ -141,13 +141,13 @@ class MenuBarViewCtr(object):
 	def onClickLogin(self, event):
 		def onBlurName(name, callback):
 			# 请求服务的回调
-			def checkName(retData):
-				if not retData:
-					callback("网络请求失败！", "red");
-				elif not retData.isSuccess:
-					callback("该用户名不存在！", "red");
+			def checkName(respData):
+				if not respData:
+					callback("网络请求失败！", False);
+				elif not respData.isSuccess:
+					callback("该用户名不存在！", False);
 				else:
-					callback("", "black");
+					callback("");
 			# 请求服务
 			_GG("CommonClient").callService("Request", "Req", {
 				"key" : "VertifyUserName",
@@ -161,19 +161,19 @@ class MenuBarViewCtr(object):
 			});
 		self.getUIByKey("LoginDialogCtr").resetView();
 		if self.getUIByKey("LoginDialogCtr").ShowModal() == wx.ID_OK:
-			retData = _GG("CommonClient").callService("Login", "LoginReq", self.getUIByKey("LoginDialogCtr").getLoginInfo());
-			_GG("Log").d(u"玩家信息：", retData)
+			respData = _GG("CommonClient").callService("Login", "LoginReq", self.getUIByKey("LoginDialogCtr").getLoginInfo());
+			_GG("Log").d(u"玩家信息：", respData)
 
 	def onClickRegister(self, event):
 		def onBlurName(name, callback):
 			# 请求服务的回调
-			def checkName(retData):
-				if not retData:
-					callback("网络请求失败！", "red");
-				elif retData.isSuccess:
-					callback("该用户名已存在！", "red");
+			def checkName(respData):
+				if not respData:
+					callback("网络请求失败！", False);
+				elif respData.isSuccess:
+					callback("该用户名已存在！", False);
 				else:
-					callback("用户名校验通过！", "green");
+					callback("用户名校验通过！");
 			# 请求服务
 			_GG("CommonClient").callService("Request", "Req", {
 				"key" : "VertifyUserName",
@@ -181,13 +181,13 @@ class MenuBarViewCtr(object):
 			}, asynCallback = checkName);
 		def onBlurEmail(email, callback):
 			# 请求服务的回调
-			def checkEmail(retData):
-				if not retData:
-					callback("网络请求失败！", "red");
-				elif retData.isSuccess:
-					callback("该邮箱已被使用！", "red");
+			def checkEmail(respData):
+				if not respData:
+					callback("网络请求失败！", False);
+				elif respData.isSuccess:
+					callback("该邮箱已被使用！", False);
 				else:
-					callback("邮箱校验通过！", "green");
+					callback("邮箱校验通过！");
 			# 请求服务
 			_GG("CommonClient").callService("Request", "Req", {
 				"key" : "VertifyUserEmail",
@@ -203,7 +203,8 @@ class MenuBarViewCtr(object):
 				},
 			});
 		if self.getUIByKey("RegisterDialogCtr").ShowModal() == wx.ID_OK:
-			_GG("Log").d(u"确认注册信息：", self.getUIByKey("RegisterDialogCtr").getRegisterInfo());
+			respData = _GG("CommonClient").callService("Register", "RegisterReq", self.getUIByKey("RegisterDialogCtr").getRegisterInfo());
+			_GG("Log").d(u"玩家注册回应：", respData);
 
 	def onUploadTool(self, event):
 		pass;
