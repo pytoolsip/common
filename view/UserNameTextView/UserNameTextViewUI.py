@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 22:27:47
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:00:41
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-14 23:06:42
 
 import wx;
 
@@ -37,6 +37,8 @@ class UserNameTextViewUI(wx.Panel):
 		pass;
 
 	def updateView(self, data):
+		if "name" in data:
+			self.updateUserName(data["name"]);
 		pass;
 
 	def createTitleText(self):
@@ -52,3 +54,6 @@ class UserNameTextViewUI(wx.Panel):
 		titleFont = wx.Font(8, wx.DECORATIVE, wx.NORMAL, wx.BOLD);
 		self.userNameText.SetFont(titleFont);
 		self.userNameText.SetForegroundColour(wx.Colour(60,120,60));
+
+	def updateUserName(self, name):
+		self.userNameText.SetLabel(name);

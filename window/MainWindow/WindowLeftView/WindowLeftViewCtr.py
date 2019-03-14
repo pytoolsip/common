@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:03:54
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-14 23:06:15
 
 import wx;
 
@@ -12,7 +12,7 @@ from WindowLeftViewUI import *;
 
 def getRegisterEventMap(G_EVENT):
 	return {
-		# G_EVENT.TO_UPDATE_VIEW : "updateView",
+		G_EVENT.LOGIN_SUCCESS_EVENT : "updateUserNameView",
 	};
 
 class WindowLeftViewCtr(object):
@@ -124,4 +124,7 @@ class WindowLeftViewCtr(object):
 					self.setTreeItemDictByItem(treeElem, treeItemDict);
 					treeItemsData.append(treeItemDict);
 		return treeItemsData;
-		
+	
+	def updateUserNameView(self, data):
+		if data.name:
+			self.getCtrByKey("UserNameTextViewCtr").updateView({"name" : data.name});

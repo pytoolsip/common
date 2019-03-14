@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-14 22:45:05
+# @Last Modified time: 2019-03-14 22:59:01
 import os;
 import wx;
 
@@ -155,14 +155,17 @@ class MenuBarViewCtr(object):
 			}, asynCallback = checkName);
 		if not self.getCtrByKey("LoginDialogCtr"):
 			self.createCtrByKey("LoginDialogCtr", _GG("g_CommonPath") + "dialog/LoginDialog", params = {
-				"name" : {
-					"onBlur" : onBlurName,
-				},
+				# "name" : {
+				# 	"onBlur" : onBlurName,
+				# },
 			});
 		self.getUIByKey("LoginDialogCtr").resetView();
 		if self.getUIByKey("LoginDialogCtr").ShowModal() == wx.ID_OK:
 			respData = _GG("CommonClient").callService("Login", "LoginReq", self.getUIByKey("LoginDialogCtr").getLoginInfo());
-			_GG("Log").d(u"玩家信息：", respData)
+			if respData.isSuccess:
+				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").LOGIN_SUCCESS_EVENT, respData);
+			else:
+				self.showMessageDialog("登录失败，请重新登录！", "登录账号", style = wx.OK|wx.ICON_INFORMATION);
 
 	def onClickRegister(self, event):
 		def onBlurName(name, callback):
@@ -204,7 +207,10 @@ class MenuBarViewCtr(object):
 			});
 		if self.getUIByKey("RegisterDialogCtr").ShowModal() == wx.ID_OK:
 			respData = _GG("CommonClient").callService("Register", "RegisterReq", self.getUIByKey("RegisterDialogCtr").getRegisterInfo());
-			_GG("Log").d(u"玩家注册回应：", respData);
+			if respData.isSuccess:
+				self.showMessageDialog("注册成功。", "注册账号", style = wx.OK|wx.ICON_INFORMATION);
+			else:
+				self.showMessageDialog("注册失败，请重新注册！", "注册账号", style = wx.OK|wx.ICON_INFORMATION);
 
 	def onUploadTool(self, event):
 		pass;
