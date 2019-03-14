@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-06 23:14:13
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-11 23:22:24
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:27:09
 import os;
 
 from _Global import _GG;
@@ -34,7 +34,7 @@ class ServiceBehavior(_GG("BaseBehavior")):
 	def appendDepends(self, depends = []):
 		depends.append({
 			"path" : "serviceBehavior/UpDownloadBehavior", 
-			"basePath" : _GG("g_CommonPath") + "behavior\\",
+			"basePath" : _GG("g_CommonPath") + "behavior/",
 		});
 
 	# 检测更新Common

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 22:27:47
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 17:15:16
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:34:18
 
 import wx;
 
@@ -20,7 +20,7 @@ class UserNameTextViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(UserNameTextViewCtr, self).__init__();
 		self.className_ = UserNameTextViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view\\UserNameTextView\\";
+		self.curPath = _GG("g_CommonPath") + "view/UserNameTextView/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent); # 初始化视图UI
 		self.registerEventMap(); # 注册事件

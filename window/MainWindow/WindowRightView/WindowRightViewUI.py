@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 18:09:36
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2018-11-06 22:36:04
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:35:01
 
 import wx;
 
@@ -38,5 +38,5 @@ class WindowRightViewUI(wx.Panel):
 		pass;
 
 	def createNoteBookCtr(self):
-		self.getCtr().createCtrByKey("NoteBookViewCtr", _GG("g_CommonPath") + "view\\NoteBookView"); # , parent = self, params = {}
+		self.getCtr().createCtrByKey("NoteBookViewCtr", _GG("g_CommonPath") + "view/NoteBookView"); # , parent = self, params = {}
 		pass;

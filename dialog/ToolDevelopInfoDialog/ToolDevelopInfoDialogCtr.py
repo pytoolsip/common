@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-10-27 15:28:41
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 17:04:52
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:30:52
 
 import wx;
 
@@ -20,7 +20,7 @@ class ToolDevelopInfoDialogCtr(object):
 	def __init__(self, parent, params = {}):
 		super(ToolDevelopInfoDialogCtr, self).__init__();
 		self.className_ = ToolDevelopInfoDialogCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "Dialog\\ToolDevelopInfoDialog\\";
+		self.curPath = _GG("g_CommonPath") + "Dialog/ToolDevelopInfoDialog/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-04-22 12:01:48
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2018-12-01 12:34:45
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:27:41
 
 import os;
 
@@ -31,7 +31,7 @@ class VerifyEnvironmentBehavior(_GG("BaseBehavior")):
 	# 校验python环境
 	def verifyPythonEnvironment(self, obj, pythonPath = None, _retTuple = None):
 		if pythonPath:
-			if os.system(pythonPath + "\\python.exe -V") == 0:
+			if os.system(pythonPath.replace("\\", "/") + "/python.exe -V") == 0:
 				return True;
 		else:
 			if os.system("python -V") == 0:
@@ -40,7 +40,7 @@ class VerifyEnvironmentBehavior(_GG("BaseBehavior")):
 
 	def verifyPipEnvironment(self, obj, pythonPath = None, _retTuple = None):
 		if pythonPath:
-			if os.system(pythonPath + "\\Scripts\\pip.exe -V") == 0:
+			if os.system(pythonPath.replace("\\", "/") + "/Scripts/pip.exe -V") == 0:
 				return True;
 		else:
 			if os.system("pip -V") == 0:

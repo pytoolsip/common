@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 18:27:07
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 17:42:41
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:32:49
 
 from enum import Enum, unique;
 
@@ -29,7 +29,7 @@ class NoteBookViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(NoteBookViewCtr, self).__init__();
 		self.className_ = NoteBookViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view\\NoteBookView\\";
+		self.curPath = _GG("g_CommonPath") + "view/NoteBookView/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent); # 初始化视图UI
 		self.registerEventMap(); # 注册事件

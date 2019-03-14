@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 17:14:42
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:34:09
 
 import wx;
 
@@ -20,7 +20,7 @@ class TreeItemsViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(TreeItemsViewCtr, self).__init__();
 		self.className_ = TreeItemsViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view\\TreeItemsView\\";
+		self.curPath = _GG("g_CommonPath") + "view/TreeItemsView/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
@@ -116,12 +116,12 @@ class TreeItemsViewCtr(object):
 		pass;
 
 	def bindEventToItem(self, treeCtr, item, itemInfo, pathList):
-		basePath = _GG("g_AssetsPath") + itemInfo["pageData"]["trunk"] + "\\";
+		basePath = _GG("g_AssetsPath") + itemInfo["pageData"]["trunk"] + "/";
 		if "branch" in itemInfo["pageData"]:
-			basePath += itemInfo["pageData"]["branch"] + "\\";
+			basePath += itemInfo["pageData"]["branch"] + "/";
 		itemPageData = {
 			"id" : itemInfo["pageData"]["id"],
-			"pagePath" : (basePath + itemInfo["pageData"]["path"]).replace("\\", "/"),
+			"pagePath" : (basePath + itemInfo["pageData"]["path"]).replace("/", "/"),
 			"keyPath" : "/".join(pathList),
 			"title" : itemInfo["name"],
 		};

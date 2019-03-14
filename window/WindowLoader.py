@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2018-04-19 14:19:46
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-01-14 14:35:07
+# @Last Modified time: 2019-03-14 17:35:47
 
 import wx;
 from ProjectConfig import ProjectConfig;
@@ -14,7 +14,7 @@ class WindowLoader(object):
 	def __init__(self):
 		super(WindowLoader, self).__init__();
 		self.className_ = WindowLoader.__name__;
-		self.curPath = _GG("g_CommonPath") + "window\\";
+		self.curPath = _GG("g_CommonPath") + "window/";
 		self.MainApp = wx.App(self.checkIsOpenLogWin());
 		self.registerEvent(); # 注册事件
 
@@ -78,7 +78,7 @@ class WindowLoader(object):
 	def restartApp(self, data):
 		self.MainApp.ExitMainLoop(); # 退出App的主循环
 		if sys.platform == "win32":
-			os.system('cd ..\\run\\&&run.vbs'); # 相对于main.py的相对路径
+			os.system('cd ../run/&&run.vbs'); # 相对于main.py的相对路径
 
 	def runWindows(self):
 		self.parentWindowUI.Tile();

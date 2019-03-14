@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-11-08 22:49:10
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-06 22:49:10
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:33:28
 
 import wx;
 
@@ -20,7 +20,7 @@ class RankingListViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(RankingListViewCtr, self).__init__();
 		self.className_ = RankingListViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view\\RankingListView\\";
+		self.curPath = _GG("g_CommonPath") + "view/RankingListView/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
@@ -83,7 +83,7 @@ class RankingListViewCtr(object):
 			_GG("EventDispatcher").unregister(eventId, self, callbackName);
 
 	def bindBehaviors(self):
-		_GG("BehaviorManager").bindBehavior(self, {"path" : "formatBehavior/NumFormatBehavior", "basePath" : _GG("g_CommonPath") + "behavior\\"});
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "formatBehavior/NumFormatBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 		
 	def unbindBehaviors(self):

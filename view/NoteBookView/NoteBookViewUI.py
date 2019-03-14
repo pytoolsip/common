@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 18:27:07
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2018-11-09 23:16:57
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:32:57
 
 import wx;
 
@@ -25,7 +25,7 @@ class NoteBookViewUI(wx.Notebook):
 		self.initViewLayout(); # 初始化布局
 
 	def createControls(self):
-		self.getCtr().createCtrByKey("PopupMenuViewCtr", _GG("g_CommonPath") + "view\\PopupMenuView"); # , parent = self, params = {}
+		self.getCtr().createCtrByKey("PopupMenuViewCtr", _GG("g_CommonPath") + "view/PopupMenuView"); # , parent = self, params = {}
 		pass;
 		
 	def initViewLayout(self):

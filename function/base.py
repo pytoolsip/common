@@ -2,7 +2,7 @@
 # @Author: JimDreamHeart
 # @Date:   2018-03-21 22:31:37
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-01-24 10:53:23
+# @Last Modified time: 2019-03-14 17:29:55
 
 import sys;
 import os;
@@ -11,7 +11,7 @@ import time;
 
 # 动态加载模块
 def require(filePath, moduleName, subModuleName = None, isReload = False, isReserve = False):
-	modulePath = "\\".join([filePath, moduleName]).replace("\\\\", "\\");
+	modulePath = "/".join([filePath, moduleName]).replace("\\", "/");
 	# 判断是否重新加载模块
 	if isReload and modulePath in sys.modules:
 		oldModule = sys.modules.pop(modulePath);
@@ -36,12 +36,12 @@ def require(filePath, moduleName, subModuleName = None, isReload = False, isRese
 def GetPathByRelativePath(path, basePath = ""):
 	if len(basePath) == 0:
 		basePath = os.getcwd();
-	basePath = re.sub(r"/", r"\\", basePath);
-	basePathList = basePath.split("\\");
+	basePath = re.sub(r"\\", r"/", basePath);
+	basePathList = basePath.split("/");
 	if len(basePathList[-1]) == 0:
 		basePathList.pop();
-	path = re.sub(r"/", r"\\", path);
-	pathList = path.split("\\");
+	path = re.sub(r"\\", r"/", path);
+	pathList = path.split("/");
 	if pathList[0] == ".":
 		pathList.pop(0);
 	while len(pathList) > 0:
@@ -51,14 +51,14 @@ def GetPathByRelativePath(path, basePath = ""):
 		else:
 			basePathList.extend(pathList);
 			break;
-	return "\\".join(basePathList).strip();
+	return "/".join(basePathList).strip();
 
 # 创建控制类（视图或窗口）
 def CreateCtr(path, parent, params = {}, isReload = False, isReserve = False):
-	path = re.sub(r"/", r"\\", path);
-	if path[-1] == "\\":
+	path = re.sub(r"\\", r"/", path);
+	if path[-1] == "/":
 		path = path[:-1];
-	ctrName = path.split("\\")[-1] + "Ctr";
+	ctrName = path.split("/")[-1] + "Ctr";
 	Ctr = require(path, ctrName, ctrName, isReload, isReserve);
 	if not callable(Ctr):
 		print(path, ctrName)
@@ -74,3 +74,10 @@ def Del(obj):
 	if hasattr(obj, "__dest__"):
 		obj.__dest__();
 	del obj;
+
+# 校验路径
+def VerifyPath(path):
+	if sys.platform.startswith("win32"):
+		return path.replace("/", "\\");
+	else:
+		return path.replace("\\", "/");

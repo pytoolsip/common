@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-11-07 21:22:29
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 17:14:10
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:33:51
 
 import wx;
 
@@ -20,7 +20,7 @@ class TitleGridsViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(TitleGridsViewCtr, self).__init__();
 		self.className_ = TitleGridsViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view\\TitleGridsView\\";
+		self.curPath = _GG("g_CommonPath") + "view/TitleGridsView/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件

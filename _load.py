@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-04-19 14:22:56
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-13 00:47:43
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:25:25
 
 import wx;
 import os;
@@ -39,7 +39,7 @@ class Loader(object):
 	def __init__(self, mainPath):
 		super(Loader, self).__init__();
 		self.className_ = Loader.__name__;
-		self.mainPath = mainPath;
+		self.__mainPath = mainPath.replace("\\", "/");
 		_G.initGlobal_GTo_Global(); # 初始化全局变量
 		pass;
 
@@ -73,10 +73,10 @@ class Loader(object):
 
 	# 加载全局路径名变量
 	def loadPaths(self):
-		_G.setGlobalVarTo_Global("g_ProjectPath", os.path.abspath(os.path.join(self.mainPath, "..")) + "\\");
-		_G.setGlobalVarTo_Global("g_AssetsPath", self.mainPath + "\\");
-		_G.setGlobalVarTo_Global("g_CommonPath", self.mainPath + "\\common\\");
-		_G.setGlobalVarTo_Global("g_CommonCorePath", self.mainPath + "\\common\\core\\");
+		_G.setGlobalVarTo_Global("g_ProjectPath", os.path.abspath(os.path.join(self.__mainPath, "..")) + "/");
+		_G.setGlobalVarTo_Global("g_AssetsPath", self.__mainPath + "/");
+		_G.setGlobalVarTo_Global("g_CommonPath", self.__mainPath + "/common/");
+		_G.setGlobalVarTo_Global("g_CommonCorePath", self.__mainPath + "/common/core/");
 		pass;
 
 	# 加载全局对象变量

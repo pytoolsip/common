@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-04-23 22:18:59
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2018-12-01 12:34:29
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:26:51
 
 import os;
 import imp;
@@ -35,7 +35,7 @@ class InstallPythonPackageBehavior(_GG("BaseBehavior")):
 	def getInstalledPackagesByPip(self, obj, pythonPath = None, _retTuple = None):
 		installedPackageDict = {};
 		if pythonPath:
-			installedPackageReader = os.popen(pythonPath + "\\Scripts\\pip.exe freeze");
+			installedPackageReader = os.popen(pythonPath.replace("\\", "/") + "/Scripts/pip.exe freeze");
 		else:
 			installedPackageReader = os.popen("pip freeze");
 		installedPackageLines = installedPackageReader.read();
@@ -48,7 +48,7 @@ class InstallPythonPackageBehavior(_GG("BaseBehavior")):
 
 	def installPackageByPip(self, obj, packageName, pythonPath = None, _retTuple = None):
 		if pythonPath:
-			if os.system(pythonPath + "\\Scripts\\pip.exe install " + packageName) == 0:
+			if os.system(pythonPath.replace("\\", "/") + "/Scripts/pip.exe install " + packageName) == 0:
 				return True;
 		else:
 			if os.system("pip install " + packageName) == 0:
@@ -57,7 +57,7 @@ class InstallPythonPackageBehavior(_GG("BaseBehavior")):
 
 	def updatePipVersion(self, obj, pythonPath = None, _retTuple = None):
 		if pythonPath:
-			if os.system(pythonPath + "\\Scripts\\python.exe -m pip install --upgrade pip") == 0:
+			if os.system(pythonPath.replace("\\", "/") + "/Scripts/python.exe -m pip install --upgrade pip") == 0:
 				return True;
 		else:
 			if os.system("python -m pip install --upgrade pip") == 0:
@@ -76,7 +76,7 @@ class InstallPythonPackageBehavior(_GG("BaseBehavior")):
 	def installPipByEasyInstall(self, obj, pythonPath = None, _retTuple = None):
 		print(pythonPath);
 		if pythonPath and len(pythonPath) > 0:
-			if os.system(pythonPath + "\\Scripts\\easy_install.exe pip") == 0:
+			if os.system(pythonPath.replace("\\", "/") + "/Scripts/easy_install.exe pip") == 0:
 				return True;
 		else:
 			if os.system("easy_install pip") == 0:

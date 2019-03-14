@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2018-11-10 23:27:43
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:34:45
 
 import wx;
 
@@ -62,13 +62,13 @@ class WindowLeftViewUI(wx.Panel):
 		pass;
 
 	def createUserNameTextCtr(self):
-		self.getCtr().createCtrByKey("UserNameTextViewCtr", _GG("g_CommonPath") + "view\\UserNameTextView"); # , parent = self, params = {}
+		self.getCtr().createCtrByKey("UserNameTextViewCtr", _GG("g_CommonPath") + "view/UserNameTextView"); # , parent = self, params = {}
 		
 	def createTreeCtrl(self):
 		params = {
-			"defaultItemsData" : self.getCtr().getTreeItemsDataByFilePath(_GG("g_CommonPath") + "config\\xml\\treeItems.xml"),
+			"defaultItemsData" : self.getCtr().getTreeItemsDataByFilePath(_GG("g_CommonPath") + "config/xml/treeItems.xml"),
 		};
 		self.getCtr().createCtrByKey("TreeItemsViewCtr",
-			_GG("g_CommonPath") + "view\\TreeItemsView",
+			_GG("g_CommonPath") + "view/TreeItemsView",
 			parent = self, params = params);
 		pass;

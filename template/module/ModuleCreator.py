@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-04-05 13:08:49
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 10:22:55
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:31:56
 
 
 import linecache;
@@ -23,7 +23,7 @@ class CreateModuleObj(object):
 	"""docstring for CreateModuleObj"""
 	def __init__(self, moduleName):
 		super(CreateModuleObj, self).__init__();
-		self.modulePath = os.getcwd() + "\\module\\";
+		self.modulePath = os.getcwd().replace("\\", "/") + "/module/";
 		self.moduleName = moduleName;
 		self.userName = self.getUserName();
 		self.fileHeadConfig = self.initFileHeadConfig();
@@ -68,10 +68,10 @@ class CreateModuleObj(object):
 	def getPathByRelativePath(self, path, basePath = ""):
 		if len(basePath) == 0:
 			basePath = os.getcwd();
-		basePath = re.sub(r"/", r"\\", basePath);
-		basePathList = basePath.split("\\");
-		path = re.sub(r"/", r"\\", path);
-		pathList = path.split("\\");
+		basePath = re.sub(r"\\", r"/", basePath);
+		basePathList = basePath.split("/");
+		path = re.sub(r"\\", r"/", path);
+		pathList = path.split("/");
 		while len(pathList) > 0:
 			if pathList[0] == "..":
 				basePathList.pop();
@@ -79,7 +79,7 @@ class CreateModuleObj(object):
 			else:
 				basePathList.extend(pathList);
 				break;
-		return "\\".join(basePathList).strip();
+		return "/".join(basePathList).strip();
 
 	def getModuleFullName(self):
 		if os.path.isdir(self.modulePath + self.moduleName):
@@ -108,14 +108,14 @@ class CreateModuleObj(object):
 			newTargetFilePath = self.checkAndCreateFolderByModule(targetFilePath, moduleFileName, targetFileName);
 			listdir = os.listdir(moduleFilePath + moduleFileName);
 			for fileName in listdir:
-				self.createFilesByRecursion(newTargetFilePath, targetFileName, moduleFilePath + moduleFileName + "\\", fileName);
+				self.createFilesByRecursion(newTargetFilePath, targetFileName, moduleFilePath + moduleFileName + "/", fileName);
 		else:
 			self.createFileByModule(targetFilePath, targetFileName, moduleFilePath, moduleFileName);
 			pass;
 
 	def checkAndCreateFolderByModule(self, baseFilePath, filePathName, targetFileName):
 		newFilePathName = re.sub(r""+self.moduleName, r""+targetFileName, filePathName);
-		targetFullPath = baseFilePath + newFilePathName + "\\";
+		targetFullPath = baseFilePath + newFilePathName + "/";
 		if not os.path.exists(targetFullPath):
 			os.makedirs(targetFullPath);
 		return targetFullPath;

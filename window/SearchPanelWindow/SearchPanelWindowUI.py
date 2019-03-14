@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-05 21:14:16
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2018-11-11 16:24:53
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:35:36
 
 import threading;
 import wx;
@@ -50,7 +50,7 @@ class SearchPanelWindowUI(wx.MDIChildFrame):
 
 	def createSearchPanel(self):
 		params = {"size" : _GG("AppConfig")["SearchPanelSize"], "bgColor" : _GG("AppConfig")["SearchPanelBGColor"]};
-		self.getCtr().createCtrByKey("SearchPanelViewCtr", _GG("g_CommonPath") + "view\\SearchPanelView", params = params);
+		self.getCtr().createCtrByKey("SearchPanelViewCtr", _GG("g_CommonPath") + "view/SearchPanelView", params = params);
 		pass;
 
 	def updateWindow(self, data):

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 10:49:59
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-13 23:01:03
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:35:21
 
 import wx;
 
@@ -22,7 +22,7 @@ class ParentWindowCtr(object):
 	def __init__(self, parent = None, params = {}):
 		super(ParentWindowCtr, self).__init__();
 		self.className_ = ParentWindowCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "window\\ParentWindow\\";
+		self.curPath = _GG("g_CommonPath") + "window/ParentWindow/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent);
 		self.registerEventMap(); # 注册事件
@@ -157,7 +157,7 @@ class ParentWindowCtr(object):
 			if curActiveChild:
 				self.appendEventToEscDown(self.SetActiveChildById, curActiveChild.GetId());
 			# 创建搜索面板
-			self.SearchPanelWindowCtr = CreateCtr(_GG("g_CommonPath") + "window\\SearchPanelWindow", self.UI);
+			self.SearchPanelWindowCtr = CreateCtr(_GG("g_CommonPath") + "window/SearchPanelWindow", self.UI);
 			# 根据父窗口大小获取中心位置
 			centerPos = self.SearchPanelWindowCtr.getCenterPosByParentSize(self.UI.GetSize());
 			self.SearchPanelWindowCtr.getUI().SetPosition((centerPos[0], 0)); # 重置窗口的位置

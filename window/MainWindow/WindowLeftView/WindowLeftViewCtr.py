@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-06 22:48:19
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:34:34
 
 import wx;
 
@@ -20,7 +20,7 @@ class WindowLeftViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(WindowLeftViewCtr, self).__init__();
 		self.className_ = WindowLeftViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view\\WindowLeftView\\";
+		self.curPath = _GG("g_CommonPath") + "view/WindowLeftView/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.registerEventMap(); # 注册事件
 		self.bindBehaviors(); # 绑定组件
@@ -83,7 +83,7 @@ class WindowLeftViewCtr(object):
 			_GG("EventDispatcher").unregister(eventId, self, callbackName);
 
 	def bindBehaviors(self):
-		_GG("BehaviorManager").bindBehavior(self, {"path" : "configParseBehavior/XmlConfigParseBehavior", "basePath" : _GG("g_CommonPath") + "behavior\\"});
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "configParseBehavior/XmlConfigParseBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 		
 	def unbindBehaviors(self):

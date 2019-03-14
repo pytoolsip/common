@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 19:05:42
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-11 23:20:11
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:32:25
 
 import wx;
 
@@ -20,7 +20,7 @@ class HomePageViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(HomePageViewCtr, self).__init__();
 		self.className_ = HomePageViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view\\HomePageView\\";
+		self.curPath = _GG("g_CommonPath") + "view/HomePageView/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
@@ -93,11 +93,11 @@ class HomePageViewCtr(object):
 		self.UI.updateView(data);
 
 	def updateRankingPagesView(self):
-		self.getCtrByKey("RankingPagesViewCtr").addDownPage(_GG("g_CommonPath") + "view\\RankingListView",
+		self.getCtrByKey("RankingPagesViewCtr").addDownPage(_GG("g_CommonPath") + "view/RankingListView",
 		 "popularity", "人气", params = {"size" : (self.UI.getRankingSizeX(), self.UI.GetSize()[1])});
-		self.getCtrByKey("RankingPagesViewCtr").addDownPage(_GG("g_CommonPath") + "view\\RankingListView",
+		self.getCtrByKey("RankingPagesViewCtr").addDownPage(_GG("g_CommonPath") + "view/RankingListView",
 		 "praise", "好评", params = {"size" : (self.UI.getRankingSizeX(), self.UI.GetSize()[1])});
-		self.getCtrByKey("RankingPagesViewCtr").addDownPage(_GG("g_CommonPath") + "view\\RankingListView",
+		self.getCtrByKey("RankingPagesViewCtr").addDownPage(_GG("g_CommonPath") + "view/RankingListView",
 		 "download", "下载", params = {"size" : (self.UI.getRankingSizeX(), self.UI.GetSize()[1])});
 		self.updateRankingPage();
 

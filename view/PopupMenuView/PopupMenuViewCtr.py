@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 18:59:05
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 17:11:36
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:33:21
 
 import wx;
 
@@ -20,7 +20,7 @@ class PopupMenuViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(PopupMenuViewCtr, self).__init__();
 		self.className_ = PopupMenuViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view\\PopupMenuView\\";
+		self.curPath = _GG("g_CommonPath") + "view/PopupMenuView/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent); # 初始化视图UI
 		self.registerEventMap(); # 注册事件

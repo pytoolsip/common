@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-26 14:05:42
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 17:12:57
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:33:37
 
 import wx;
 
@@ -20,7 +20,7 @@ class SearchPanelViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(SearchPanelViewCtr, self).__init__();
 		self.className_ = SearchPanelViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view\\SearchPanelView\\";
+		self.curPath = _GG("g_CommonPath") + "view/SearchPanelView/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件

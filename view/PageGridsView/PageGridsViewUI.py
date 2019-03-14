@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-11-10 15:59:49
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 09:54:10
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:33:14
 
 import wx;
 
@@ -70,7 +70,7 @@ class PageGridsViewUI(wx.Panel):
 
 	def createSketchGridViewCtr(self):
 		viewHeight = self.GetSize()[1] - self.title.GetSize()[1] - self.pageCtrlPanel.GetSize()[1] - self.__params["itemRows"]; # 除减去titlePanel的高度外，还需减去边框的高度
-		self.getCtr().createCtrByKey("SketchGridViewCtr", _GG("g_CommonPath") + "view\\SketchGridView",
+		self.getCtr().createCtrByKey("SketchGridViewCtr", _GG("g_CommonPath") + "view/SketchGridView",
 		 params = {
 			"itemSize" : (self.GetSize()[0]/self.__params["itemCols"], viewHeight/self.__params["itemRows"]),
 		 	"minCols" : self.__params["itemCols"]

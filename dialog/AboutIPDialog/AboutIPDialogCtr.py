@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-11-13 23:07:38
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-01-29 10:23:12
+# @Last Modified time: 2019-03-14 17:30:43
 
 import wx;
 
@@ -20,7 +20,7 @@ class AboutIPDialogCtr(object):
 	def __init__(self, parent, params = {}):
 		super(AboutIPDialogCtr, self).__init__();
 		self.className_ = AboutIPDialogCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "Dialog\\AboutIPDialog\\";
+		self.curPath = _GG("g_CommonPath") + "Dialog/AboutIPDialog/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-07-29 10:53:54
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 17:16:20
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:34:26
 
 import wx;
 
@@ -21,7 +21,7 @@ class MainWindowCtr(object):
 	def __init__(self, parent = None, params = {}):
 		super(MainWindowCtr, self).__init__();
 		self.className_ = MainWindowCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "window\\MainWindow\\";
+		self.curPath = _GG("g_CommonPath") + "window/MainWindow/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.toolWinSizeEventDict = {}; # 窗口大小事件字典
 		self.initUI(parent, params);
@@ -107,7 +107,7 @@ class MainWindowCtr(object):
 		self.UI.Size = (self.UI.Size[0] + curSize[0] - PreUISize[0], self.UI.Size[1] + curSize[1] - PreUISize[1]);
 
 	def createHomePage(self):
-		self.getCtrByKey("WindowRightViewCtr").createPageToNoteBook({"id" : 0, "pagePath" : _GG("g_CommonPath") + "view\\HomePageView", "title" : "首页"});
+		self.getCtrByKey("WindowRightViewCtr").createPageToNoteBook({"id" : 0, "pagePath" : _GG("g_CommonPath") + "view/HomePageView", "title" : "首页"});
 
 	def getToolWinSize(self):
 		noteBookSize = self.getCtrByKey("WindowRightViewCtr").getUIByKey("NoteBookViewCtr").GetSize();

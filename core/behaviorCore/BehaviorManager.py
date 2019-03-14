@@ -2,7 +2,7 @@
 # @Author: JimDreamHeart
 # @Date:   2018-08-25 03:33:52
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-01-23 14:25:50
+# @Last Modified time: 2019-03-14 17:30:23
 
 from behaviorCore.BehaviorBinder import BehaviorBinder;
 
@@ -29,9 +29,9 @@ class BehaviorManager(object):
 			bhPath = path;
 			if basePath:
 				bhPath = GetPathByRelativePath(path, basePath);
-			behaviorPathList = bhPath.split("\\");
+			behaviorPathList = bhPath.split("/");
 			behaviorFileName = behaviorPathList.pop();
-			behaviorObj = require("\\".join(behaviorPathList), behaviorFileName, behaviorFileName);
+			behaviorObj = require("/".join(behaviorPathList), behaviorFileName, behaviorFileName);
 			return behaviorObj();
 		except Exception as e:
 			print("Require behavior fail! =>", e);

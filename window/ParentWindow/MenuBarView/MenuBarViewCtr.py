@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-09 22:03:23
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:35:12
 import os;
 import wx;
 
@@ -20,7 +20,7 @@ class MenuBarViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(MenuBarViewCtr, self).__init__();
 		self.className_ = MenuBarViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view\\MenuBarView\\";
+		self.curPath = _GG("g_CommonPath") + "view/MenuBarView/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
@@ -83,7 +83,7 @@ class MenuBarViewCtr(object):
 			_GG("EventDispatcher").unregister(eventId, self, callbackName);
 
 	def bindBehaviors(self):
-		_GG("BehaviorManager").bindBehavior(self, {"path" : "copyBehavior/ShutilCopyBehavior", "basePath" : _GG("g_CommonPath") + "behavior\\"});
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "copyBehavior/ShutilCopyBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 		
 	def unbindBehaviors(self):
@@ -96,11 +96,11 @@ class MenuBarViewCtr(object):
 		wx.MessageDialog(self.getUI(), message, caption = caption, style = style).ShowModal();
 
 	def linkToolCommon(self, toolPath = ""):
-		if os.path.exists(toolPath + "\\assets"):
-			toolCommonPath = toolPath + "\\assets\\common";
+		if os.path.exists(toolPath + "/assets"):
+			toolCommonPath = toolPath + "/assets/common";
 			if sys.platform == "win32":
 				if os.system("mklink /J " + toolCommonPath + " " + _GG("g_CommonPath")) != 0:
-					raise Exception("'mklink /J ...template\\assets\\common ...assets\\common' fail !");
+					raise Exception("'mklink /J ...template/assets/common ...assets/common' fail !");
 			else:
 				os.system("ln -sf " + toolCommonPath + _GG("g_CommonPath"));
 			return True;
@@ -108,12 +108,12 @@ class MenuBarViewCtr(object):
 
 	def onClickToolDevelopment(self, event):
 		if not self.getCtrByKey("ToolDevelopInfoDialogCtr"):
-			self.createCtrByKey("ToolDevelopInfoDialogCtr", _GG("g_CommonPath") + "dialog\\ToolDevelopInfoDialog");
+			self.createCtrByKey("ToolDevelopInfoDialogCtr", _GG("g_CommonPath") + "dialog/ToolDevelopInfoDialog");
 		if self.getUIByKey("ToolDevelopInfoDialogCtr").ShowModal() == wx.ID_OK :
 			message = "创建工具开发项目模板失败！";
 			if hasattr(self, "copyPath"):
 				srcPath = _GG("g_ProjectPath") + "template";
-				dstPath = self.getUIByKey("ToolDevelopInfoDialogCtr").getDirInputValue() + "\\" + self.getUIByKey("ToolDevelopInfoDialogCtr").getTextCtrlValue();
+				dstPath = self.getUIByKey("ToolDevelopInfoDialogCtr").getDirInputValue() + "/" + self.getUIByKey("ToolDevelopInfoDialogCtr").getTextCtrlValue();
 				dstPath = str(dstPath);
 				if self.copyPath(srcPath, dstPath):
 					if self.linkToolCommon(toolPath = dstPath):
@@ -123,7 +123,7 @@ class MenuBarViewCtr(object):
 
 	def onClickAboutIP(self, event):
 		if not self.getCtrByKey("AboutIPDialogCtr"):
-			self.createCtrByKey("AboutIPDialogCtr", _GG("g_CommonPath") + "dialog\\AboutIPDialog");
+			self.createCtrByKey("AboutIPDialogCtr", _GG("g_CommonPath") + "dialog/AboutIPDialog");
 		self.getUIByKey("AboutIPDialogCtr").ShowModal();
 
 	def onOpenCurTabPagePath(self, event):
@@ -154,7 +154,7 @@ class MenuBarViewCtr(object):
 				"data" : _GG("CommonClient").encodeBytes({"name" : name}),
 			}, asynCallback = checkName);
 		if not self.getCtrByKey("LoginDialogCtr"):
-			self.createCtrByKey("LoginDialogCtr", _GG("g_CommonPath") + "dialog\\LoginDialog", params = {
+			self.createCtrByKey("LoginDialogCtr", _GG("g_CommonPath") + "dialog/LoginDialog", params = {
 				"name" : {
 					"onBlur" : onBlurName,
 				},
@@ -194,7 +194,7 @@ class MenuBarViewCtr(object):
 				"data" : _GG("CommonClient").encodeBytes({"email" : email}),
 			}, asynCallback = checkEmail);
 		if not self.getCtrByKey("RegisterDialogCtr"):
-			self.createCtrByKey("RegisterDialogCtr", _GG("g_CommonPath") + "dialog\\RegisterDialog", params = {
+			self.createCtrByKey("RegisterDialogCtr", _GG("g_CommonPath") + "dialog/RegisterDialog", params = {
 				"name" : {
 					"onBlur" : onBlurName,
 				},

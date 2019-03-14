@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 18:09:36
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-01-12 17:41:49
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:34:53
 
 import wx;
 
@@ -20,7 +20,7 @@ class WindowRightViewCtr(object):
 	def __init__(self, parent, params = {}):
 		super(WindowRightViewCtr, self).__init__();
 		self.className_ = WindowRightViewCtr.__name__;
-		self.curPath = _GG("g_CommonPath") + "view\\WindowRightView\\";
+		self.curPath = _GG("g_CommonPath") + "view/WindowRightView/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent); # 初始化视图UI
 		self.registerEventMap(); # 注册事件

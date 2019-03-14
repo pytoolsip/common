@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 19:05:42
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-11 23:19:38
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-14 17:32:34
 
 import wx;
 
@@ -59,13 +59,13 @@ class HomePageViewUI(wx.ScrolledWindow):
 
 	def createControls(self):
 		# 创建推荐视图
-		self.getCtr().createCtrByKey("RecommendToolsCtr", _GG("g_CommonPath") + "view\\TitleGridsView",
+		self.getCtr().createCtrByKey("RecommendToolsCtr", _GG("g_CommonPath") + "view/TitleGridsView",
 		 params = {"size" : (self.GetSize()[0] - self.__params["rankingSizeX"], self.GetSize()[1]), "title" : "推荐工具"});
 		# 创建排行榜
-		self.getCtr().createCtrByKey("RankingPagesViewCtr", _GG("g_CommonPath") + "view\\DownPagesView",
+		self.getCtr().createCtrByKey("RankingPagesViewCtr", _GG("g_CommonPath") + "view/DownPagesView",
 		 params = {"size" : (self.__params["rankingSizeX"], self.GetSize()[1]), "title" : "排行榜"});
 		# 创建最新视图
-		self.getCtr().createCtrByKey("NewestGridsViewCtr", _GG("g_CommonPath") + "view\\PageGridsView",
+		self.getCtr().createCtrByKey("NewestGridsViewCtr", _GG("g_CommonPath") + "view/PageGridsView",
 		 params = {"size" : (self.GetSize()[0], self.GetSize()[1]*2/3), "title" : "最新工具"});
 		pass;
 		
