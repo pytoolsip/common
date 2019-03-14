@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2019-03-03 22:54:01
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 18:21:55
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-14 20:38:42
 import os,logging;
 from logging.handlers import RotatingFileHandler;
 
@@ -39,9 +39,6 @@ class LogRecord(logging.LogRecord):
 		logMsg = "{} "*(len(self.args) + 1);
 		return logMsg.format(self.msg, *self.args);
 
-# 重置logging的LogRecord类
-logging.LogRecord = LogRecord;
-
 # Logger类
 class Logger(logging.Logger):
 	"""docstring for Logger"""
@@ -60,6 +57,17 @@ class Logger(logging.Logger):
 		# 新增日志打印方法接口
 		self.__initMethods__(methodKeyMap);
 
+	# 覆盖Logger类的makeRecord方法
+	def makeRecord(self, name, level, fn, lno, msg, args, exc_info, func=None, extra=None, sinfo=None):
+		rv = LogRecord(name, level, fn, lno, msg, args, exc_info, func);
+		if extra:
+			for key in extra:
+				if (key in ["message", "asctime"]) or (key in rv.__dict__):
+					raise KeyError("Attempt to overwrite %r in LogRecord" % key);
+				rv.__dict__[key] = extra[key];
+		return rv;
+
+	# 添加handler
 	def __addHandler__(self, handler, level = "debug"):
 		handler.setLevel(LevelKeyMap[level]);
 		handler.setFormatter(self.__formatter);
@@ -92,4 +100,3 @@ class Logger(logging.Logger):
 			if self.isEnabledFor(LevelKeyMap[level]):
 				self._log(LevelKeyMap[level], msg, args, **kwargs);
 		return method;
-
