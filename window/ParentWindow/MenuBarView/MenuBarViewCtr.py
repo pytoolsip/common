@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 19:48:57
+# @Last Modified time: 2019-03-15 20:24:27
 import os;
 import wx;
 import time;
@@ -236,6 +236,11 @@ class MenuBarViewCtr(object):
 			if respData and respData.isSuccess:
 				self.showMessageDialog("注册成功。", "注册账号", style = wx.OK|wx.ICON_INFORMATION);
 			else:
+				if respData and respData.data:
+					data = _GG("CommonClient").decodeBytes(respData.data);
+					if "content" in data:
+						self.showMessageDialog(data["content"], "注册账号", style = wx.OK|wx.ICON_INFORMATION);
+						return False;
 				self.showMessageDialog("注册失败，请重新注册！", "注册账号", style = wx.OK|wx.ICON_INFORMATION);
 			return respData and respData.isSuccess or False;
 		# 显示弹窗

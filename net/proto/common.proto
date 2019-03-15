@@ -44,6 +44,7 @@ message RegisterReq{
 	string name = 1; // 用户名
 	string password = 2; // 密码
 	string email = 3; // 用户邮箱
+	string veriCode = 4; // 校验码
 }
 
 // 上传请求
@@ -51,7 +52,7 @@ message UploadReq{
 	int32 uid = 1; // 玩家ID
 	string name = 2; // 工具名
 	string version = 3; // 工具版本号
-	string common_version = 4; // common版本号
+	string commonVersion = 4; // common版本号
 	string description = 5; // 工具简述
 }
 
@@ -80,6 +81,7 @@ message UpdateReq{
 	int32 uid = 1; // 玩家ID【用于更新权限判断】
 	string name = 2; // common或工具名
 	string version = 3; // 当前版本号
+	string commonVersion = 4; // common版本号
 }
 
 // 更新回应
@@ -93,7 +95,7 @@ message CommentReq{
 	int32 uid = 1; // 玩家ID【用于权限判断】
 	string name = 2; // common或工具名
 	string version = 3; // 当前版本号
-	string common_version = 4; // common版本号
+	string commonVersion = 4; // common版本号
 	float score = 5; // 评分
 	string content = 6; // 评论内容
 }
@@ -103,5 +105,5 @@ message CollectReq{
 	int32 uid = 1; // 玩家ID【用于权限判断】
 	string name = 2; // common或工具名
 	string version = 3; // 当前版本号
-	string common_version = 4; // common版本号
+	string commonVersion = 4; // common版本号
 }

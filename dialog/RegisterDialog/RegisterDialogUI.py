@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-01-26 18:49:31
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 15:13:09
+# @Last Modified time: 2019-03-15 20:06:36
 import wx;
 import math;
 
@@ -324,4 +324,5 @@ class RegisterDialogUI(wx.Dialog):
 			"email" : self.__email.input.GetValue(),
 			"name" : self.__name.input.GetValue(),
 			"password" : self.__pwd.input.GetValue(),
+			"veriCode" : self.__veriCode.input.GetValue(),
 		};
