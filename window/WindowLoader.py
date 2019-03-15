@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JinZhang
 # @Date:   2018-04-19 14:19:46
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 18:57:13
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 02:28:51
 
 import wx;
 from ProjectConfig import ProjectConfig;
@@ -15,7 +15,7 @@ class WindowLoader(object):
 		super(WindowLoader, self).__init__();
 		self.className_ = WindowLoader.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
-		self.MainApp = wx.App(self.checkIsOpenLogWin());
+		self.__mainApp = wx.App(self.checkIsOpenLogWin());
 		self.registerEvent(); # 注册事件
 
 	def __del__(self):
@@ -37,7 +37,7 @@ class WindowLoader(object):
 		return False;
 
 	def initWindowEvent(self):
-		self.initKeyDownEvent();
+		self.bindKeyDownEvent();
 		pass;
 
 	def createWindows(self):
@@ -66,8 +66,11 @@ class WindowLoader(object):
 	def createSearchPanelWindowCtr(self):
 		_GG("WindowObject").ParentWindowCtr.SearchPanelWindowCtr = CreateCtr(self._curPath + "SearchPanelWindow", self.parentWindowUI);
 
-	def initKeyDownEvent(self):
-		self.MainApp.Bind(wx.EVT_CHAR_HOOK, _GG("HotKeyManager").dispatchEvent);
+	def bindKeyDownEvent(self):
+		self.__mainApp.Bind(wx.EVT_CHAR_HOOK, _GG("HotKeyManager").dispatchEvent);
+
+	def unbindKeyDownEvent(self):
+		self.__mainApp.Unbind(wx.EVT_CHAR_HOOK);
 
 	def registerEvent(self):
 		_GG("EventDispatcher").register(_GG("EVENT_ID").RESTART_APP_EVENT, self, "restartApp");
@@ -76,9 +79,12 @@ class WindowLoader(object):
 		_GG("EventDispatcher").unregister(_GG("EVENT_ID").RESTART_APP_EVENT, self, "restartApp");
 
 	def restartApp(self, data):
-		self.MainApp.ExitMainLoop(); # 退出App的主循环
+		self.__mainApp.ExitMainLoop(); # 退出App的主循环
 		if sys.platform == "win32":
 			os.system('cd ../run/&&run.vbs'); # 相对于main.py的相对路径
+		# 解绑事件
+		self.unregisterEvent();
+		self.unbindKeyDownEvent();
 
 	def runWindows(self):
 		self.parentWindowUI.Tile();
@@ -86,7 +92,7 @@ class WindowLoader(object):
 		self.parentWindowUI.Show(True);
 
 	def runApp(self):
-		self.MainApp.MainLoop();
+		self.__mainApp.MainLoop();
 
 	def createViews(self):
 		wx.CallLater(100, self.onCreateViews);
