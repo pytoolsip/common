@@ -2,9 +2,10 @@
 # @Author: JimDreamHeart
 # @Date:   2018-04-19 14:22:56
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 18:53:31
+# @Last Modified time: 2019-03-15 19:09:31
 import wx;
 import os,sys,time;
+import shutil;
 # 当前文件位置
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__));
 # 添加搜索路径
@@ -125,3 +126,8 @@ class Loader(object):
 	def loadCommonClient(self):
 		_G.setGlobalVarTo_Global("CommonClient", CommonClient()); # 设置客户端->服务端连接的全局变量
 		pass;
+
+	# 校验默认数据
+	def verifyDefaultData(self):
+		if not os.path.exists(_G._GG("g_DataPath")+"tools_tree.xml"):
+			shutil.copyfile(_G._GG("g_CommonPath") + "config/xml/treeItems.xml", _G._GG("g_DataPath")+"tools_tree.xml");

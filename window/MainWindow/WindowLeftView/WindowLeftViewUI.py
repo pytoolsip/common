@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:00:43
+# @Last Modified time: 2019-03-15 19:07:36
 
 import wx;
 
@@ -66,7 +66,7 @@ class WindowLeftViewUI(wx.Panel):
 		
 	def createTreeCtrl(self):
 		params = {
-			"defaultItemsData" : self.getCtr().getTreeItemsDataByFilePath(_GG("g_CommonPath") + "config/xml/treeItems.xml"),
+			"defaultItemsData" : self.getCtr().getTreeItemsDataByFilePath(_GG("g_DataPath")+"tools_tree.xml"),
 		};
 		self.getCtr().createCtrByKey("TreeItemsViewCtr",
 			_GG("g_CommonPath") + "view/TreeItemsView",
