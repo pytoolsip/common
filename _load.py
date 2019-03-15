@@ -2,7 +2,7 @@
 # @Author: JimDreamHeart
 # @Date:   2018-04-19 14:22:56
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 18:46:43
+# @Last Modified time: 2019-03-15 18:53:31
 import wx;
 import os,sys,time;
 # 当前文件位置
@@ -73,7 +73,9 @@ class Loader(object):
 	# 加载全局路径名变量
 	def loadPaths(self):
 		_G.setGlobalVarTo_Global("g_ProjectPath", os.path.abspath(os.path.join(self.__mainPath, "..")).replace("\\", "/") + "/");
-		_G.setGlobalVarTo_Global("g_DataPath", _G.GG("g_ProjectPath") + "data/");
+		_G.setGlobalVarTo_Global("g_DataPath", _G._GG("g_ProjectPath") + "data/");
+		if not os.path.exists(_G._GG("g_DataPath")):
+			os.mkdir(_G._GG("g_DataPath")); # 若工程数据文件不存在，则需创建该目录
 		_G.setGlobalVarTo_Global("g_AssetsPath", self.__mainPath + "/");
 		_G.setGlobalVarTo_Global("g_CommonPath", self.__mainPath + "/common/");
 		_G.setGlobalVarTo_Global("g_CommonCorePath", self.__mainPath + "/common/core/");

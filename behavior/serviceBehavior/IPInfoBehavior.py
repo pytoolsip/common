@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2019-03-15 16:09:17
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 18:40:52
+# @Last Modified time: 2019-03-15 18:56:39
 import os;
 try:
 	import ConfigParser;
@@ -22,6 +22,7 @@ def getExposeMethod(DoType):
 		"getIPInfoConfigObj" : DoType.AddToRear,
 		"getIPInfoConfig" : DoType.AddToRear,
 		"setIPInfoConfig" : DoType.AddToRear,
+		"removeIPInfoConfig" : DoType.AddToRear,
 	};
 
 class IPInfoBehavior(_GG("BaseBehavior")):
@@ -53,13 +54,13 @@ class IPInfoBehavior(_GG("BaseBehavior")):
 			with open(self.__filePath, "w") as f:
 				f.write("");
 
-	def getIPInfoConfig(self, obj, _retTuple = None):
+	def getIPInfoConfigObj(self, obj, _retTuple = None):
 		self.__checkFile__();
 		conf = ConfigParser.RawConfigParser();
 		conf.read(self.__filePath);
 		return conf;
 
-	def getIPInfoConfigObj(self, obj, section, option, _retTuple = None):
+	def getIPInfoConfig(self, obj, section, option, _retTuple = None):
 		self.__checkFile__();
 		return obj.readIniConfig(self.__filePath, section, option);
 
