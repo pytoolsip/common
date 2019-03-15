@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 15:10:59
+# @Last Modified time: 2019-03-15 16:43:26
 import os;
 import wx;
 
@@ -93,7 +93,7 @@ class MenuBarViewCtr(object):
 		self.__ui.updateView(data);
 
 	def showMessageDialog(self, message, caption = "提示", style = wx.OK):
-		wx.MessageDialog(self.getUI(), message, caption = caption, style = style).ShowModal();
+		return wx.MessageDialog(self.getUI(), message, caption = caption, style = style).ShowModal();
 
 	def linkToolCommon(self, toolPath = ""):
 		if os.path.exists(toolPath + "/assets"):
@@ -157,6 +157,8 @@ class MenuBarViewCtr(object):
 			respData = _GG("CommonClient").callService("Login", "LoginReq", loginInfo);
 			if respData and respData.isSuccess:
 				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").LOGIN_SUCCESS_EVENT, respData);
+				if self.showMessageDialog("登录成功，是否保存账户密码到本地？", "登录账号", style = wx.OK|wx.CANCEL|wx.ICON_QUESTION) == wx.OK:
+					obj.writeIPInfoConfig("user", "name", respData.name), obj.writeIPInfoConfig("user", "password", respData.password); # 保存配置
 			else:
 				self.showMessageDialog("登录失败，请重新登录！", "登录账号", style = wx.OK|wx.ICON_INFORMATION);
 			return respData.isSuccess;

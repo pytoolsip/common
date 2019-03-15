@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-06 23:14:13
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:27:09
+# @Last Modified time: 2019-03-15 16:41:58
 import os;
 
 from _Global import _GG;
@@ -16,6 +16,7 @@ def getExposeData():
 def getExposeMethod(DoType):
 	return {
 		"checkUpdateCommon" : DoType.AddToRear,
+		"autoLoginIP" : DoType.AddToRear,
 	};
 
 class ServiceBehavior(_GG("BaseBehavior")):
@@ -33,7 +34,11 @@ class ServiceBehavior(_GG("BaseBehavior")):
 
 	def appendDepends(self, depends = []):
 		depends.append({
-			"path" : "serviceBehavior/UpDownloadBehavior", 
+			"path" : "serviceBehavior/UpDownloadBehavior",
+			"basePath" : _GG("g_CommonPath") + "behavior/",
+		});
+		depends.append({
+			"path" : "serviceBehavior/IPInfoBehavior",
 			"basePath" : _GG("g_CommonPath") + "behavior/",
 		});
 
@@ -49,23 +54,13 @@ class ServiceBehavior(_GG("BaseBehavior")):
 
 	# 自动登录平台
 	def autoLoginIP(self, obj, _retTuple = None):
-		# todo 获取保存到本地的账号密码
-		if not os.path.exists(_GG("g_ProjectPath")+"date/ip_info.ini"):
-			return;
-		# 读取配置
-		conf = ConfigParser.RawConfigParser();
-		conf.read(_GG("g_ProjectPath")+"date/ip_info.ini");
-		if not (conf.has_option("user", "name") and conf.has_option("user", "password")):
-			return;
-		userName, password = conf.get("user", "name"), conf.get("user", "password");
 		# 登录回调
-		def onLogin(retData):
-			if not retData or retData.isSuccess:
-				return;
-			# 登录成功后的处理
-			data = _GG("CommonClient").decodeBytes(retData.data);
-			# todo 通知更新用户信息[retData]
+		def onLogin(respData):
+			if respData and respData.isSuccess:
+				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").LOGIN_SUCCESS_EVENT, respData);
 			pass;
+		# 读取配置
+		userName, password = obj.readIPInfoConfig("user", "name"), obj.readIPInfoConfig("user", "password");
 		# 请求服务
 		_GG("CommonClient").callService("Login", "LoginReq", {
 			"name" : userName,

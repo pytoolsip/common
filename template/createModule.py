@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-03-29 22:21:00
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-07 20:48:55
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-15 16:09:14
 
 from module.ModuleCreator import *;
 
@@ -19,12 +19,12 @@ if __name__ == "__main__":
 	commonPath = "../";
 
 
-	# # 创建组件的参数配置 behavior
-	# theModule = {
-	# 	"modName" : "behavior",
-	# 	"targetModName" : "UploadBehavior",
-	# 	"targetModPath" : commonPath + "behavior/serviceBehavior/",
-	# };
+	# 创建组件的参数配置 behavior
+	theModule = {
+		"modName" : "behavior",
+		"targetModName" : "IPInfoBehavior",
+		"targetModPath" : commonPath + "behavior/serviceBehavior/",
+	};
 
 	# # 创建视图的参数配置 view
 	# theModule = {
@@ -40,12 +40,12 @@ if __name__ == "__main__":
 	# 	"targetModPath" : scriptPath + "launcher/window/",
 	# };
 
-	# 创建弹窗的参数配置 dialog
-	theModule = {
-		"modName" : "dialog",
-		"targetModName" : "DownloadDialog",
-		"targetModPath" : commonPath + "dialog/",
-	};
+	# # 创建弹窗的参数配置 dialog
+	# theModule = {
+	# 	"modName" : "dialog",
+	# 	"targetModName" : "DownloadDialog",
+	# 	"targetModPath" : commonPath + "dialog/",
+	# };
 
 
 	# # 创建module的对象

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-04-24 22:54:42
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-09 16:44:12
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-15 17:32:54
 
 try:
 	import ConfigParser;
@@ -34,7 +34,9 @@ class IniConfigParseBehavior(_GG("BaseBehavior")):
 	def readIniConfig(self, obj, iniFilePath, section, option, _retTuple = None):
 		config = ConfigParser.RawConfigParser();
 		config.read(iniFilePath);
-		return config.get(section, option);
+		if config.has_option(section, option):
+			return config.get(section, option);
+		return None;
 
 	# 读取ini配置文件
 	def writeIniConfig(self, obj, iniFilePath, section, option, value, _retTuple = None):
