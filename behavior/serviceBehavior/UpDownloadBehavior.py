@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-07 20:34:34
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:27:17
+# @Last Modified time: 2019-03-15 19:46:19
 import urllib;
 import paramiko;
 import zipfile;
@@ -56,7 +56,7 @@ class UpDownloadBehavior(_GG("BaseBehavior")):
 		zf = zipfile.ZipFile(filePath,'w', zipfile.ZIP_DEFLATED);
 		for path, _, filenames in os.walk(dirpath):
 			# 去掉目标跟路径，只对目标文件夹下边的文件及文件夹进行压缩
-			fpath = path.replace(dirpath,'');
+			fpath = path.replace(dirpath, '');
 			for filename in filenames:
 				zf.write(os.path.join(path, filename), os.path.join(fpath, filename));
 		zf.close();

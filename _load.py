@@ -2,7 +2,7 @@
 # @Author: JimDreamHeart
 # @Date:   2018-04-19 14:22:56
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 19:09:31
+# @Last Modified time: 2019-03-15 19:31:58
 import wx;
 import os,sys,time;
 import shutil;
@@ -129,5 +129,6 @@ class Loader(object):
 
 	# 校验默认数据
 	def verifyDefaultData(self):
+		# 校验工具树配置
 		if not os.path.exists(_G._GG("g_DataPath")+"tools_tree.xml"):
 			shutil.copyfile(_G._GG("g_CommonPath") + "config/xml/treeItems.xml", _G._GG("g_DataPath")+"tools_tree.xml");

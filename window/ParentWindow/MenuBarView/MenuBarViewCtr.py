@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 18:11:33
+# @Last Modified time: 2019-03-15 19:48:57
 import os;
 import wx;
 import time;
@@ -164,7 +164,7 @@ class MenuBarViewCtr(object):
 					obj.setIPInfoConfig("user", "time_stamp", time.time());
 			else:
 				self.showMessageDialog("登录失败，请重新登录！", "登录账号", style = wx.OK|wx.ICON_INFORMATION);
-			return respData.isSuccess;
+			return respData and respData.isSuccess or False;
 		# 显示弹窗
 		if not self.getCtrByKey("LoginDialogCtr"):
 			self.createCtrByKey("LoginDialogCtr", _GG("g_CommonPath") + "dialog/LoginDialog", params = {
@@ -237,7 +237,7 @@ class MenuBarViewCtr(object):
 				self.showMessageDialog("注册成功。", "注册账号", style = wx.OK|wx.ICON_INFORMATION);
 			else:
 				self.showMessageDialog("注册失败，请重新注册！", "注册账号", style = wx.OK|wx.ICON_INFORMATION);
-			return respData.isSuccess;
+			return respData and respData.isSuccess or False;
 		# 显示弹窗
 		if not self.getCtrByKey("RegisterDialogCtr"):
 			self.createCtrByKey("RegisterDialogCtr", _GG("g_CommonPath") + "dialog/RegisterDialog", params = {
