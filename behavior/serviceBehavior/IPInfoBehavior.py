@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2019-03-15 16:09:17
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 17:34:57
+# @Last Modified time: 2019-03-15 17:43:54
 import os;
 try:
 	import ConfigParser;
@@ -29,7 +29,7 @@ class IPInfoBehavior(_GG("BaseBehavior")):
 		self.appendDepends(depends);
 		super(IPInfoBehavior, self).__init__(depends);
 		self.className_ = IPInfoBehavior.__name__;
-		self.__dirPath = _GG("g_ProjectPath")+"date/";
+		self.__dirPath = _GG("g_ProjectPath")+"data/";
 		self.__fileName = "ptip_info.ini";
 
 	def getExposeData(self):
