@@ -32,11 +32,17 @@ message LoginReq{
 	string password = 2; // 密码
 }
 
+// 用户信息
+message UserInfo{
+	int32 uid = 1; // 玩家ID
+	string name = 2; // 用户名
+	string email = 3; // 用户邮箱
+}
+
 // 登录回应
 message LoginResp{
 	bool isSuccess = 1; // 是否登录成功
-	string name = 2; // 用户名
-	string email = 3; // 用户邮箱
+	UserInfo userInfo = 2; // 玩家信息
 }
 
 // 注册请求

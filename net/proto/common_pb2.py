@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='pbcommon',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x12proto/common.proto\x12\x08pbcommon\" \n\x03Req\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\"\'\n\x04Resp\x12\x11\n\tisSuccess\x18\x01 \x01(\x08\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\"*\n\x08LoginReq\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\";\n\tLoginResp\x12\x11\n\tisSuccess\x18\x01 \x01(\x08\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\"N\n\x0bRegisterReq\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x10\n\x08veriCode\x18\x04 \x01(\t\"c\n\tUploadReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x15\n\rcommonVersion\x18\x04 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x05 \x01(\t\"-\n\nUploadResp\x12\x10\n\x08isPermit\x18\x01 \x01(\x08\x12\r\n\x05token\x18\x02 \x01(\x0c\"9\n\x0b\x44ownloadReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\"?\n\x0c\x44ownloadResp\x12\x0f\n\x07isExist\x18\x01 \x01(\x08\x12\x0b\n\x03url\x18\x02 \x01(\t\x12\x11\n\ttotalSize\x18\x03 \x01(\x03\"N\n\tUpdateReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x15\n\rcommonVersion\x18\x04 \x01(\t\"L\n\nUpdateResp\x12\x12\n\nisUpToDate\x18\x01 \x01(\x08\x12*\n\nupdateInfo\x18\x02 \x01(\x0b\x32\x16.pbcommon.DownloadResp\"o\n\nCommentReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x15\n\rcommonVersion\x18\x04 \x01(\t\x12\r\n\x05score\x18\x05 \x01(\x02\x12\x0f\n\x07\x63ontent\x18\x06 \x01(\t\"O\n\nCollectReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x15\n\rcommonVersion\x18\x04 \x01(\t2\xcf\x03\n\x06\x43ommon\x12(\n\x07Request\x12\r.pbcommon.Req\x1a\x0e.pbcommon.Resp\x12\x30\n\x05Login\x12\x12.pbcommon.LoginReq\x1a\x13.pbcommon.LoginResp\x12\x31\n\x08Register\x12\x15.pbcommon.RegisterReq\x1a\x0e.pbcommon.Resp\x12\x33\n\x06Upload\x12\x13.pbcommon.UploadReq\x1a\x14.pbcommon.UploadResp\x12/\n\x08Uploaded\x12\x13.pbcommon.UploadReq\x1a\x0e.pbcommon.Resp\x12\x39\n\x08\x44ownload\x12\x15.pbcommon.DownloadReq\x1a\x16.pbcommon.DownloadResp\x12\x33\n\x06Update\x12\x13.pbcommon.UpdateReq\x1a\x14.pbcommon.UpdateResp\x12/\n\x07\x43omment\x12\x14.pbcommon.CommentReq\x1a\x0e.pbcommon.Resp\x12/\n\x07\x43ollect\x12\x14.pbcommon.CollectReq\x1a\x0e.pbcommon.Respb\x06proto3')
+  serialized_pb=_b('\n\x12proto/common.proto\x12\x08pbcommon\" \n\x03Req\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\"\'\n\x04Resp\x12\x11\n\tisSuccess\x18\x01 \x01(\x08\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\"*\n\x08LoginReq\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"4\n\x08UserInfo\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\"D\n\tLoginResp\x12\x11\n\tisSuccess\x18\x01 \x01(\x08\x12$\n\x08userInfo\x18\x02 \x01(\x0b\x32\x12.pbcommon.UserInfo\"N\n\x0bRegisterReq\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x10\n\x08veriCode\x18\x04 \x01(\t\"c\n\tUploadReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x15\n\rcommonVersion\x18\x04 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x05 \x01(\t\"-\n\nUploadResp\x12\x10\n\x08isPermit\x18\x01 \x01(\x08\x12\r\n\x05token\x18\x02 \x01(\x0c\"9\n\x0b\x44ownloadReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\"?\n\x0c\x44ownloadResp\x12\x0f\n\x07isExist\x18\x01 \x01(\x08\x12\x0b\n\x03url\x18\x02 \x01(\t\x12\x11\n\ttotalSize\x18\x03 \x01(\x03\"N\n\tUpdateReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x15\n\rcommonVersion\x18\x04 \x01(\t\"L\n\nUpdateResp\x12\x12\n\nisUpToDate\x18\x01 \x01(\x08\x12*\n\nupdateInfo\x18\x02 \x01(\x0b\x32\x16.pbcommon.DownloadResp\"o\n\nCommentReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x15\n\rcommonVersion\x18\x04 \x01(\t\x12\r\n\x05score\x18\x05 \x01(\x02\x12\x0f\n\x07\x63ontent\x18\x06 \x01(\t\"O\n\nCollectReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x15\n\rcommonVersion\x18\x04 \x01(\t2\xcf\x03\n\x06\x43ommon\x12(\n\x07Request\x12\r.pbcommon.Req\x1a\x0e.pbcommon.Resp\x12\x30\n\x05Login\x12\x12.pbcommon.LoginReq\x1a\x13.pbcommon.LoginResp\x12\x31\n\x08Register\x12\x15.pbcommon.RegisterReq\x1a\x0e.pbcommon.Resp\x12\x33\n\x06Upload\x12\x13.pbcommon.UploadReq\x1a\x14.pbcommon.UploadResp\x12/\n\x08Uploaded\x12\x13.pbcommon.UploadReq\x1a\x0e.pbcommon.Resp\x12\x39\n\x08\x44ownload\x12\x15.pbcommon.DownloadReq\x1a\x16.pbcommon.DownloadResp\x12\x33\n\x06Update\x12\x13.pbcommon.UpdateReq\x1a\x14.pbcommon.UpdateResp\x12/\n\x07\x43omment\x12\x14.pbcommon.CommentReq\x1a\x0e.pbcommon.Resp\x12/\n\x07\x43ollect\x12\x14.pbcommon.CollectReq\x1a\x0e.pbcommon.Respb\x06proto3')
 )
 
 
@@ -139,29 +139,29 @@ _LOGINREQ = _descriptor.Descriptor(
 )
 
 
-_LOGINRESP = _descriptor.Descriptor(
-  name='LoginResp',
-  full_name='pbcommon.LoginResp',
+_USERINFO = _descriptor.Descriptor(
+  name='UserInfo',
+  full_name='pbcommon.UserInfo',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='isSuccess', full_name='pbcommon.LoginResp.isSuccess', index=0,
-      number=1, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
+      name='uid', full_name='pbcommon.UserInfo.uid', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='name', full_name='pbcommon.LoginResp.name', index=1,
+      name='name', full_name='pbcommon.UserInfo.name', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='email', full_name='pbcommon.LoginResp.email', index=2,
+      name='email', full_name='pbcommon.UserInfo.email', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -180,7 +180,45 @@ _LOGINRESP = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=151,
-  serialized_end=210,
+  serialized_end=203,
+)
+
+
+_LOGINRESP = _descriptor.Descriptor(
+  name='LoginResp',
+  full_name='pbcommon.LoginResp',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='isSuccess', full_name='pbcommon.LoginResp.isSuccess', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='userInfo', full_name='pbcommon.LoginResp.userInfo', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=205,
+  serialized_end=273,
 )
 
 
@@ -231,8 +269,8 @@ _REGISTERREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=212,
-  serialized_end=290,
+  serialized_start=275,
+  serialized_end=353,
 )
 
 
@@ -290,8 +328,8 @@ _UPLOADREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=292,
-  serialized_end=391,
+  serialized_start=355,
+  serialized_end=454,
 )
 
 
@@ -328,8 +366,8 @@ _UPLOADRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=393,
-  serialized_end=438,
+  serialized_start=456,
+  serialized_end=501,
 )
 
 
@@ -373,8 +411,8 @@ _DOWNLOADREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=440,
-  serialized_end=497,
+  serialized_start=503,
+  serialized_end=560,
 )
 
 
@@ -418,8 +456,8 @@ _DOWNLOADRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=499,
-  serialized_end=562,
+  serialized_start=562,
+  serialized_end=625,
 )
 
 
@@ -470,8 +508,8 @@ _UPDATEREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=564,
-  serialized_end=642,
+  serialized_start=627,
+  serialized_end=705,
 )
 
 
@@ -508,8 +546,8 @@ _UPDATERESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=644,
-  serialized_end=720,
+  serialized_start=707,
+  serialized_end=783,
 )
 
 
@@ -574,8 +612,8 @@ _COMMENTREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=722,
-  serialized_end=833,
+  serialized_start=785,
+  serialized_end=896,
 )
 
 
@@ -626,14 +664,16 @@ _COLLECTREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=835,
-  serialized_end=914,
+  serialized_start=898,
+  serialized_end=977,
 )
 
+_LOGINRESP.fields_by_name['userInfo'].message_type = _USERINFO
 _UPDATERESP.fields_by_name['updateInfo'].message_type = _DOWNLOADRESP
 DESCRIPTOR.message_types_by_name['Req'] = _REQ
 DESCRIPTOR.message_types_by_name['Resp'] = _RESP
 DESCRIPTOR.message_types_by_name['LoginReq'] = _LOGINREQ
+DESCRIPTOR.message_types_by_name['UserInfo'] = _USERINFO
 DESCRIPTOR.message_types_by_name['LoginResp'] = _LOGINRESP
 DESCRIPTOR.message_types_by_name['RegisterReq'] = _REGISTERREQ
 DESCRIPTOR.message_types_by_name['UploadReq'] = _UPLOADREQ
@@ -666,6 +706,13 @@ LoginReq = _reflection.GeneratedProtocolMessageType('LoginReq', (_message.Messag
   # @@protoc_insertion_point(class_scope:pbcommon.LoginReq)
   ))
 _sym_db.RegisterMessage(LoginReq)
+
+UserInfo = _reflection.GeneratedProtocolMessageType('UserInfo', (_message.Message,), dict(
+  DESCRIPTOR = _USERINFO,
+  __module__ = 'proto.common_pb2'
+  # @@protoc_insertion_point(class_scope:pbcommon.UserInfo)
+  ))
+_sym_db.RegisterMessage(UserInfo)
 
 LoginResp = _reflection.GeneratedProtocolMessageType('LoginResp', (_message.Message,), dict(
   DESCRIPTOR = _LOGINRESP,
@@ -745,8 +792,8 @@ _COMMON = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=917,
-  serialized_end=1380,
+  serialized_start=980,
+  serialized_end=1443,
   methods=[
   _descriptor.MethodDescriptor(
     name='Request',
