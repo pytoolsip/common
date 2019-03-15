@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:03:49
+# @Last Modified time: 2019-03-15 19:13:27
 
 import wx;
 
@@ -116,7 +116,7 @@ class TreeItemsViewCtr(object):
 		pass;
 
 	def bindEventToItem(self, treeCtr, item, itemInfo, pathList):
-		basePath = _GG("g_AssetsPath") + itemInfo["pageData"]["trunk"] + "/";
+		basePath = _GG("g_ProjectPath") + itemInfo["pageData"]["trunk"] + "/";
 		if "branch" in itemInfo["pageData"]:
 			basePath += itemInfo["pageData"]["branch"] + "/";
 		itemPageData = {
