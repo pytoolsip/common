@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JinZhang
 # @Date:   2019-01-28 14:23:53
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-14 21:23:02
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-15 15:11:46
 
 import wx;
 import math;
@@ -72,23 +72,23 @@ class LoginDialogUI(wx.Dialog):
 	def updateDialog(self, data):
 		pass;
 
-	def resetView(self):
-		self.updateNameInput("");
-		self.updatePwdInput("");
+	def resetDialog(self):
+		self.updateInputPanel(self.__name, isReset = True);
+		self.updateInputPanel(self.__pwd, isReset = True);
 		pass;
 
 	def createInputViewsList(self):
 		# 创建用户名输入框
 		nameParams = self.__params.get("name", {});
-		def checkNameInput(inputView, tipsView):
-			if not inputView.GetValue():
-				self.updateNameInput("必须填写用户名！", False);
+		def checkNameInput(panel):
+			if not panel.input.GetValue():
+				self.updateInputPanel(panel, "必须填写用户名！", False);
 			else:
 				callback = nameParams.get("onBlur", None);
 				if callback:
-					callback(inputView.GetValue(), self.updateNameInput);
+					callback(panel.input.GetValue(), self.updateNameInput);
 				else:
-					self.updateNameInput("");
+					self.updateInputPanel(panel, "");
 		self.__name = self.createInfoInputPanel(params = {
 			"size" : (-1, -1),
 			"name" : nameParams.get("label", "用户名"),
@@ -96,15 +96,15 @@ class LoginDialogUI(wx.Dialog):
 		});
 		# 创建密码输入框
 		pwdParams = self.__params.get("password", {});
-		def checkPwdInput(inputView, tipsView):
-			if not inputView.GetValue():
-				self.updatePwdInput("必须填写密码！", False);
+		def checkPwdInput(panel):
+			if not panel.input.GetValue():
+				self.updateInputPanel(panel, "必须填写密码！", False);
 			else:
 				callback = pwdParams.get("onBlur", None);
 				if callback:
-					callback(inputView.GetValue(), self.updatePwdInput);
+					callback(panel.input.GetValue(), self.updatePwdInput);
 				else:
-					self.updatePwdInput("");
+					self.updateInputPanel(panel, "");
 		self.__pwd = self.createInfoInputPanel(params = {
 			"size" : (-1, -1),
 			"name" : pwdParams.get("label", "密码"),
@@ -114,10 +114,15 @@ class LoginDialogUI(wx.Dialog):
 
 	def createOKButton(self):
 		self.__okButton = wx.Button(self, label = "确认登录", size = (-1, 30));
-		self.__okButton.Bind(wx.EVT_BUTTON, self.onOkButton);
-
-	def onOkButton(self, event):
-		self.EndModal(wx.ID_OK);
+		def onOkButton(event):
+			callback = self.__params.get("onOk", None);
+			if callback:
+				if callback(self.getLoginInfo()):
+					self.EndModal(wx.ID_OK);
+			else:
+				self.EndModal(wx.ID_OK);
+		self.__okButton.Bind(wx.EVT_BUTTON, onOkButton);
+		self.__okButton.Enable(False);
 
 	def createInfoInputPanel(self, params = {}):
 		name = wx.StaticText(self, label = params.get("name", ""));
@@ -130,40 +135,50 @@ class LoginDialogUI(wx.Dialog):
 
 	def createInputPanel(self, params):
 		panel = wx.Panel(self);
-		inputView = wx.TextCtrl(panel, -1, "", size = params.get("inputSize", (-1,20)), style = params.get("inputStyle", wx.TE_PROCESS_TAB));
-		tipsText = wx.StaticText(panel, label = params.get("exTips", ""));
-		tipsText.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL));
+		panel.input = wx.TextCtrl(panel, -1, "", size = params.get("inputSize", (-1,20)), style = params.get("inputStyle", wx.TE_PROCESS_TAB));
+		panel.tips = wx.StaticText(panel, label = params.get("exTips", ""));
+		panel.tips.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL));
 		if params.get("isHideExTips", False):
-			wx.CallAfter(tipsText.Hide);
+			wx.CallAfter(panel.tips.Hide);
 		# 绑定事件
 		if "inputCallback" in params:
 			def onInput(event):
-				params.get("inputCallback")(inputView, tipsText);
-			inputView.Bind(wx.EVT_TEXT, onInput);
+				params.get("inputCallback")(panel);
+			panel.input.Bind(wx.EVT_TEXT, onInput);
 		if "blurCallback" in params:
 			def onBlur(event):
-				params.get("blurCallback")(inputView, tipsText);
+				params.get("blurCallback")(panel);
 				event.Skip();
-			inputView.Bind(wx.EVT_KILL_FOCUS, onBlur);
+			panel.input.Bind(wx.EVT_KILL_FOCUS, onBlur);
 		# 布局
 		box = wx.BoxSizer(wx.VERTICAL);
-		box.Add(inputView, 1, flag = wx.EXPAND);
-		box.Add(tipsText, 0, flag = wx.TOP, border = 1);
+		box.Add(panel.input, 1, flag = wx.EXPAND);
+		box.Add(panel.tips, 0, flag = wx.TOP, border = 1);
 		panel.SetSizer(box);
-		# 保存索引对象
-		panel.input = inputView;
-		panel.tips = tipsText;
+		# 初始化输入校验结果
+		panel.isOk = False;
 		return panel;
 
-	def updateNameInput(self, label, isOk = True):
+	def updateInputPanel(self, panel, label = "", isOk = True, isReset = False):
 		color = isOk and "black" or "red";
-		self.__name.tips.SetLabel(label);
-		self.__name.tips.SetForegroundColour(color);
+		if isReset == True:
+			label, isOk, color = "", False, "black";
+		# 更新属性
+		panel.isOk = isOk;
+		panel.tips.SetLabel(label);
+		panel.tips.SetForegroundColour(color);
+		# 检测输入框，并设置相应按钮的可点击逻辑
+		if self.checkInputView():
+			self.__okButton.Enable();
 
-	def updatePwdInput(self, label, isOk = True):
-		color = isOk and "black" or "red";
-		self.__pwd.tips.SetLabel(label);
-		self.__pwd.tips.SetForegroundColour(color);
+	def checkInputView(self, key = "a"):
+		if key in ["a", "name"]:
+			if not self.__name.isOk:
+				return False;
+		elif key in ["a", "pwd"]:
+			if not self.__pwd.isOk:
+				return False;
+		return True;
 
 	def getLoginInfo(self):
 		return {

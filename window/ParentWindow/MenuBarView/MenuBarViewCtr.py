@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-14 22:59:01
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-15 15:10:59
 import os;
 import wx;
 
@@ -153,19 +153,23 @@ class MenuBarViewCtr(object):
 				"key" : "VertifyUserName",
 				"data" : _GG("CommonClient").encodeBytes({"name" : name}),
 			}, asynCallback = checkName);
+		def onLogin(loginInfo):
+			respData = _GG("CommonClient").callService("Login", "LoginReq", loginInfo);
+			if respData and respData.isSuccess:
+				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").LOGIN_SUCCESS_EVENT, respData);
+			else:
+				self.showMessageDialog("登录失败，请重新登录！", "登录账号", style = wx.OK|wx.ICON_INFORMATION);
+			return respData.isSuccess;
+		# 显示弹窗
 		if not self.getCtrByKey("LoginDialogCtr"):
 			self.createCtrByKey("LoginDialogCtr", _GG("g_CommonPath") + "dialog/LoginDialog", params = {
 				# "name" : {
 				# 	"onBlur" : onBlurName,
 				# },
+				"onOk" : onLogin,
 			});
-		self.getUIByKey("LoginDialogCtr").resetView();
-		if self.getUIByKey("LoginDialogCtr").ShowModal() == wx.ID_OK:
-			respData = _GG("CommonClient").callService("Login", "LoginReq", self.getUIByKey("LoginDialogCtr").getLoginInfo());
-			if respData.isSuccess:
-				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").LOGIN_SUCCESS_EVENT, respData);
-			else:
-				self.showMessageDialog("登录失败，请重新登录！", "登录账号", style = wx.OK|wx.ICON_INFORMATION);
+		self.getUIByKey("LoginDialogCtr").resetDialog();
+		self.getUIByKey("LoginDialogCtr").ShowModal();		
 
 	def onClickRegister(self, event):
 		def onBlurName(name, callback):
@@ -196,6 +200,40 @@ class MenuBarViewCtr(object):
 				"key" : "VertifyUserEmail",
 				"data" : _GG("CommonClient").encodeBytes({"email" : email}),
 			}, asynCallback = checkEmail);
+		def onBlurVeriCode(email, code, callback):
+			# 请求服务的回调
+			def checkCode(respData):
+				if not respData:
+					callback("网络请求失败！", False);
+				elif not respData.isSuccess:
+					callback("验证码输入错误！", False);
+				else:
+					callback("验证码校验通过！");
+			# 请求服务
+			_GG("CommonClient").callService("Request", "Req", {
+				"key" : "VertifyVerificationCode",
+				"data" : _GG("CommonClient").encodeBytes({"email" : email, "code" : code}),
+			}, asynCallback = checkCode);
+		def onSendVeriCode(email, callback):
+			# 请求服务的回调
+			def checkResp(respData):
+				if respData and respData.isSuccess:
+					callback(respData.data["expire"]);
+				else:
+					self.showMessageDialog("发送失败，请检测邮箱是否正确！", "发送校验码", style = wx.OK|wx.ICON_ERROR);
+			# 请求服务
+			_GG("CommonClient").callService("Request", "Req", {
+				"key" : "SendVerificationCode",
+				"data" : _GG("CommonClient").encodeBytes({"email" : email}),
+			}, asynCallback = checkResp);
+		def onRegister(registerInfo):
+			respData = _GG("CommonClient").callService("Register", "RegisterReq", registerInfo);
+			if respData and respData.isSuccess:
+				self.showMessageDialog("注册成功。", "注册账号", style = wx.OK|wx.ICON_INFORMATION);
+			else:
+				self.showMessageDialog("注册失败，请重新注册！", "注册账号", style = wx.OK|wx.ICON_INFORMATION);
+			return respData.isSuccess;
+		# 显示弹窗
 		if not self.getCtrByKey("RegisterDialogCtr"):
 			self.createCtrByKey("RegisterDialogCtr", _GG("g_CommonPath") + "dialog/RegisterDialog", params = {
 				"name" : {
@@ -204,13 +242,14 @@ class MenuBarViewCtr(object):
 				"email" : {
 					"onBlur" : onBlurEmail,
 				},
+				"veriCode" : {
+					"onBlur" : onBlurVeriCode,
+					"onBtn" : onSendVeriCode,
+				},
+				"onOk" : onRegister,
 			});
-		if self.getUIByKey("RegisterDialogCtr").ShowModal() == wx.ID_OK:
-			respData = _GG("CommonClient").callService("Register", "RegisterReq", self.getUIByKey("RegisterDialogCtr").getRegisterInfo());
-			if respData.isSuccess:
-				self.showMessageDialog("注册成功。", "注册账号", style = wx.OK|wx.ICON_INFORMATION);
-			else:
-				self.showMessageDialog("注册失败，请重新注册！", "注册账号", style = wx.OK|wx.ICON_INFORMATION);
+		self.getUIByKey("RegisterDialogCtr").resetDialog();
+		self.getUIByKey("RegisterDialogCtr").ShowModal();
 
 	def onUploadTool(self, event):
 		pass;
