@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-06 23:14:13
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 16:41:58
+# @Last Modified time: 2019-03-15 18:29:27
 import os;
 
 from _Global import _GG;
@@ -54,15 +54,22 @@ class ServiceBehavior(_GG("BaseBehavior")):
 
 	# 自动登录平台
 	def autoLoginIP(self, obj, _retTuple = None):
-		# 登录回调
-		def onLogin(respData):
-			if respData and respData.isSuccess:
-				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").LOGIN_SUCCESS_EVENT, respData);
-			pass;
+		# 根据时间戳，判断是否过期
+		timeStamp = obj.getIPInfoConfig("user", "time_stamp");
+		expire = float(_GG("ClientConfig").Config().Get("local", "user_info_expire", 60 * 60 * 24 * 10)); # 服务配置
+		if not timeStamp or time.time() - float(timeStamp) > expire:
+			obj.removeIPInfoConfig("user"); # 移除配置
+			return;
 		# 读取配置
-		userName, password = obj.readIPInfoConfig("user", "name"), obj.readIPInfoConfig("user", "password");
-		# 请求服务
-		_GG("CommonClient").callService("Login", "LoginReq", {
-			"name" : userName,
-			"password" : password,
-		}, asynCallback = onLogin);
+		userName, password = obj.getIPInfoConfig("user", "name"), obj.getIPInfoConfig("user", "password");
+		if userName and password:
+			# 登录回调
+			def onLogin(respData):
+				if respData and respData.isSuccess:
+					_GG("EventDispatcher").dispatch(_GG("EVENT_ID").LOGIN_SUCCESS_EVENT, respData);
+				pass;
+			# 请求服务
+			_GG("CommonClient").callService("Login", "LoginReq", {
+				"name" : userName,
+				"password" : password,
+			}, asynCallback = onLogin);

@@ -2,9 +2,10 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 16:43:26
+# @Last Modified time: 2019-03-15 18:11:33
 import os;
 import wx;
+import time;
 
 from _Global import _GG;
 
@@ -158,7 +159,9 @@ class MenuBarViewCtr(object):
 			if respData and respData.isSuccess:
 				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").LOGIN_SUCCESS_EVENT, respData);
 				if self.showMessageDialog("登录成功，是否保存账户密码到本地？", "登录账号", style = wx.OK|wx.CANCEL|wx.ICON_QUESTION) == wx.OK:
-					obj.writeIPInfoConfig("user", "name", respData.name), obj.writeIPInfoConfig("user", "password", respData.password); # 保存配置
+					obj.setIPInfoConfig("user", "name", respData.name);
+					obj.setIPInfoConfig("user", "password", respData.password);
+					obj.setIPInfoConfig("user", "time_stamp", time.time());
 			else:
 				self.showMessageDialog("登录失败，请重新登录！", "登录账号", style = wx.OK|wx.ICON_INFORMATION);
 			return respData.isSuccess;

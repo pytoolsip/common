@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2019-03-15 16:09:17
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 17:43:54
+# @Last Modified time: 2019-03-15 18:40:52
 import os;
 try:
 	import ConfigParser;
@@ -19,9 +19,9 @@ def getExposeData():
 
 def getExposeMethod(DoType):
 	return {
+		"getIPInfoConfigObj" : DoType.AddToRear,
 		"getIPInfoConfig" : DoType.AddToRear,
-		"readIPInfoConfig" : DoType.AddToRear,
-		"writeIPInfoConfig" : DoType.AddToRear,
+		"setIPInfoConfig" : DoType.AddToRear,
 	};
 
 class IPInfoBehavior(_GG("BaseBehavior")):
@@ -29,8 +29,7 @@ class IPInfoBehavior(_GG("BaseBehavior")):
 		self.appendDepends(depends);
 		super(IPInfoBehavior, self).__init__(depends);
 		self.className_ = IPInfoBehavior.__name__;
-		self.__dirPath = _GG("g_ProjectPath")+"data/";
-		self.__fileName = "ptip_info.ini";
+		self.__filePath = _GG("g_DataPath") + "ptip_info.ini";
 
 	def getExposeData(self):
 		return getExposeData(); # 获取暴露出的数据
@@ -49,23 +48,25 @@ class IPInfoBehavior(_GG("BaseBehavior")):
 			"basePath" : _GG("g_CommonPath") + "behavior/",
 		});
 
-	def checkIPInfoFile(self):
-		if not os.path.exists(self.__dirPath):
-			os.mkdir(self.__dirPath);
-		if not os.path.exists(self.__dirPath + self.__fileName):
-			with open(self.__dirPath + self.__fileName, "w") as f:
+	def __checkFile__(self):
+		if not os.path.exists(self.__filePath):
+			with open(self.__filePath, "w") as f:
 				f.write("");
 
 	def getIPInfoConfig(self, obj, _retTuple = None):
-		self.checkIPInfoFile();
+		self.__checkFile__();
 		conf = ConfigParser.RawConfigParser();
-		conf.read(self.__dirPath + self.__fileName);
+		conf.read(self.__filePath);
 		return conf;
 
-	def readIPInfoConfig(self, obj, section, option, _retTuple = None):
-		self.checkIPInfoFile();
-		return obj.readIniConfig(self.__dirPath + self.__fileName, section, option);
+	def getIPInfoConfigObj(self, obj, section, option, _retTuple = None):
+		self.__checkFile__();
+		return obj.readIniConfig(self.__filePath, section, option);
 
-	def writeIPInfoConfig(self, obj, section, option, value, _retTuple = None):
-		self.checkIPInfoFile();
-		obj.writeIniConfig(self.__dirPath + self.__fileName, section, option, value);
+	def setIPInfoConfig(self, obj, section, option, value, _retTuple = None):
+		self.__checkFile__();
+		obj.writeIniConfig(self.__filePath, section, option, value);
+
+	def removeIPInfoConfig(self, obj, section, option = None, _retTuple = None):
+		self.__checkFile__();
+		obj.removeIniConfig(self.__filePath, section, option);

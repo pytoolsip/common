@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-04-24 22:54:42
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 17:32:54
+# @Last Modified time: 2019-03-15 18:17:17
 
 try:
 	import ConfigParser;
@@ -21,6 +21,7 @@ def getExposeMethod(DoType):
 	return {
 		"readIniConfig" : DoType.AddToRear,
 		"writeIniConfig" : DoType.AddToRear,
+		"removeIniConfig" : DoType.AddToRear,
 	};
 
 class IniConfigParseBehavior(_GG("BaseBehavior")):
@@ -46,3 +47,14 @@ class IniConfigParseBehavior(_GG("BaseBehavior")):
 			config.add_section(section);
 		config.set(section, option, value);
 		config.write(open(iniFilePath, "w"), "w");
+
+	# 移除ini配置文件
+	def removeIniConfig(self, obj, iniFilePath, section, option = None, _retTuple = None):
+		config = ConfigParser.RawConfigParser();
+		config.read(iniFilePath);
+		if option and config.has_option(section, option):
+			config.remove_option(section, option);
+			config.write(open(iniFilePath, "w"), "w");
+		elif config.has_section(section):
+			config.remove_section(section);
+			config.write(open(iniFilePath, "w"), "w");
