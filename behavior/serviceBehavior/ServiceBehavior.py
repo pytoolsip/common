@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-06 23:14:13
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 20:20:23
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 02:15:29
 import os;
 
 from _Global import _GG;
@@ -57,7 +57,7 @@ class ServiceBehavior(_GG("BaseBehavior")):
 		# 根据时间戳，判断是否过期
 		timeStamp = obj.getIPInfoConfig("user", "time_stamp");
 		expire = float(_GG("ClientConfig").Config().Get("local", "user_info_expire", 60 * 60 * 24 * 10)); # 服务配置
-		if not timeStamp or time.time() - float(timeStamp) > expire:
+		if not timeStamp or float(time.time()) - float(timeStamp) > expire:
 			obj.removeIPInfoConfig("user"); # 移除配置
 			return;
 		# 读取配置

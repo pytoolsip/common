@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 20:24:27
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 02:14:13
 import os;
 import wx;
 import time;
@@ -85,6 +85,7 @@ class MenuBarViewCtr(object):
 
 	def bindBehaviors(self):
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "copyBehavior/ShutilCopyBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/IPInfoBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 		
 	def unbindBehaviors(self):
@@ -158,10 +159,10 @@ class MenuBarViewCtr(object):
 			respData = _GG("CommonClient").callService("Login", "LoginReq", loginInfo);
 			if respData and respData.isSuccess:
 				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").LOGIN_SUCCESS_EVENT, respData);
-				if self.showMessageDialog("登录成功，是否保存账户密码到本地？", "登录账号", style = wx.OK|wx.CANCEL|wx.ICON_QUESTION) == wx.OK:
-					obj.setIPInfoConfig("user", "name", respData.name);
-					obj.setIPInfoConfig("user", "password", respData.password);
-					obj.setIPInfoConfig("user", "time_stamp", time.time());
+				if self.showMessageDialog("登录成功，是否保存账户密码到本地？", "登录账号", style = wx.OK|wx.CANCEL|wx.ICON_QUESTION) == wx.ID_OK:
+					self.setIPInfoConfig("user", "name", loginInfo["name"]);
+					self.setIPInfoConfig("user", "password", loginInfo["password"]);
+					self.setIPInfoConfig("user", "time_stamp", time.time());
 			else:
 				self.showMessageDialog("登录失败，请重新登录！", "登录账号", style = wx.OK|wx.ICON_INFORMATION);
 			return respData and respData.isSuccess or False;
