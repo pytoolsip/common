@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-03-29 22:21:00
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 16:09:14
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 11:12:05
 
 from module.ModuleCreator import *;
 
@@ -22,7 +22,7 @@ if __name__ == "__main__":
 	# 创建组件的参数配置 behavior
 	theModule = {
 		"modName" : "behavior",
-		"targetModName" : "IPInfoBehavior",
+		"targetModName" : "UserServiceBehavior",
 		"targetModPath" : commonPath + "behavior/serviceBehavior/",
 	};
 
@@ -43,7 +43,7 @@ if __name__ == "__main__":
 	# # 创建弹窗的参数配置 dialog
 	# theModule = {
 	# 	"modName" : "dialog",
-	# 	"targetModName" : "DownloadDialog",
+	# 	"targetModName" : "UploadDialog",
 	# 	"targetModPath" : commonPath + "dialog/",
 	# };
 

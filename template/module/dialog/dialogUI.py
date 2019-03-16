@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-03-29 22:19:40
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:00:08
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 10:32:07
 
 import wx;
 
@@ -53,4 +53,7 @@ class TemplateDialogUI(wx.Dialog):
 			self.SetPosition(wx.Point(winCenterPoint.x - self.GetSize()[0]/2, winCenterPoint.y - self.GetSize()[1]));
 
 	def updateDialog(self, data):
+		pass;
+
+	def resetDialog(self):
 		pass;
