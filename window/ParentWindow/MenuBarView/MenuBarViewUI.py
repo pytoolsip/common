@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:00:46
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 12:29:13
 
 import wx;
 
@@ -16,8 +16,8 @@ class MenuBarViewUI(wx.Panel):
 		self.className_ = MenuBarViewUI.__name__;
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
-		self.parent = parent;
-		self.itemCallbackDict = {}; # 菜单项回调函数【key值对应菜单项ID】
+		self.__parent = parent;
+		self.__itemCallDict = {}; # 菜单项回调函数【key值对应菜单项ID】
 
 	def getCtr(self):
 		return self.__viewCtr;
@@ -35,15 +35,18 @@ class MenuBarViewUI(wx.Panel):
 		pass;
 
 	def createTopMenu(self):
-		self.TopMenu = wx.MenuBar();
-		self.parent.SetMenuBar(self.TopMenu); # 创建菜单条
-		self.parent.Bind(wx.EVT_MENU, self.onMenu); # 绑定菜单事件
+		self.__topMenu = wx.MenuBar();
+		self.__parent.SetMenuBar(self.__topMenu); # 创建菜单条
+		self.__parent.Bind(wx.EVT_MENU, self.onMenu); # 绑定菜单事件
 		data = {"itemsData" : self.__viewCtr.getMenuItemsData()};
 		self.updateView(data);
 		pass;
 
+	def getTopMenu(self):
+		return self.__topMenu;
+
 	def createStatusBar(self):
-		self.StatusBar = self.parent.CreateStatusBar();#创建窗口底部的状态栏
+		self.StatusBar = self.__parent.CreateStatusBar();#创建窗口底部的状态栏
 		self.StatusBar.SetFieldsCount(3);
 		self.StatusBar.SetStatusStyles([wx.SB_FLAT,wx.SB_FLAT,wx.SB_FLAT]);
 
@@ -89,7 +92,7 @@ class MenuBarViewUI(wx.Panel):
 						theMenuItem.SetBitmap(wx.Bitmap(itemInfo["iconImg"]));
 					# 绑定回调函数
 					if "callback" in itemInfo and callable(itemInfo["callback"]):
-						self.itemCallbackDict[theMenuItem.GetId()] = itemInfo["callback"];
+						self.__itemCallDict[theMenuItem.GetId()] = itemInfo["callback"];
 					# 是否允许点击
 					if "enable" in itemInfo:
 						theMenuItem.Enable(itemInfo["enable"]);
@@ -102,7 +105,7 @@ class MenuBarViewUI(wx.Panel):
 
 	def updateMenuItems(self, data):
 		itemsData = data["itemsData"];
-		self.createMenuItemsByItemsData(self.TopMenu, itemsData, True);
+		self.createMenuItemsByItemsData(self.__topMenu, itemsData, True);
 		pass;
 
 	def updateView(self, data):
@@ -111,5 +114,5 @@ class MenuBarViewUI(wx.Panel):
 		pass;
 
 	def onMenu(self, event):
-		if event.GetId() in self.itemCallbackDict:
-			self.itemCallbackDict[event.GetId()](event);
+		if event.GetId() in self.__itemCallDict:
+			self.__itemCallDict[event.GetId()](event);

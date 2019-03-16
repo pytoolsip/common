@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2018-04-19 14:19:46
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 02:28:51
+# @Last Modified time: 2019-03-16 12:30:59
 
 import wx;
 from ProjectConfig import ProjectConfig;
@@ -16,6 +16,7 @@ class WindowLoader(object):
 		self.className_ = WindowLoader.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__mainApp = wx.App(self.checkIsOpenLogWin());
+		self.__CtrMap = {}; # 控制器列表
 		self.registerEvent(); # 注册事件
 
 	def __del__(self):
@@ -48,13 +49,13 @@ class WindowLoader(object):
 
 	def createParentWindowCtr(self):
 		_GG("WindowObject").ParentWindowCtr = CreateCtr(self._curPath + "ParentWindow", None);
-		self.parentWindowUI = _GG("WindowObject").ParentWindowCtr.getUI();
+		self.__parentWindowUI = _GG("WindowObject").ParentWindowCtr.getUI();
 		
 	def createMainWindowCtr(self):
 		params = {
-			"windowSize" : self.parentWindowUI.ClientWindow.Size,
+			"windowSize" : self.__parentWindowUI.ClientWindow.Size,
 		};
-		_GG("WindowObject").MainWindowCtr = CreateCtr(self._curPath + "MainWindow", self.parentWindowUI, params = params);
+		_GG("WindowObject").MainWindowCtr = CreateCtr(self._curPath + "MainWindow", self.__parentWindowUI, params = params);
 
 	# 初始化窗口对象的公有函数
 	def initWindowMethods(self):
@@ -62,9 +63,12 @@ class WindowLoader(object):
 		_GG("WindowObject").BindEventToToolWinSize = _GG("WindowObject").MainWindowCtr.bindEventToToolWinSize; # 绑定工具窗口大小变化事件
 		_GG("WindowObject").UnbindEventToToolWinSize = _GG("WindowObject").MainWindowCtr.unbindEventToToolWinSize; # 解绑工具窗口大小变化事件
 		_GG("WindowObject").GetMainWindowCenterPoint = _GG("WindowObject").MainWindowCtr.getMainWindowCenterPoint; # 获取主窗口的中心点
+		_GG("WindowObject").GetMainWindowCenterPoint = _GG("WindowObject").MainWindowCtr.getMainWindowCenterPoint; # 获取主窗口的中心点
+		_GG("WindowObject").ShowMessageDialog = self.showMessageDialog; # 设置显示显示消息弹窗函数
+		_GG("WindowObject").CreateDialogCtr = self.createDialogCtr; # 设置显示弹窗控制器
 		
 	def createSearchPanelWindowCtr(self):
-		_GG("WindowObject").ParentWindowCtr.SearchPanelWindowCtr = CreateCtr(self._curPath + "SearchPanelWindow", self.parentWindowUI);
+		_GG("WindowObject").ParentWindowCtr.SearchPanelWindowCtr = CreateCtr(self._curPath + "SearchPanelWindow", self.__parentWindowUI);
 
 	def bindKeyDownEvent(self):
 		self.__mainApp.Bind(wx.EVT_CHAR_HOOK, _GG("HotKeyManager").dispatchEvent);
@@ -87,9 +91,9 @@ class WindowLoader(object):
 		self.unbindKeyDownEvent();
 
 	def runWindows(self):
-		self.parentWindowUI.Tile();
-		self.parentWindowUI.Centre();
-		self.parentWindowUI.Show(True);
+		self.__parentWindowUI.Tile();
+		self.__parentWindowUI.Centre();
+		self.__parentWindowUI.Show(True);
 
 	def runApp(self):
 		self.__mainApp.MainLoop();
@@ -102,3 +106,23 @@ class WindowLoader(object):
 
 	def createHomePage(self):
 		_GG("WindowObject").MainWindowCtr.createHomePage();
+
+	def showMessageDialog(self, message, caption = "消息弹窗", style = wx.OK):
+		return wx.MessageDialog(self.__parentWindowUI, message, caption = caption, style = style).ShowModal();
+
+	def createDialogCtr(self, path, params = {}, isRecreate = False, isReset = True, isShow = True, callback = None):
+		# 判断是否重新创建弹窗
+		if path in self.__CtrMap:
+			if not isRecreate:
+				return self.__CtrMap[path]
+			DelCtr(self.__CtrMap[path]);
+		# 创建弹窗
+		self.__CtrMap[path] = CreateCtr(path, self.__parentWindowUI, params = params);
+		ui = self.__CtrMap[path].getUI();
+		if isReset and hasattr(ui, "resetDialog"):
+			ui.resetDialog();
+		if isShow:
+			result = ui.ShowModal();
+			if callable(callback):
+				callback(ui, result);
+		return ui;
