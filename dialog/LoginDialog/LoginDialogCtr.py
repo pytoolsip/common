@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JinZhang
 # @Date:   2019-01-28 14:23:53
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:03:27
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:45:43
 import os;
 import wx;
 
@@ -19,7 +19,7 @@ class LoginDialogCtr(object):
 	"""docstring for LoginDialogCtr"""
 	def __init__(self, parent, params = {}):
 		super(LoginDialogCtr, self).__init__();
-		self.className_ = LoginDialogCtr.__name__;
+		self._className_ = LoginDialogCtr.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI

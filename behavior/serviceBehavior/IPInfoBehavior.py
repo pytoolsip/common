@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JinZhang
 # @Date:   2019-03-15 16:09:17
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 18:56:39
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:45:36
 import os;
 try:
 	import ConfigParser;
@@ -12,12 +12,12 @@ except Exception as e:
 from _Global import _GG;
 from function.base import *;
 
-def getExposeData():
+def __getExposeData__():
 	return {
 		# "exposeDataName" : {},
 	};
 
-def getExposeMethod(DoType):
+def __getExposeMethod__(DoType):
 	return {
 		"getIPInfoConfigObj" : DoType.AddToRear,
 		"getIPInfoConfig" : DoType.AddToRear,
@@ -25,29 +25,24 @@ def getExposeMethod(DoType):
 		"removeIPInfoConfig" : DoType.AddToRear,
 	};
 
+def __getDepends__():
+	return [
+		{
+			"path" : "ConfigParseBehavior/IniConfigParseBehavior",
+			"basePath" : _GG("g_CommonPath") + "behavior/",
+		},
+	];
+
 class IPInfoBehavior(_GG("BaseBehavior")):
-	def __init__(self, depends = []):
-		self.appendDepends(depends);
-		super(IPInfoBehavior, self).__init__(depends);
-		self.className_ = IPInfoBehavior.__name__;
+	def __init__(self):
+		super(IPInfoBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		self._className_ = IPInfoBehavior.__name__;
 		self.__filePath = _GG("g_DataPath") + "ptip_info.ini";
-
-	def getExposeData(self):
-		return getExposeData(); # 获取暴露出的数据
-
-	def getExposeMethod(self, DoType):
-		return getExposeMethod(DoType); # 获取暴露出的方法接口
 
 	# 默认方法【obj为绑定该组件的对象，argList和argDict为可变参数，_retTuple为该组件的前个函数返回值】
 	# def defaultFun(self, obj, *argList, _retTuple = None, **argDict):
-	# 	_GG("Log").i(obj.className_);
+	# 	_GG("Log").i(obj._className_);
 	# 	pass;
-
-	def appendDepends(self, depends = []):
-		depends.append({
-			"path" : "ConfigParseBehavior/IniConfigParseBehavior",
-			"basePath" : _GG("g_CommonPath") + "behavior/",
-		});
 
 	def __checkFile__(self):
 		if not os.path.exists(self.__filePath):

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-07-29 10:53:54
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:03:52
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:15
 
 import wx;
 
@@ -20,7 +20,7 @@ class MainWindowCtr(object):
 	"""docstring for MainWindowCtr"""
 	def __init__(self, parent = None, params = {}):
 		super(MainWindowCtr, self).__init__();
-		self.className_ = MainWindowCtr.__name__;
+		self._className_ = MainWindowCtr.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.toolWinSizeEventDict = {}; # 窗口大小事件字典

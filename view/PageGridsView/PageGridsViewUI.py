@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-11-10 15:59:49
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:00:31
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:03
 
 import wx;
 
@@ -16,7 +16,7 @@ class PageGridsViewUI(wx.Panel):
 	def __init__(self, parent, id = -1, curPath = "", viewCtr = None, params = {}):
 		self.initParams(params);
 		super(PageGridsViewUI, self).__init__(parent, id, pos = self.__params["pos"], size = self.__params["size"], style = self.__params["style"]);
-		self.className_ = PageGridsViewUI.__name__;
+		self._className_ = PageGridsViewUI.__name__;
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
 		self.__randomPool = RandomPool();

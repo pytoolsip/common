@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-05 21:14:16
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:01:50
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:23
 
 import threading;
 import wx;
@@ -14,7 +14,7 @@ class SearchPanelWindowUI(wx.MDIChildFrame):
 	"""docstring for SearchPanelWindowUI"""
 	def __init__(self, parent, id = -1, title = "", pos = (0,0), size = (0,0), style = wx.DEFAULT_FRAME_STYLE, curPath = "", windowCtr = None):
 		super(SearchPanelWindowUI, self).__init__(parent, id, title = title, pos = pos, size = size, style = style); #^(wx.RESIZE_BORDER|wx.CAPTION)
-		self.className_ = SearchPanelWindowUI.__name__;
+		self._className_ = SearchPanelWindowUI.__name__;
 		self._curPath = curPath;
 		self.__windowCtr = windowCtr;
 

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-01-26 18:49:31
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 20:06:36
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:45:45
 import wx;
 import math;
 
@@ -14,7 +14,7 @@ class RegisterDialogUI(wx.Dialog):
 	def __init__(self, parent, id = -1, curPath = "", viewCtr = None, params = {}):
 		self.initParams(params);
 		super(RegisterDialogUI, self).__init__(parent, id, title = self.__params["title"], pos = self.__params.get("pos", (0,0)), size = self.__params["size"], style = self.__params["style"]);
-		self.className_ = RegisterDialogUI.__name__;
+		self._className_ = RegisterDialogUI.__name__;
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
 		self.__inputInfosList = []; # 输入框列表

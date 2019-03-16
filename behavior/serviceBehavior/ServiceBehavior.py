@@ -2,45 +2,40 @@
 # @Author: JimZhang
 # @Date:   2019-03-06 23:14:13
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 02:15:29
+# @Last Modified time: 2019-03-16 13:45:37
 import os;
 
 from _Global import _GG;
 from function.base import *;
 
-def getExposeData():
+def __getExposeData__():
 	return {
 		# "exposeDataName" : {},
 	};
 
-def getExposeMethod(DoType):
+def __getExposeMethod__(DoType):
 	return {
 		"checkUpdateCommon" : DoType.AddToRear,
 		"autoLoginIP" : DoType.AddToRear,
 	};
 
-class ServiceBehavior(_GG("BaseBehavior")):
-	def __init__(self, depends = []):
-		self.appendDepends(depends);
-		super(ServiceBehavior, self).__init__(depends);
-		self.className_ = ServiceBehavior.__name__;
-		pass;
-
-	def getExposeData(self):
-		return getExposeData(); # 获取暴露出的数据
-
-	def getExposeMethod(self, DoType):
-		return getExposeMethod(DoType); # 获取暴露出的方法接口
-
-	def appendDepends(self, depends = []):
-		depends.append({
+def __getDepends__():
+	return [
+		{
 			"path" : "serviceBehavior/UpDownloadBehavior",
 			"basePath" : _GG("g_CommonPath") + "behavior/",
-		});
-		depends.append({
+		},
+		{
 			"path" : "serviceBehavior/IPInfoBehavior",
 			"basePath" : _GG("g_CommonPath") + "behavior/",
-		});
+		},
+	];
+
+class ServiceBehavior(_GG("BaseBehavior")):
+	def __init__(self):
+		super(ServiceBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		self._className_ = ServiceBehavior.__name__;
+		pass;
 
 	# 检测更新Common
 	def checkUpdateCommon(self, obj, _retTuple = None):

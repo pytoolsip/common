@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-10-29 22:06:46
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 18:03:57
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:45:33
 
 import os;
 import shutil;
@@ -11,27 +11,29 @@ from _Global import _GG;
 from function.base import *;
 BaseBehavior = _GG("BaseBehavior");
 
-def getExposeData():
+def __getExposeData__():
 	return {
 		# "exposeDataName" : {},
 	};
 
-def getExposeMethod(DoType):
+def __getExposeMethod__(DoType):
 	return {
 		"copyPath" : DoType.AddToRear,
 	};
 
+def __getDepends__():
+	return [
+		# {
+		# 	"path" : "tempBehavior", 
+		# 	"basePath" : _GG("g_CommonPath") + "behavior/",
+		# },
+	];
+
 class ShutilCopyBehavior(BaseBehavior):
-	def __init__(self, depends = []):
-		super(ShutilCopyBehavior, self).__init__(depends);
-		self.className_ = ShutilCopyBehavior.__name__;
+	def __init__(self):
+		super(ShutilCopyBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		self._className_ = ShutilCopyBehavior.__name__;
 		pass;
-
-	def getExposeData(self):
-		return getExposeData(); # 获取暴露出的数据
-
-	def getExposeMethod(self, DoType):
-		return getExposeMethod(DoType); # 获取暴露出的方法接口
 
 	# 拷贝路径方法【obj为绑定该组件的对象，_retTuple为该组件的前个函数返回值】
 	def copyPath(self, obj, srcPath, dstPath, _retTuple = None):

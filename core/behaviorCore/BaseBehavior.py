@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-03-24 12:24:07
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 18:04:49
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:45:28
 
 from enum import Enum, unique;
 from _Global import _GG;
@@ -15,11 +15,13 @@ class DoType(Enum):
 	AddToRear = 2; # 后置添加
 
 class BaseBehavior(object):
-	def __init__(self, depends = []):
+	def __init__(self, depends = [], exposeData = {}, exposeMethod = None):
 		super(BaseBehavior, self).__init__();
-		self.className_ = BaseBehavior.__name__;
-		self.DependBehaviorList_ = depends; # 依赖组件列表
-		self.BeDependedBehaviorList_ = []; # 被依赖组件列表
+		self._className_ = BaseBehavior.__name__;
+		self._DEPEND_BEHAVIOR_LIST_ = depends; # 依赖组件列表
+		self._BE_DEPENDED_BEHAVIOR_LIST_ = []; # 被依赖组件列表
+		self.__EXPOSE_DATA__ = exposeData; # 导出数据
+		self.__EXPOSE_METHOD__ = exposeMethod; # 导出方法
 
 	# 打印obj绑定的组件名称【obj为绑定该组件的对象，argList和argDict为可变参数】
 	def printBehaviorName(self, obj, *argList, **argDict):
@@ -36,28 +38,28 @@ class BaseBehavior(object):
 
 	# 设置组件名称
 	def setBehaviorName(self, name):
-		self.behaviorName_ = name;
+		self.__behaviorName__ = name;
 
 	# 获取组件路径
 	def getBehaviorName(self):
-		if hasattr(self, "behaviorName_"):
-			return self.behaviorName_;
-		return self.className_;
+		if hasattr(self, "__behaviorName__"):
+			return self.__behaviorName__;
+		return self._className_;
 
 	# 设置组件路径
 	def setBehaviorPath(self, path):
-		self.behaviorPath_ = path;
+		self.__behaviorPath__ = path;
 
 	# 获取组件路径
 	def getBehaviorPath(self):
-		if hasattr(self, "behaviorPath_"):
-			return self.behaviorPath_;
+		if hasattr(self, "__behaviorPath__"):
+			return self.__behaviorPath__;
 		return "";
 
 	# 获取组件导出数据
 	def getBehaviorExposeData(self):
 		baseExposeData = {};
-		exposeData = self.getExposeData(); # 获取暴露出的数据
+		exposeData = self.__EXPOSE_DATA__; # 获取暴露出的数据
 		for dataKey,dataValue in baseExposeData.items():
 			if dataKey not in exposeData:
 				exposeData[dataKey] = dataValue;
@@ -66,7 +68,7 @@ class BaseBehavior(object):
 	# 获取组件导出方法
 	def getBehaviorExposeMethod(self):
 		baseExposeMethod = {"printBehaviorName" : DoType.AddToRear};
-		exposeMethod = self.getExposeMethod(DoType); # 获取暴露出的方法接口
+		exposeMethod = callable(self.__EXPOSE_METHOD__) and self.__EXPOSE_METHOD__(DoType) or {}; # 获取暴露出的方法接口
 		for methodName,methodType in baseExposeMethod.items():
 			if methodName not in exposeMethod:
 				exposeMethod[methodName] = methodType;

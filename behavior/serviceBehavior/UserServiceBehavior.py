@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-16 11:25:09
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 12:31:30
+# @Last Modified time: 2019-03-16 13:48:37
 
 from _Global import _GG;
 from function.base import *;
@@ -28,19 +28,13 @@ def __getDepends__():
 
 class UserServiceBehavior(_GG("BaseBehavior")):
 	def __init__(self):
-		super(UserServiceBehavior, self).__init__(__getDepends__());
-		self.className_ = UserServiceBehavior.__name__;
+		super(UserServiceBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		self._className_ = UserServiceBehavior.__name__;
 		pass;
-
-	def getExposeData(self):
-		return __getExposeData__(); # 获取暴露出的数据
-
-	def getExposeMethod(self, DoType):
-		return __getExposeMethod__(DoType); # 获取暴露出的方法接口
 
 	# 默认方法【obj为绑定该组件的对象，argList和argDict为可变参数，_retTuple为该组件的前个函数返回值】
 	# def defaultFun(self, obj, *argList, _retTuple = None, **argDict):
-	# 	_GG("Log").i(obj.className_);
+	# 	_GG("Log").i(obj._className_);
 	# 	pass;
 
 	def _loginIP_(self, obj, _retTuple = None):

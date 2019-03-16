@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-11-07 21:22:29
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:00:39
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:11
 
 import wx;
 import math;
@@ -17,7 +17,7 @@ class TitleGridsViewUI(wx.Panel):
 	def __init__(self, parent, id = -1, curPath = "", viewCtr = None, params = {}):
 		self.initParams(params);
 		super(TitleGridsViewUI, self).__init__(parent, id, pos = self.__params["pos"], size = self.__params["size"], style = self.__params["style"]);
-		self.className_ = TitleGridsViewUI.__name__;
+		self._className_ = TitleGridsViewUI.__name__;
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
 		self.__randomPool = RandomPool();

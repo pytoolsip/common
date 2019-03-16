@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-03-29 22:19:40
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:01:46
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:45:57
 
 import wx;
 
@@ -13,7 +13,7 @@ class TemplateWindowUI(wx.Frame):
 	"""docstring for TemplateWindowUI"""
 	def __init__(self, parent, id = -1, title = "", pos = (0,0), size = (0,0), style = wx.DEFAULT_FRAME_STYLE, curPath = "", windowCtr = None):
 		super(TemplateWindowUI, self).__init__(parent, id, title = title, pos = pos, size = size, style = style);
-		self.className_ = TemplateWindowUI.__name__;
+		self._className_ = TemplateWindowUI.__name__;
 		self._curPath = curPath;
 		self.__windowCtr = windowCtr;
 

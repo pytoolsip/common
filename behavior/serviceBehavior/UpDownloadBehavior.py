@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-07 20:34:34
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 11:44:10
+# @Last Modified time: 2019-03-16 13:45:37
 import urllib;
 import paramiko;
 import zipfile;
@@ -10,12 +10,12 @@ import zipfile;
 from _Global import _GG;
 from function.base import *;
 
-def getExposeData():
+def __getExposeData__():
 	return {
 		# "exposeDataName" : {},
 	};
 
-def getExposeMethod(DoType):
+def __getExposeMethod__(DoType):
 	return {
 		"download" : DoType.AddToRear,
 		"upload" : DoType.AddToRear,
@@ -23,17 +23,19 @@ def getExposeMethod(DoType):
 		"unzipFile" : DoType.AddToRear,
 	};
 
+def __getDepends__():
+	return [
+		# {
+		# 	"path" : "tempBehavior", 
+		# 	"basePath" : _GG("g_CommonPath") + "behavior/",
+		# },
+	];
+
 class UpDownloadBehavior(_GG("BaseBehavior")):
-	def __init__(self, depends = []):
-		super(UpDownloadBehavior, self).__init__(depends);
-		self.className_ = UpDownloadBehavior.__name__;
+	def __init__(self):
+		super(UpDownloadBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		self._className_ = UpDownloadBehavior.__name__;
 		pass;
-
-	def getExposeData(self):
-		return getExposeData(); # 获取暴露出的数据
-
-	def getExposeMethod(self, DoType):
-		return getExposeMethod(DoType); # 获取暴露出的方法接口
 
 	# 下载文件
 	def download(self, obj, url, filePath, totalSize, _retTuple = None):

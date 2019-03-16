@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-08-25 13:25:32
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-01-24 11:40:04
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:45:39
 
 from hotKeyCore.HotKeyConfig import *;
 
@@ -36,7 +36,7 @@ class HotKeyObj(object):
 class HotKeyManager(object):
 	def __init__(self):
 		super(HotKeyManager, self).__init__();
-		self.className_ = HotKeyManager.__name__;
+		self._className_ = HotKeyManager.__name__;
 		self.__HotKeyObj = HotKeyObj();
 
 	def addHotKeyConfig(self, config = {}):

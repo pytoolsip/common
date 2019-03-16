@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 19:05:42
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:03:38
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:45:59
 
 import wx;
 
@@ -19,7 +19,7 @@ class HomePageViewCtr(object):
 	"""docstring for HomePageViewCtr"""
 	def __init__(self, parent, params = {}):
 		super(HomePageViewCtr, self).__init__();
-		self.className_ = HomePageViewCtr.__name__;
+		self._className_ = HomePageViewCtr.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI

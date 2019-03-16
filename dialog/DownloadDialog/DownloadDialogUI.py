@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-07 20:49:03
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 11:51:16
+# @Last Modified time: 2019-03-16 13:45:42
 
 import wx;
 import time;
@@ -15,7 +15,7 @@ class DownloadDialogUI(wx.Dialog):
 	def __init__(self, parent, id = -1, curPath = "", viewCtr = None, params = {}):
 		self.initParams(params);
 		super(DownloadDialogUI, self).__init__(parent, id, title = self.__params["title"], pos = self.__params.get("pos", (0,0)), size = self.__params["size"], style = self.__params["style"]);
-		self.className_ = DownloadDialogUI.__name__;
+		self._className_ = DownloadDialogUI.__name__;
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
 		self.Bind(wx.EVT_CLOSE, self.onClose); # 绑定关闭事件

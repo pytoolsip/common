@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-10-27 15:28:41
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 11:54:06
+# @Last Modified time: 2019-03-16 13:45:47
 
 import wx;
 
@@ -15,7 +15,7 @@ class ToolDevelopInfoDialogUI(wx.Dialog):
 	def __init__(self, parent, id = -1, curPath = "", viewCtr = None, params = {}):
 		self.initParams(params);
 		super(ToolDevelopInfoDialogUI, self).__init__(parent, id, title = self.__params["title"], pos = self.__params.get("pos", (0,0)), size = self.__params["size"]);
-		self.className_ = ToolDevelopInfoDialogUI.__name__;
+		self._className_ = ToolDevelopInfoDialogUI.__name__;
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
 		self.Bind(wx.EVT_CLOSE, self.onClose); # 绑定关闭事件

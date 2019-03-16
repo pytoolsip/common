@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 12:31:37
+# @Last Modified time: 2019-03-16 13:46:19
 import os;
 import wx;
 import time;
@@ -20,7 +20,7 @@ class MenuBarViewCtr(object):
 	"""docstring for MenuBarViewCtr"""
 	def __init__(self, parent, params = {}):
 		super(MenuBarViewCtr, self).__init__();
-		self.className_ = MenuBarViewCtr.__name__;
+		self._className_ = MenuBarViewCtr.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent); # 初始化视图UI

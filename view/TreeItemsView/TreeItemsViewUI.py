@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:00:40
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:12
 
 import wx;
 
@@ -13,7 +13,7 @@ class TreeItemsViewUI(wx.TreeCtrl):
 	"""docstring for TreeItemsViewUI"""
 	def __init__(self, parent, id = -1, curPath = "", viewCtr = None):
 		super(TreeItemsViewUI, self).__init__(parent, id, style = wx.TR_HIDE_ROOT|wx.TR_LINES_AT_ROOT|wx.TR_HAS_BUTTONS);
-		self.className_ = TreeItemsViewUI.__name__;
+		self._className_ = TreeItemsViewUI.__name__;
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
 

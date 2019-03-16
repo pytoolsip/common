@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-01-26 18:49:31
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:03:29
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:45:44
 import os;
 import wx;
 import re;
@@ -20,7 +20,7 @@ class RegisterDialogCtr(object):
 	"""docstring for RegisterDialogCtr"""
 	def __init__(self, parent, params = {}):
 		super(RegisterDialogCtr, self).__init__();
-		self.className_ = RegisterDialogCtr.__name__;
+		self._className_ = RegisterDialogCtr.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI

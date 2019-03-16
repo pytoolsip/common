@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2018-04-19 14:19:46
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 12:30:59
+# @Last Modified time: 2019-03-16 13:46:24
 
 import wx;
 from ProjectConfig import ProjectConfig;
@@ -13,7 +13,7 @@ from function.base import *;
 class WindowLoader(object):
 	def __init__(self):
 		super(WindowLoader, self).__init__();
-		self.className_ = WindowLoader.__name__;
+		self._className_ = WindowLoader.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__mainApp = wx.App(self.checkIsOpenLogWin());
 		self.__CtrMap = {}; # 控制器列表

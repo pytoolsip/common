@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-11-08 22:49:10
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:00:34
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:06
 
 import wx;
 
@@ -15,7 +15,7 @@ class RankingListViewUI(wx.ScrolledWindow):
 	def __init__(self, parent, id = -1, curPath = "", viewCtr = None, params = {}):
 		self.initParams(params);
 		super(RankingListViewUI, self).__init__(parent, id, pos = self.__params["pos"], size = self.__params["size"], style = self.__params["style"]);
-		self.className_ = RankingListViewUI.__name__;
+		self._className_ = RankingListViewUI.__name__;
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
 		self.listDataList = [];

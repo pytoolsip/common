@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 19:07:36
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:17
 
 import wx;
 
@@ -13,7 +13,7 @@ class WindowLeftViewUI(wx.Panel):
 	"""docstring for WindowLeftViewUI"""
 	def __init__(self, parent, id = -1, curPath = "", viewCtr = None):
 		super(WindowLeftViewUI, self).__init__(parent, id);
-		self.className_ = WindowLeftViewUI.__name__;
+		self._className_ = WindowLeftViewUI.__name__;
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
 

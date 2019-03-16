@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 12:29:13
+# @Last Modified time: 2019-03-16 13:46:20
 
 import wx;
 
@@ -13,7 +13,7 @@ class MenuBarViewUI(wx.Panel):
 	"""docstring for MenuBarViewUI"""
 	def __init__(self, parent, id = -1, curPath = "", viewCtr = None):
 		super(MenuBarViewUI, self).__init__(parent, id);
-		self.className_ = MenuBarViewUI.__name__;
+		self._className_ = MenuBarViewUI.__name__;
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
 		self.__parent = parent;

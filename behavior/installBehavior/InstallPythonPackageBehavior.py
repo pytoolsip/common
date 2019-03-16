@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-04-23 22:18:59
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 18:02:15
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:45:35
 
 import os;
 import imp;
@@ -10,12 +10,12 @@ import imp;
 from _Global import _GG;
 from function.base import *;
 
-def getExposeData():
+def __getExposeData__():
 	return {
 		# "exposeDataName",
 	};
 
-def getExposeMethod(DoType):
+def __getExposeMethod__(DoType):
 	return {
 		"getInstalledPackagesByPip" : DoType.AddToRear,
 		"installPackageByPip" : DoType.AddToRear,
@@ -24,12 +24,19 @@ def getExposeMethod(DoType):
 		"installPipByEasyInstall" : DoType.AddToRear,
 	};
 
+def __getDepends__():
+	return [
+		# {
+		# 	"path" : "tempBehavior", 
+		# 	"basePath" : _GG("g_CommonPath") + "behavior/",
+		# },
+	];
+
 class InstallPythonPackageBehavior(_GG("BaseBehavior")):
-	def __init__(self, depends = []):
-		super(InstallPythonPackageBehavior, self).__init__(depends);
-		self.className_ = InstallPythonPackageBehavior.__name__;
-		self.getExposeData = getExposeData; # 获取暴露出的数据
-		self.getExposeMethod = getExposeMethod; # 获取暴露出的方法接口
+	def __init__(self):
+		super(InstallPythonPackageBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		self._className_ = InstallPythonPackageBehavior.__name__;
+		pass;
 
 	# 获取已通过pip安装的包
 	def getInstalledPackagesByPip(self, obj, pythonPath = None, _retTuple = None):

@@ -1,31 +1,37 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-04-22 12:01:48
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 17:27:41
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:45:50
 
 import os;
 
 from _Global import _GG;
 from function.base import *;
 
-def getExposeData():
+def __getExposeData__():
 	return {
 		# "exposeDataName",
 	};
 
-def getExposeMethod(DoType):
+def __getExposeMethod__(DoType):
 	return {
 		"verifyPythonEnvironment" : DoType.AddToRear,
 		"verifyPipEnvironment" : DoType.AddToRear,
 	};
 
+def __getDepends__():
+	return [
+		# {
+		# 	"path" : "tempBehavior", 
+		# 	"basePath" : _GG("g_CommonPath") + "behavior/",
+		# },
+	];
+
 class VerifyEnvironmentBehavior(_GG("BaseBehavior")):
-	def __init__(self, depends = []):
-		super(VerifyEnvironmentBehavior, self).__init__(depends);
-		self.className_ = VerifyEnvironmentBehavior.__name__;
-		self.getExposeData = getExposeData; # 获取暴露出的数据
-		self.getExposeMethod = getExposeMethod; # 获取暴露出的方法接口
+	def __init__(self):
+		super(VerifyEnvironmentBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		self._className_ = VerifyEnvironmentBehavior.__name__;
 		pass;
 
 	# 校验python环境

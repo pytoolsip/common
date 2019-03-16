@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-04-19 14:22:56
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 19:31:58
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:45:28
 import wx;
 import os,sys,time;
 import shutil;
@@ -38,7 +38,7 @@ class GlobalWindowObject(object):
 class Loader(object):
 	def __init__(self, mainPath):
 		super(Loader, self).__init__();
-		self.className_ = Loader.__name__;
+		self._className_ = Loader.__name__;
 		self.__mainPath = mainPath.replace("\\", "/");
 		_G.initGlobal_GTo_Global(); # 初始化全局变量
 		pass;

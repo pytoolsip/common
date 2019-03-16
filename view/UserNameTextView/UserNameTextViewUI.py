@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 22:27:47
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-14 23:06:42
+# @Last Modified time: 2019-03-16 13:46:14
 
 import wx;
 
@@ -13,7 +13,7 @@ class UserNameTextViewUI(wx.Panel):
 	"""docstring for UserNameTextViewUI"""
 	def __init__(self, parent, id = -1, curPath = "", viewCtr = None):
 		super(UserNameTextViewUI, self).__init__(parent, id);
-		self.className_ = UserNameTextViewUI.__name__;
+		self._className_ = UserNameTextViewUI.__name__;
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
 

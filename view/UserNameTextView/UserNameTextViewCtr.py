@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 22:27:47
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:03:50
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:13
 
 import wx;
 
@@ -19,7 +19,7 @@ class UserNameTextViewCtr(object):
 	"""docstring for UserNameTextViewCtr"""
 	def __init__(self, parent, params = {}):
 		super(UserNameTextViewCtr, self).__init__();
-		self.className_ = UserNameTextViewCtr.__name__;
+		self._className_ = UserNameTextViewCtr.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent); # 初始化视图UI

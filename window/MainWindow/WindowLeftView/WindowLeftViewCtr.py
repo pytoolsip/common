@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-14 23:06:15
+# @Last Modified time: 2019-03-16 13:46:16
 
 import wx;
 
@@ -19,7 +19,7 @@ class WindowLeftViewCtr(object):
 	"""docstring for WindowLeftViewCtr"""
 	def __init__(self, parent, params = {}):
 		super(WindowLeftViewCtr, self).__init__();
-		self.className_ = WindowLeftViewCtr.__name__;
+		self._className_ = WindowLeftViewCtr.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.registerEventMap(); # 注册事件

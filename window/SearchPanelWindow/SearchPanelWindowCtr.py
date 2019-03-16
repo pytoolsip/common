@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-05 21:14:16
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:03:59
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:22
 
 import wx;
 
@@ -21,7 +21,7 @@ class SearchPanelWindowCtr(object):
 	"""docstring for SearchPanelWindowCtr"""
 	def __init__(self, parent = None, params = {}):
 		super(SearchPanelWindowCtr, self).__init__();
-		self.className_ = SearchPanelWindowCtr.__name__;
+		self._className_ = SearchPanelWindowCtr.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent);

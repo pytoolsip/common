@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-04-24 22:54:42
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 18:17:17
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:45:30
 
 try:
 	import ConfigParser;
@@ -12,24 +12,30 @@ except Exception as e:
 from _Global import _GG;
 from function.base import *;
 
-def getExposeData():
+def __getExposeData__():
 	return {
 		# "exposeDataName",
 	};
 
-def getExposeMethod(DoType):
+def __getExposeMethod__(DoType):
 	return {
 		"readIniConfig" : DoType.AddToRear,
 		"writeIniConfig" : DoType.AddToRear,
 		"removeIniConfig" : DoType.AddToRear,
 	};
 
+def __getDepends__():
+	return [
+		# {
+		# 	"path" : "tempBehavior", 
+		# 	"basePath" : _GG("g_CommonPath") + "behavior/",
+		# },
+	];
+
 class IniConfigParseBehavior(_GG("BaseBehavior")):
-	def __init__(self, depends = []):
-		super(IniConfigParseBehavior, self).__init__(depends);
-		self.className_ = IniConfigParseBehavior.__name__;
-		self.getExposeData = getExposeData; # 获取暴露出的数据
-		self.getExposeMethod = getExposeMethod; # 获取暴露出的方法接口
+	def __init__(self):
+		super(IniConfigParseBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		self._className_ = IniConfigParseBehavior.__name__;
 
 	# 读取ini配置文件
 	def readIniConfig(self, obj, iniFilePath, section, option, _retTuple = None):

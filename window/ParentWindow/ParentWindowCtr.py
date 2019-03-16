@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 10:49:59
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:03:58
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:21
 
 import wx;
 
@@ -21,7 +21,7 @@ class ParentWindowCtr(object):
 	"""docstring for ParentWindowCtr"""
 	def __init__(self, parent = None, params = {}):
 		super(ParentWindowCtr, self).__init__();
-		self.className_ = ParentWindowCtr.__name__;
+		self._className_ = ParentWindowCtr.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent);

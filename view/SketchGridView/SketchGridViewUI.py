@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-11-03 17:07:37
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:00:37
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:09
 
 import wx;
 import math;
@@ -16,7 +16,7 @@ class SketchGridViewUI(wx.Panel):
 	def __init__(self, parent, id = -1, curPath = "", viewCtr = None, params = {}):
 		self.initParams(params)
 		super(SketchGridViewUI, self).__init__(parent, id);
-		self.className_ = SketchGridViewUI.__name__;
+		self._className_ = SketchGridViewUI.__name__;
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
 		self.gridDataList = [];

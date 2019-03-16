@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 18:27:07
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:03:40
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 13:46:01
 
 from enum import Enum, unique;
 
@@ -28,7 +28,7 @@ class NoteBookViewCtr(object):
 	"""docstring for NoteBookViewCtr"""
 	def __init__(self, parent, params = {}):
 		super(NoteBookViewCtr, self).__init__();
-		self.className_ = NoteBookViewCtr.__name__;
+		self._className_ = NoteBookViewCtr.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent); # 初始化视图UI
