@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 22:27:47
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:46:14
+# @Last Modified time: 2019-03-16 15:20:27
 
 import wx;
 
@@ -11,11 +11,34 @@ from function.base import *;
 
 class UserNameTextViewUI(wx.Panel):
 	"""docstring for UserNameTextViewUI"""
-	def __init__(self, parent, id = -1, curPath = "", viewCtr = None):
+	def __init__(self, parent, id = -1, curPath = "", viewCtr = None, params = {}):
+		self.initParams(params);
 		super(UserNameTextViewUI, self).__init__(parent, id);
 		self._className_ = UserNameTextViewUI.__name__;
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
+
+	def __del__(self):
+		self.__dest__();
+
+	def __dest__(self):
+		if not hasattr(self, "_unloaded_"):
+			self._unloaded_ = True;
+			self.__unload__();
+
+	def __unload__(self):
+		pass;
+
+	def initParams(self, params):
+		# 初始化参数
+		self.__params = {
+			"name" : "点击登录",
+			"onClick" : None,
+			"blurColor" : wx.Colour(60,160,60),
+			"focusColor" : wx.Colour(60,240,60),
+		};
+		for k,v in params.items():
+			self.__params[k] = v;
 
 	def getCtr(self):
 		return self.__viewCtr;
@@ -39,6 +62,8 @@ class UserNameTextViewUI(wx.Panel):
 	def updateView(self, data):
 		if "name" in data:
 			self.updateUserName(data["name"]);
+		if "onClick" in data and callable(data["onClick"]):
+			self.__params["onClick"] = data["onClick"];
 		pass;
 
 	def createTitleText(self):
@@ -49,11 +74,25 @@ class UserNameTextViewUI(wx.Panel):
 		# self.userTitleText.SetForegroundColour(wx.Colour(108,108,108));
 
 	def createUserNameText(self):
-		userName = self.getCtr().getCurUserName();
-		self.userNameText = wx.StaticText(self, -1, userName, style = wx.ALIGN_CENTRE_HORIZONTAL|wx.ST_ELLIPSIZE_END);
+		self.userNameText = wx.StaticText(self, -1, self.__params["name"], style = wx.ALIGN_CENTRE_HORIZONTAL|wx.ST_ELLIPSIZE_END);
 		titleFont = wx.Font(8, wx.DECORATIVE, wx.NORMAL, wx.BOLD);
 		self.userNameText.SetFont(titleFont);
-		self.userNameText.SetForegroundColour(wx.Colour(60,120,60));
+		self.userNameText.SetForegroundColour(self.__params["blurColor"]);
+		self.userNameText.Bind(wx.EVT_ENTER_WINDOW, self.onEnterNameText);
+		self.userNameText.Bind(wx.EVT_LEAVE_WINDOW, self.onLeaveNameText);
+		self.userNameText.Bind(wx.EVT_LEFT_DOWN, self.onClickNameText);
+
+	def onEnterNameText(self, event):
+		event.GetEventObject().SetForegroundColour(self.__params["focusColor"]);
+		event.GetEventObject().Refresh();
+
+	def onLeaveNameText(self, event):
+		event.GetEventObject().SetForegroundColour(self.__params["blurColor"]);
+		event.GetEventObject().Refresh();
+
+	def onClickNameText(self, event):
+		if callable(self.__params["onClick"]):
+			self.__params["onClick"](event);
 
 	def updateUserName(self, name):
 		self.userNameText.SetLabel(name);

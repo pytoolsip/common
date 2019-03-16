@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-10-29 22:06:46
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:45:33
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-16 15:09:23
 
 import os;
 import shutil;
@@ -31,7 +31,7 @@ def __getDepends__():
 
 class ShutilCopyBehavior(BaseBehavior):
 	def __init__(self):
-		super(ShutilCopyBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		super(ShutilCopyBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__, __file__);
 		self._className_ = ShutilCopyBehavior.__name__;
 		pass;
 

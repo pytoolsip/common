@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:46:16
+# @Last Modified time: 2019-03-16 14:33:16
 
 import wx;
 
@@ -84,6 +84,7 @@ class WindowLeftViewCtr(object):
 
 	def bindBehaviors(self):
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "configParseBehavior/XmlConfigParseBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/UserServiceBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 		
 	def unbindBehaviors(self):
@@ -126,5 +127,10 @@ class WindowLeftViewCtr(object):
 		return treeItemsData;
 	
 	def updateUserNameView(self, data):
-		if data.name:
-			self.getCtrByKey("UserNameTextViewCtr").updateView({"name" : data.name});
+		def onClick():
+			# 显示玩家信息的弹窗
+			pass;
+		self.getCtrByKey("UserNameTextViewCtr").updateView({"name" : data.name, "onClick" : onClick});
+
+	def onClickLogin(self, event):
+		self._loginIP_();

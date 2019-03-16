@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-03-29 22:19:40
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:45:51
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-16 15:09:26
 
 from _Global import _GG;
 from function.base import *;
@@ -27,7 +27,7 @@ def __getDepends__():
 
 class TemplateBehavior(_GG("BaseBehavior")):
 	def __init__(self):
-		super(TemplateBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		super(TemplateBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__, __file__);
 		self._className_ = TemplateBehavior.__name__;
 		pass;
 

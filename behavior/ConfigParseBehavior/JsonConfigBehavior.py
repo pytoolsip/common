@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-11-24 02:42:20
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:45:31
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-16 15:09:22
 
 from _Global import _GG;
 from function.base import *;
@@ -29,7 +29,7 @@ def __getDepends__():
 
 class JsonConfigBehavior(BaseBehavior):
 	def __init__(self):
-		super(JsonConfigBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		super(JsonConfigBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__, __file__);
 		self._className_ = JsonConfigBehavior.__name__;
 		pass;
 

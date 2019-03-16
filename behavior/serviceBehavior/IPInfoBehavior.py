@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JinZhang
 # @Date:   2019-03-15 16:09:17
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:45:36
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-16 15:09:24
 import os;
 try:
 	import ConfigParser;
@@ -35,7 +35,7 @@ def __getDepends__():
 
 class IPInfoBehavior(_GG("BaseBehavior")):
 	def __init__(self):
-		super(IPInfoBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		super(IPInfoBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__, __file__);
 		self._className_ = IPInfoBehavior.__name__;
 		self.__filePath = _GG("g_DataPath") + "ptip_info.ini";
 

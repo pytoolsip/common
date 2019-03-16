@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-16 11:25:09
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:48:37
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-16 15:09:25
 
 from _Global import _GG;
 from function.base import *;
@@ -28,7 +28,7 @@ def __getDepends__():
 
 class UserServiceBehavior(_GG("BaseBehavior")):
 	def __init__(self):
-		super(UserServiceBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		super(UserServiceBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__, __file__);
 		self._className_ = UserServiceBehavior.__name__;
 		pass;
 

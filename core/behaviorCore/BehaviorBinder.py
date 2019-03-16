@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-24 22:31:21
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:45:30
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-16 14:55:15
 
 from behaviorCore.BaseBehavior import DoType;
 
@@ -35,7 +35,7 @@ class BehaviorBinder(object):
 				# 新添对应dataKey的导出数据
 				obj.behavior_exposeDataDict__[dataKey]["behaviorInfos"].append({
 					"data" : data,
-					"behaviorId" : behavior.behaviorId_,
+					"behaviorId" : behavior.getBehaviorId(),
 				});
 			else:
 				# 新建对应dataKey的导出数据
@@ -44,13 +44,13 @@ class BehaviorBinder(object):
 					"curBehaviorId" : None,
 					"behaviorInfos" : [{
 						"data" : data,
-						"behaviorId" : behavior.behaviorId_,
+						"behaviorId" : behavior.getBehaviorId(),
 					}],
 				};
 				if hasattr(obj, dataKey):
 					obj.behavior_exposeDataDict__[dataKey]["oriData"] = getattr(obj, dataKey);
 				# 根据数据key值设置新数据
-				self.setNewDataByDataKey(obj, dataKey, behaviorInfo = {"data" : data, "behaviorId" : behavior.behaviorId_,});
+				self.setNewDataByDataKey(obj, dataKey, behaviorInfo = {"data" : data, "behaviorId" : behavior.getBehaviorId(),});
 
 	# 绑定组件暴露的数据到对象上
 	def bindExposeMethodOfBehaviorToObj(self, behavior, obj):
@@ -69,7 +69,7 @@ class BehaviorBinder(object):
 			if methodKey in obj.behavior_exposeMethodDict__: # obj.behavior_exposeMethodDict__.has_key(methodKey)
 				# 新添对应methodKey的导出方法
 				obj.behavior_exposeMethodDict__[methodKey]["behaviorInfos"].append({
-					"behaviorId" : behavior.behaviorId_,
+					"behaviorId" : behavior.getBehaviorId(),
 					"methodType" : methodType,
 					"function" : getattr(behavior, methodKey),
 				});
@@ -78,7 +78,7 @@ class BehaviorBinder(object):
 				obj.behavior_exposeMethodDict__[methodKey] = {
 					"oriFunc" : None,
 					"behaviorInfos" : [{
-						"behaviorId" : behavior.behaviorId_,
+						"behaviorId" : behavior.getBehaviorId(),
 						"methodType" : methodType,
 						"function" : getattr(behavior, methodKey),
 					}],
@@ -148,7 +148,7 @@ class BehaviorBinder(object):
 					# 移除相应的组件数据信息
 					behaviorInfoList = obj.behavior_exposeDataDict__[dataKey]["behaviorInfos"];
 					for idx in behaviorInfoList:
-						if behaviorInfoList[idx]["behaviorId"] == behavior.behaviorId_:
+						if behaviorInfoList[idx]["behaviorId"] == behavior.getBehaviorId():
 							behaviorInfoList.pop(idx);
 					# 根据dataKey更新导出数据
 					self.updateExposeDataByDataKey(obj, dataKey);
@@ -162,7 +162,7 @@ class BehaviorBinder(object):
 					# 移除相应的组件函数信息
 					behaviorInfoList = obj.behavior_exposeMethodDict__[methodKey]["behaviorInfos"];
 					for idx in behaviorInfoList:
-						if behaviorInfoList[idx]["behaviorId"] == behavior.behaviorId_:
+						if behaviorInfoList[idx]["behaviorId"] == behavior.getBehaviorId():
 							behaviorInfoList.pop(idx);
 					# 根据dataKey更新导出函数
 					self.updateExposeMethodByMethodKey(obj, dataKey);

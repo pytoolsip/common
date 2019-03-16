@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 22:27:47
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:46:13
+# @Last Modified time: 2019-03-16 14:24:54
 
 import wx;
 
@@ -22,7 +22,7 @@ class UserNameTextViewCtr(object):
 		self._className_ = UserNameTextViewCtr.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
-		self.initUI(parent); # 初始化视图UI
+		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
 		self.bindBehaviors(); # 绑定组件
 
@@ -44,9 +44,9 @@ class UserNameTextViewCtr(object):
 			DelCtr(self.__CtrMap[key]);
 		self.__CtrMap.clear();
 
-	def initUI(self, parent):
+	def initUI(self, parent, params):
 		# 创建视图UI类
-		self.__ui = UserNameTextViewUI(parent, curPath = self._curPath, viewCtr = self);
+		self.__ui = UserNameTextViewUI(parent, curPath = self._curPath, viewCtr = self, params = params);
 		self.__ui.initView();
 
 	def getUI(self):
@@ -90,9 +90,3 @@ class UserNameTextViewCtr(object):
 			
 	def updateView(self, data):
 		self.__ui.updateView(data);
-
-	def getCurUserName(self):
-		return "游客";
-
-	def onClickUserInfoBtn(self):
-		pass;

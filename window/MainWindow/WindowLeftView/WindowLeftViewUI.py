@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:46:17
+# @Last Modified time: 2019-03-16 14:33:56
 
 import wx;
 
@@ -62,7 +62,9 @@ class WindowLeftViewUI(wx.Panel):
 		pass;
 
 	def createUserNameTextCtr(self):
-		self.getCtr().createCtrByKey("UserNameTextViewCtr", _GG("g_CommonPath") + "view/UserNameTextView"); # , parent = self, params = {}
+		self.getCtr().createCtrByKey("UserNameTextViewCtr", _GG("g_CommonPath") + "view/UserNameTextView", params = {
+			"onClick" : self.getCtr().onClickLogin,
+		}); # , parent = self, params = {}
 		
 	def createTreeCtrl(self):
 		params = {

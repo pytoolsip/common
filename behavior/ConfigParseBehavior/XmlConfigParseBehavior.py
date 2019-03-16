@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-06-06 22:52:21
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:45:32
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-16 15:09:23
 
 from _Global import _GG;
 from function.base import *;
@@ -35,7 +35,7 @@ def __getDepends__():
 
 class XmlConfigParseBehavior(BaseBehavior):
 	def __init__(self):
-		super(XmlConfigParseBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		super(XmlConfigParseBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__, __file__);
 		self._className_ = XmlConfigParseBehavior.__name__;
 		pass;
 

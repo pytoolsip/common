@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-11-11 18:04:16
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:45:34
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-16 15:09:23
 
 from _Global import _GG;
 from function.base import *;
@@ -28,7 +28,7 @@ def __getDepends__():
 
 class NumFormatBehavior(BaseBehavior):
 	def __init__(self):
-		super(NumFormatBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		super(NumFormatBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__, __file__);
 		self._className_ = NumFormatBehavior.__name__;
 		pass;
 

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-04-24 22:54:42
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:45:30
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-16 15:09:22
 
 try:
 	import ConfigParser;
@@ -34,7 +34,7 @@ def __getDepends__():
 
 class IniConfigParseBehavior(_GG("BaseBehavior")):
 	def __init__(self):
-		super(IniConfigParseBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		super(IniConfigParseBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__, __file__);
 		self._className_ = IniConfigParseBehavior.__name__;
 
 	# 读取ini配置文件

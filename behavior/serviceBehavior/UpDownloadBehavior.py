@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-07 20:34:34
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:45:37
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-16 15:09:25
 import urllib;
 import paramiko;
 import zipfile;
@@ -33,7 +33,7 @@ def __getDepends__():
 
 class UpDownloadBehavior(_GG("BaseBehavior")):
 	def __init__(self):
-		super(UpDownloadBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__);
+		super(UpDownloadBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__, __file__);
 		self._className_ = UpDownloadBehavior.__name__;
 		pass;
 
