@@ -2,7 +2,7 @@
 # @Author: JimDreamHeart
 # @Date:   2018-10-27 15:47:32
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2018-10-27 23:13:54
+# @Last Modified time: 2019-03-16 11:53:06
 
 import wx;
 
@@ -48,3 +48,6 @@ class DirInputView(wx.Panel):
 
 	def getInputValue(self):
 		return self.input.GetValue();
+
+	def resetInputValue(self):
+		return self.input.SetValue("");

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-07 20:34:34
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 19:46:19
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 11:44:10
 import urllib;
 import paramiko;
 import zipfile;
@@ -37,11 +37,11 @@ class UpDownloadBehavior(_GG("BaseBehavior")):
 
 	# 下载文件
 	def download(self, obj, url, filePath, totalSize, _retTuple = None):
-		dialog = CreateCtr(_GG("g_CommonPath") + "dialog/DownloadDialog", obj, params = {"title" : "文件下载", "size" : (200,-1)});
+		dialogCtr = _GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/DownloadDialog", params = {"title" : "文件下载", "size" : (200,-1)});
 		def schedule(block, size, totalSize):
-			dialog.updateDialog({"size" : block*size});
+			dialogCtr.updateDialog({"size" : block*size});
 		urllib.urlretrieve(url, filePath, schedule);
-		dialog.start(totalSize = totalSize);
+		dialogCtr.getUI().start(totalSize = totalSize);
 
 	# 上传文件
 	def upload(self, obj, filePath, url, data, _retTuple = None):

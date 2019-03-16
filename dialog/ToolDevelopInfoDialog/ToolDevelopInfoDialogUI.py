@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-10-27 15:28:41
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:00:07
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 11:54:06
 
 import wx;
 
@@ -73,6 +73,10 @@ class ToolDevelopInfoDialogUI(wx.Dialog):
 
 	def updateDialog(self, data):
 		pass;
+
+	def resetDialog(self):
+		self.textCtrl.SetValue("");
+		self.dirInput.resetInputValue();
 
 	def createNames(self):
 		self.name = wx.StaticText(self, label = self.__params["name"]);

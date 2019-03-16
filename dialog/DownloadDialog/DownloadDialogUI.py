@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-07 20:49:03
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:00:02
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 11:51:16
 
 import wx;
 import time;
@@ -19,6 +19,8 @@ class DownloadDialogUI(wx.Dialog):
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
 		self.Bind(wx.EVT_CLOSE, self.onClose); # 绑定关闭事件
+		self.__totalSize = -1;
+		self.__speedSize = 0;
 		self.__startTime = time.time(); # 开始下载时间
 		self.createTimer();
 
@@ -26,7 +28,6 @@ class DownloadDialogUI(wx.Dialog):
 		self.stopTimer(True);
 
 	def onClose(self, event):
-		self.stopTimer(True);
 		self.EndModal(wx.ID_CANCEL);
 
 	def initParams(self, params):
@@ -65,6 +66,15 @@ class DownloadDialogUI(wx.Dialog):
 		if "size" in data:
 			self.update(data["size"]);
 
+	def resetDialog(self):
+		if not self.__timer.IsRunning():
+			self.updateGauge(0);
+			self.updateSpeed(0);
+			self.__schedule.SetLabel("已下载：--/--");
+			self.__totalSize = -1;
+			self.__speedSize = 0;
+		pass;
+
 	def createTimer(self):
 		self.__timer = _GG("TimerManager").createTimer(self, callback = self.onTimerEvent);
 
@@ -80,16 +90,16 @@ class DownloadDialogUI(wx.Dialog):
 
 	def onTimerEvent(self, event = None):
 		self.updateSpeed(self.__speedSize);
+		self.__speedSize = 0;
 
 	def createGauge(self):
 		self.__gauge = wx.Gauge(self, size = (self.GetSize()[0], 20), style = wx.GA_SMOOTH);
 
 	def createSpeed(self):
-		self.__speed = wx.StaticText(self, label = "0KB/s", style = wx.ALIGN_LEFT);
+		self.__speed = wx.StaticText(self, label = "0B/s", style = wx.ALIGN_LEFT);
 
 	def createSchedule(self):
 		self.__schedule = wx.StaticText(self, label = "已下载：--/--", style = wx.ALIGN_LEFT);
-		self.__totalSize = -1; 
 
 	def start(self, totalSize = 0):
 		if totalSize > 0:
@@ -99,8 +109,10 @@ class DownloadDialogUI(wx.Dialog):
 	def update(self, size = 0):
 		self.updateSchedule(size);
 		self.updateGauge(size/self.__totalSize);
+		self.__speedSize += size;
 		if size >= self.__totalSize:
 			self.stopTimer();
+			self.__speed.SetLabel("");
 
 	def updateGauge(self, guage = 0):
 		self.__gauge.SetValue(guage * self.__gauge.GetRange());
