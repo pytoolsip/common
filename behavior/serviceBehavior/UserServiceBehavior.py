@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-16 11:25:09
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-16 15:09:25
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-16 21:31:16
 
 from _Global import _GG;
 from function.base import *;
@@ -56,12 +56,14 @@ class UserServiceBehavior(_GG("BaseBehavior")):
 			respData = _GG("CommonClient").callService("Login", "LoginReq", loginInfo);
 			if respData and respData.isSuccess:
 				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").LOGIN_SUCCESS_EVENT, respData.userInfo);
-				if _GG("WindowObject").ShowMessageDialog("登录成功，是否保存账户密码到本地？", "登录账号", style = wx.OK|wx.CANCEL|wx.ICON_QUESTION) == wx.ID_OK:
-					obj.setIPInfoConfig("user", "name", loginInfo["name"]);
-					obj.setIPInfoConfig("user", "password", loginInfo["password"]);
-					obj.setIPInfoConfig("user", "time_stamp", time.time());
+				def setIPInfoConfig(msgDialog, status):
+					if status == wx.ID_OK:
+						obj.setIPInfoConfig("user", "name", loginInfo["name"]);
+						obj.setIPInfoConfig("user", "password", loginInfo["password"]);
+						obj.setIPInfoConfig("user", "time_stamp", time.time());
+				_GG("WindowObject").CreateMessageDialog("登录成功，是否保存账户密码到本地？", "登录账号", callback = setIPInfoConfig, style = wx.OK|wx.CANCEL|wx.ICON_QUESTION)
 			else:
-				_GG("WindowObject").ShowMessageDialog("登录失败，请重新登录！", "登录账号", style = wx.OK|wx.ICON_INFORMATION);
+				_GG("WindowObject").CreateMessageDialog("登录失败，请重新登录！", "登录账号", style = wx.OK|wx.ICON_INFORMATION);
 			return respData and respData.isSuccess or False;
 		# 显示弹窗
 		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/LoginDialog", params = {
@@ -120,7 +122,7 @@ class UserServiceBehavior(_GG("BaseBehavior")):
 				if respData and respData.isSuccess:
 					callback(respData.data["expire"]);
 				else:
-					_GG("WindowObject").ShowMessageDialog("发送失败，请检测邮箱是否正确！", "发送校验码", style = wx.OK|wx.ICON_ERROR);
+					_GG("WindowObject").CreateMessageDialog("发送失败，请检测邮箱是否正确！", "发送校验码", style = wx.OK|wx.ICON_ERROR);
 			# 请求服务
 			_GG("CommonClient").callService("Request", "Req", {
 				"key" : "SendVerificationCode",
@@ -129,14 +131,14 @@ class UserServiceBehavior(_GG("BaseBehavior")):
 		def onRegister(registerInfo):
 			respData = _GG("CommonClient").callService("Register", "RegisterReq", registerInfo);
 			if respData and respData.isSuccess:
-				_GG("WindowObject").ShowMessageDialog("注册成功。", "注册账号", style = wx.OK|wx.ICON_INFORMATION);
+				_GG("WindowObject").CreateMessageDialog("注册成功。", "注册账号", style = wx.OK|wx.ICON_INFORMATION);
 			else:
 				if respData and respData.data:
 					data = _GG("CommonClient").decodeBytes(respData.data);
 					if "content" in data:
-						_GG("WindowObject").ShowMessageDialog(data["content"], "注册账号", style = wx.OK|wx.ICON_INFORMATION);
+						_GG("WindowObject").CreateMessageDialog(data["content"], "注册账号", style = wx.OK|wx.ICON_INFORMATION);
 						return False;
-				_GG("WindowObject").ShowMessageDialog("注册失败，请重新注册！", "注册账号", style = wx.OK|wx.ICON_INFORMATION);
+				_GG("WindowObject").CreateMessageDialog("注册失败，请重新注册！", "注册账号", style = wx.OK|wx.ICON_INFORMATION);
 			return respData and respData.isSuccess or False;
 		# 显示弹窗
 		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/RegisterDialog", params = {

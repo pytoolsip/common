@@ -2,7 +2,7 @@
 # @Author: JimDreamHeart
 # @Date:   2018-10-27 15:47:32
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 11:53:06
+# @Last Modified time: 2019-03-16 21:08:22
 
 import wx;
 
@@ -19,6 +19,8 @@ class DirInputView(wx.Panel):
 			"size" : (-1,-1),
 			"inputSize" : (-1,20),
 			"buttonSize" : (30,20),
+			"buttonLabel" : "选择",
+			"onInput" : None,
 		};
 		for k,v in params.items():
 			self.params[k] = v;
@@ -30,24 +32,29 @@ class DirInputView(wx.Panel):
 
 	def initViewLayout(self):
 		box = wx.BoxSizer(wx.HORIZONTAL);
-		box.Add(self.input, proportion = 1);
-		box.Add(self.button, proportion = 0);
+		box.Add(self.__input, proportion = 1);
+		box.Add(self.__button, proportion = 0);
 		self.SetSizerAndFit(box);
 
 	def createInput(self):
-		self.input = wx.TextCtrl(self, -1, "", size = self.params["inputSize"]);
+		self.__input = wx.TextCtrl(self, -1, "", size = self.params["inputSize"]);
 
 	def createButton(self):
-		self.button = wx.Button(self, -1, "选择", size = self.params["buttonSize"]);
-		self.button.Bind(wx.EVT_BUTTON, self.onClickButton)
+		self.__button = wx.Button(self, -1, self.params["buttonLabel"], size = self.params["buttonSize"]);
+		self.__button.Bind(wx.EVT_BUTTON, self.onClickButton)
 
 	def onClickButton(self, event):
 		dirVal = wx.DirSelector();
 		if dirVal != "":
-			self.input.SetValue(dirVal);
+			self.setInputValue(dirVal);
 
 	def getInputValue(self):
-		return self.input.GetValue();
+		return self.__input.GetValue();
+
+	def setInputValue(self, value):
+		if callable(self.params["onInput"]):
+			self.params["onInput"](value);
+		return self.__input.SetValue(value);
 
 	def resetInputValue(self):
-		return self.input.SetValue("");
+		return self.__input.SetValue("");
