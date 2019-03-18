@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-16 03:04:58
 # @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-16 23:21:04
+# @Last Modified time: 2019-03-18 22:30:08
 import wx, math;
 
 from _Global import _GG;
@@ -245,13 +245,18 @@ class UploadDialogUI(wx.Dialog):
 			"blurCallback" : checkDescriptionInput,
 		});
 
-	def onInputToolFile(self, filePath):
-		if os.path.exists(filePath):
+	def onInputToolFile(self, filePath, callback):
+		if filePath != "" and os.path.exists(filePath):
 			if os.path.isdir(filePath):
 				fileName = os.path.basename(filePath);
 				if not os.path.exists(_GG("g_DataPath")+"temp/zip"):
 					os.mkdir(_GG("g_DataPath")+"temp/zip");
-				self.zipFile(filePath, _GG("g_DataPath")+"temp/zip/" + "%s_%d.zip"%(fileName, int(time.time())));
+				zipFilePath = _GG("g_DataPath") + "temp/zip/" + "%s_%d.zip"%(fileName, int(time.time()));
+				self.zipFile(filePath, zipFilePath); # 压缩filePath为zip包
+				filePath = zipFilePath; # 重置filePath
+			if os.path.splitext(filePath)[-1] == ".zip":
+				pass;
+		return callback(zipFilePath);
 
 	def checkInputView(self, key = "a"):
 		if key in ["a", "dirInput"]:

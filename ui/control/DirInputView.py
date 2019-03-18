@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-10-27 15:47:32
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 21:08:22
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-18 21:19:57
 
 import wx;
 
@@ -53,7 +53,7 @@ class DirInputView(wx.Panel):
 
 	def setInputValue(self, value):
 		if callable(self.params["onInput"]):
-			self.params["onInput"](value);
+			return self.params["onInput"](value, self.__input.SetValue);
 		return self.__input.SetValue(value);
 
 	def resetInputValue(self):
