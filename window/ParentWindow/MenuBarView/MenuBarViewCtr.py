@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:46:19
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-19 19:07:00
 import os;
 import wx;
 import time;
 
 from _Global import _GG;
+from function.base import *;
 
 from MenuBarViewUI import *;
 
@@ -99,10 +100,10 @@ class MenuBarViewCtr(object):
 
 	def linkToolCommon(self, toolPath = ""):
 		if os.path.exists(toolPath + "/assets"):
-			toolCommonPath = toolPath + "/assets/common";
+			toolCommonPath = VerifyPath(toolPath + "/assets/common");
 			if sys.platform == "win32":
-				if os.system("mklink /J " + toolCommonPath + " " + _GG("g_CommonPath")) != 0:
-					raise Exception("'mklink /J ...template/assets/common ...assets/common' fail !");
+				if os.system(" ".join(["mklink /J", toolCommonPath, VerifyPath(_GG("g_CommonPath"))])) != 0:
+					raise Exception("<" + " ".join(["mklink /J", toolCommonPath, VerifyPath(_GG("g_CommonPath"))]) + "> fail !");
 			else:
 				os.system("ln -sf " + toolCommonPath + _GG("g_CommonPath"));
 			return True;
@@ -119,7 +120,7 @@ class MenuBarViewCtr(object):
 				dstPath = str(dstPath);
 				if self.copyPath(srcPath, dstPath):
 					if self.linkToolCommon(toolPath = dstPath):
-						message = "创建工具开发项目模板成功！\n创建路径为：" + dstPath;
+						message = "创建工具开发项目模板成功！\n创建路径为：" + VerifyPath(dstPath);
 			# 显示弹窗
 			self.showMessageDialog(message, "创建工具开发项目", style = wx.OK|wx.ICON_INFORMATION);
 
