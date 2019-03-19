@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-16 03:04:58
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:45:47
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-19 22:45:03
 import os;
 import wx;
+import zipfile, json;
 
 from _Global import _GG;
 
@@ -83,6 +84,7 @@ class UploadDialogCtr(object):
 			_GG("EventDispatcher").unregister(eventId, self, callbackName);
 
 	def bindBehaviors(self):
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/UpDownloadBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 		
 	def unbindBehaviors(self):
@@ -90,3 +92,27 @@ class UploadDialogCtr(object):
 			
 	def updateDialog(self, data):
 		self.__ui.updateDialog(data);
+
+	def onInputToolFile(self, filePath, callback):
+		if filePath != "" and os.path.exists(filePath):
+			if os.path.isdir(filePath):
+				fileName = os.path.basename(filePath);
+				if not os.path.exists(_GG("g_DataPath")+"temp/zip"):
+					os.mkdir(_GG("g_DataPath")+"temp/zip");
+				zipFilePath = _GG("g_DataPath") + "temp/zip/" + "%s_%d.zip"%(fileName, int(time.time()));
+				def finishCallback():
+					self.updateDialogByZipFile(zipFilePath);
+				if self.zipFile(filePath, zipFilePath, finishCallback = finishCallback): # 压缩filePath为zip包
+					filePath = zipFilePath; # 重置filePath
+			else:
+				self.updateDialogByZipFile(filePath);
+		return callback(zipFilePath);
+
+	def updateDialogByZipFile(self, filePath):
+		if os.path.splitext(filePath)[-1] == ".zip":
+			zfile = zipfile.ZipFile(filePath);
+			try:
+				toolJsonStr = bytes.decode(zfile.read('tool.json'));
+				self.getUI().updateDialog(json.loads(toolJsonStr));
+			except Exception as e:
+				_GG("WindowObject").CreateMessageDialog("上传工具包的json文件数据有误！\n%s"%e, "上传工具", style = wx.OK|wx.ICON_ERROR);

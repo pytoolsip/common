@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-16 03:04:58
 # @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-18 22:30:08
+# @Last Modified time: 2019-03-19 23:05:20
 import wx, math;
 
 from _Global import _GG;
@@ -19,7 +19,6 @@ class UploadDialogUI(wx.Dialog):
 		self.__viewCtr = viewCtr;
 		self.__inputInfosList = []; # 输入框列表
 		self.Bind(wx.EVT_CLOSE, self.onClose); # 绑定关闭事件
-		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/UpDownloadBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 
 	def onClose(self, event):
 		self.EndModal(wx.ID_CANCEL);
@@ -52,6 +51,7 @@ class UploadDialogUI(wx.Dialog):
 		box.AddMany(self.__inputInfosList);
 		box.Add(wx.Panel(self));
 		box.Add(self.__okButton, flag = wx.ALIGN_CENTER|wx.BOTTOM, border = 10);
+		box.AddGrowableRow(len(self.__inputInfosList)/3);
 		self.SetSizerAndFit(box);
 
 	def updatePosition(self):
@@ -60,6 +60,10 @@ class UploadDialogUI(wx.Dialog):
 			self.SetPosition(wx.Point(winCenterPoint.x - self.GetSize()[0]/2, winCenterPoint.y - self.GetSize()[1]));
 
 	def updateDialog(self, data):
+		if "name" in data:
+			self.__name.input.SetValue(data["name"]);
+		if "version" in data:
+			self.__version.input.SetValue(data["version"]);
 		pass;
 
 	def resetDialog(self):
@@ -141,7 +145,7 @@ class UploadDialogUI(wx.Dialog):
 	def createDirInputView(self):
 		params = self.__params.get("dirInput", {});
 		name = wx.StaticText(self, label = params.get("name", "工具路径"));
-		self.__dirInput = DirInputView(self, params = {"buttonLabel" : "选择目录", "buttonSize" : (60, 20), "onInput" : self.onInputToolFile});
+		self.__dirInput = DirInputView(self, params = {"buttonLabel" : "选择目录", "buttonSize" : (60, 20), "onInput" : self.getCtr().onInputToolFile});
 		self.__dirInput.isOk = False;
 		self.__fileInput = wx.Button(self, -1, "选择zip包", size = (60, 20));
 		def onClickBtn(event):
@@ -211,7 +215,7 @@ class UploadDialogUI(wx.Dialog):
 					self.updateInputPanel(panel, "版本校验通过！");
 		self.__version = self.createInfoInputPanel(params = {
 			"size" : (-1, -1),
-			"name" : versionParams.get("label", "版本"),
+			"name" : versionParams.get("label", "工具版本"),
 			"tips" : "*（必填）",
 			"blurCallback" : checkVersionInput,
 		});
@@ -242,21 +246,10 @@ class UploadDialogUI(wx.Dialog):
 			"size" : (-1, -1),
 			"name" : descriptionParams.get("label", "工具简介"),
 			"tips" : "*（必填）",
+			"inputSize" : descriptionParams.get("inputSize", (-1, 100)),
+			"inputStyle" : wx.TE_MULTILINE,
 			"blurCallback" : checkDescriptionInput,
 		});
-
-	def onInputToolFile(self, filePath, callback):
-		if filePath != "" and os.path.exists(filePath):
-			if os.path.isdir(filePath):
-				fileName = os.path.basename(filePath);
-				if not os.path.exists(_GG("g_DataPath")+"temp/zip"):
-					os.mkdir(_GG("g_DataPath")+"temp/zip");
-				zipFilePath = _GG("g_DataPath") + "temp/zip/" + "%s_%d.zip"%(fileName, int(time.time()));
-				self.zipFile(filePath, zipFilePath); # 压缩filePath为zip包
-				filePath = zipFilePath; # 重置filePath
-			if os.path.splitext(filePath)[-1] == ".zip":
-				pass;
-		return callback(zipFilePath);
 
 	def checkInputView(self, key = "a"):
 		if key in ["a", "dirInput"]:

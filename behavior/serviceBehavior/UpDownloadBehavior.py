@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-07 20:34:34
 # @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-17 13:14:22
+# @Last Modified time: 2019-03-19 22:13:06
 import wx;
 import urllib;
 import paramiko;
@@ -56,9 +56,9 @@ class UpDownloadBehavior(_GG("BaseBehavior")):
 		transport.close();
 
 	# 压缩文件
-	def zipFile(self, obj, dirpath, filePath, _retTuple = None):
+	def zipFile(self, obj, dirpath, filePath, finishCallback = None, _retTuple = None):
 		totalSize = self.getDirPathSize(dirpath);
-		def zipMethod(dirpath, filePath, totalSize, callback):
+		def zipMethod(dirpath, filePath, totalSize, callback, lastCallback):
 			zf = zipfile.ZipFile(filePath,'w', zipfile.ZIP_DEFLATED);
 			completeSize = 0;
 			for root, _, files in os.walk(dirpath):
@@ -68,14 +68,16 @@ class UpDownloadBehavior(_GG("BaseBehavior")):
 					completeSize += os.path.getsize(os.path.join(root, file));
 				callback(completeSize/totalSize, root); # 回调函数
 			zf.close();
-		proDialog = wx.ProgressDialog("压缩工具包", "", style = wx.PD_APP_MODAL|wx.PD_SMOOTH|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIM);
+			if callable(lastCallback):
+				wx.CallAfter(lastCallback); # 完成后的回调
+		proDialog = wx.ProgressDialog("压缩工具包", "", style = wx.PD_APP_MODAL|wx.PD_CAN_SKIP|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME);
 		def updateProDialog(value, path):
 			value = proDialog.GetRange() * value;
 			if value >= proDialog.GetRange():
 				wx.CallAfter(proDialog.Update, proDialog.GetRange(), "已完成压缩，包路径为：\n" + str(filePath));
 			else:
 				wx.CallAfter(proDialog.Update, value, "正在压缩\n" + str(path));
-		threading.Thread(target = zipMethod, args = (dirpath, filePath, totalSize, updateProDialog)).start();
+		threading.Thread(target = zipMethod, args = (dirpath, filePath, totalSize, updateProDialog, finishCallback)).start();
 		proDialog.Update(0, "开始压缩\n" + str(filePath));
 		proDialog.ShowModal();
 
