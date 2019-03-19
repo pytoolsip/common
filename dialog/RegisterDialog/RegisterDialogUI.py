@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-01-26 18:49:31
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:45:45
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-19 23:56:34
 import wx;
 import math;
 
@@ -140,7 +140,7 @@ class RegisterDialogUI(wx.Dialog):
 			if not panel.input.GetValue():
 				self.updateInputPanel(panel, "必须填写用户名！", False);
 			elif not self.getCtr().checkNameFormat(panel.input.GetValue()):
-				self.updateInputPanel(panel, "用户名格式错误！", False);
+				self.updateInputPanel(panel, "用户名不能包含特殊字符！", False);
 			else:
 				callback = nameParams.get("onBlur", None);
 				if callback:

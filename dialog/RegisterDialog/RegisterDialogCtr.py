@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-01-26 18:49:31
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:45:44
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-19 23:55:09
 import os;
 import wx;
 import re;
@@ -98,7 +98,9 @@ class RegisterDialogCtr(object):
 		return False;
 
 	def checkNameFormat(self, name):
-		return True;
+		if re.match(r"^[_a-zA-Z0-9\u4e00-\u9fa5]+$", name):
+			return True;
+		return False;
 
 	def checkPwdFormat(self, pwd):
 		if re.match(r"(?=.*[A-Za-z])(?=.*\d)[a-zA-Z\d]{8,16}", pwd):

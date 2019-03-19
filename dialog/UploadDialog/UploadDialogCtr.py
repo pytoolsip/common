@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-16 03:04:58
 # @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-19 22:45:03
+# @Last Modified time: 2019-03-19 23:59:20
 import os;
 import wx;
 import zipfile, json;
@@ -116,3 +116,8 @@ class UploadDialogCtr(object):
 				self.getUI().updateDialog(json.loads(toolJsonStr));
 			except Exception as e:
 				_GG("WindowObject").CreateMessageDialog("上传工具包的json文件数据有误！\n%s"%e, "上传工具", style = wx.OK|wx.ICON_ERROR);
+
+	def checkNameFormat(self, name):
+		if re.match(r"^[_a-zA-Z0-9\u4e00-\u9fa5]+$", name):
+			return True;
+		return False;

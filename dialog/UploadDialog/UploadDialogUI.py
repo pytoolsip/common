@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-16 03:04:58
 # @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-19 23:05:20
+# @Last Modified time: 2019-03-19 23:56:48
 import wx, math;
 
 from _Global import _GG;
@@ -168,7 +168,7 @@ class UploadDialogUI(wx.Dialog):
 			if not panel.input.GetValue():
 				self.updateInputPanel(panel, "必须填写工具名！", False);
 			elif not self.getCtr().checkNameFormat(panel.input.GetValue()):
-				self.updateInputPanel(panel, "工具名格式错误！", False);
+				self.updateInputPanel(panel, "工具名不能包含特殊字符！", False);
 			else:
 				callback = nameParams.get("onBlur", None);
 				if callback:
