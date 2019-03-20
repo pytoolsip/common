@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-16 03:04:58
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-19 23:56:48
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-20 19:03:06
 import wx, math;
 
 from _Global import _GG;
@@ -71,6 +71,8 @@ class UploadDialogUI(wx.Dialog):
 		self.updateInputPanel(self.__name, isReset = True);
 		self.updateOnlineVersionView("无");
 		self.updateInputPanel(self.__version, isReset = True);
+		self.resetCategoryPanel();
+		self.updateInputPanel(self.__exCategory, isReset = True);
 		self.__commonVersion.SetLabel(_GG("AppConfig")["version"]);
 		self.updateInputPanel(self.__description, isReset = True);
 
@@ -79,6 +81,8 @@ class UploadDialogUI(wx.Dialog):
 		self.createNameView();
 		self.createOnlineVersionView();
 		self.createVersionView();
+		self.createCategoryView();
+		self.createExCategoryView();
 		self.createConmonVersionView();
 		self.createDescriptionView();
 
@@ -158,7 +162,7 @@ class UploadDialogUI(wx.Dialog):
 		self.__fileInput.Bind(wx.EVT_BUTTON, onClickBtn);
 		# 添加到信息列表中
 		self.__inputInfosList.append((name, 0, wx.ALIGN_RIGHT|wx.TOP|wx.LEFT, 8));
-		self.__inputInfosList.append((self.__dirInput, 0, wx.ALIGN_RIGHT|wx.TOP|wx.LEFT, 8));
+		self.__inputInfosList.append((self.__dirInput, 0, wx.EXPAND|wx.TOP|wx.LEFT, 8));
 		self.__inputInfosList.append((self.__fileInput, 0, wx.TOP|wx.LEFT|wx.RIGHT, 8));
 
 	# 创建工具名输入框
@@ -179,7 +183,7 @@ class UploadDialogUI(wx.Dialog):
 					self.updateInputPanel(panel, "工具名校验通过！");
 		self.__name = self.createInfoInputPanel(params = {
 			"size" : (-1, -1),
-			"name" : nameParams.get("label", "工具名"),
+			"name" : nameParams.get("label", "工具名称"),
 			"tips" : "*（必填）",
 			"blurCallback" : checkNameInput,
 		});
@@ -249,6 +253,84 @@ class UploadDialogUI(wx.Dialog):
 			"inputSize" : descriptionParams.get("inputSize", (-1, 100)),
 			"inputStyle" : wx.TE_MULTILINE,
 			"blurCallback" : checkDescriptionInput,
+		});
+
+	def createCategoryView(self):
+		categoryParams = self.__params.get("category", {});
+		def checkCategoryInput(panel):
+			if not panel.input.GetValue():
+				self.updateInputPanel(panel, "必须填写工具简介！", False);
+			else:
+				callback = categoryParams.get("onBlur", None);
+				if callback:
+					def update(label, isOk = True):
+						self.updateInputPanel(panel, label, isOk);
+					callback(panel.input.GetValue(), update);
+				else:
+					self.updateInputPanel(panel, "");
+		self.__category = self.createCategoryPanel(params = {
+			"name" : categoryParams.get("label", "工具类别"),
+			"tips" : "*（必填）",
+			"choicesInfo" : categoryParams.get("choicesInfo", {}),
+		});
+
+	def createCategoryPanel(self, params):
+		name = wx.StaticText(self, label = params.get("name", "名称"));
+		tips = wx.StaticText(self, label = params.get("tips", ""));
+		# 创建选择框
+		panel = wx.Panel(self);
+		panel._choiceList = [];
+		box = wx.BoxSizer(wx.HORIZONTAL);
+		choicesInfo = params.get("choicesInfo", {});
+		for i in range(choicesInfo.get("cols", 1)):
+			choices = i == 0 and choicesInfo.get("choices", []) or [];
+			choiceCtl = wx.Choice(panel, choices = choices);
+			choiceCtl._idx = i;
+			choiceCtl.Bind(wx.EVT_CHOICE, self.__onChoiceCategory__);
+			panel._choiceList.append(choiceCtl);
+			box.Add(choiceCtl);
+		panel.SetSizer(box);
+		self.__inputInfosList.append((name, 0, wx.ALIGN_RIGHT|wx.TOP|wx.LEFT, 8));
+		self.__inputInfosList.append((panel, 0, wx.EXPAND|wx.TOP|wx.LEFT, 8));
+		self.__inputInfosList.append((tips, 0, wx.TOP|wx.LEFT, 8));
+		return panel;
+
+	def resetCategoryPanel(self):
+		for i in range(self.__category._choiceList):
+			choiceCtl = self.__category._choiceList[i];
+			if i == 0:
+				choiceCtl.SetSelection(0);
+			else:
+				choiceCtl.Clear();
+		return panel;
+
+	def __updateCategoryChoice__(self, choiceCtl, choices = []):
+		choiceCtl.SetItems(choices);
+		choiceCtl.Layout();
+
+	def __onChoiceCategory__(self, event):
+		choicesInfo = self.__params.get("category", {}).get("choicesInfo", {});
+		choiceCtl = event.GetEventObject();
+		nextIdx = choiceCtl._idx + 1;
+		if nextIdx < len(self.__category._choiceList):
+			selectionStr = choiceCtl.GetString(choiceCtl.GetSelection());
+			self.__updateCategoryChoice__(self.__category._choiceList[nextIdx], choicesInfo.get(selectionStr, []));
+
+	def createExCategoryView(self):
+		exCategoryParams = self.__params.get("exCategory", {});
+		def checkExCategoryInput(panel):
+			callback = exCategoryParams.get("onBlur", None);
+			if callback:
+				def update(label, isOk = True):
+					self.updateInputPanel(panel, label, isOk);
+				callback(panel.input.GetValue(), update);
+			else:
+				self.updateInputPanel(panel, "");
+		self.__exCategory = self.createInfoInputPanel(params = {
+			"size" : (-1, -1),
+			"name" : exCategoryParams.get("label", "扩展类别"),
+			"tips" : "[请用/分割]",
+			"blurCallback" : checkExCategoryInput,
 		});
 
 	def checkInputView(self, key = "a"):
