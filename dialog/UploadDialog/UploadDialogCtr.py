@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-16 03:04:58
 # @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-19 23:59:20
+# @Last Modified time: 2019-03-20 22:53:33
 import os;
 import wx;
 import zipfile, json;
@@ -96,14 +96,18 @@ class UploadDialogCtr(object):
 	def onInputToolFile(self, filePath, callback):
 		if filePath != "" and os.path.exists(filePath):
 			if os.path.isdir(filePath):
-				fileName = os.path.basename(filePath);
-				if not os.path.exists(_GG("g_DataPath")+"temp/zip"):
-					os.mkdir(_GG("g_DataPath")+"temp/zip");
-				zipFilePath = _GG("g_DataPath") + "temp/zip/" + "%s_%d.zip"%(fileName, int(time.time()));
-				def finishCallback():
-					self.updateDialogByZipFile(zipFilePath);
-				if self.zipFile(filePath, zipFilePath, finishCallback = finishCallback): # 压缩filePath为zip包
-					filePath = zipFilePath; # 重置filePath
+				if os.path.exists(filePath+"/tool.json"):
+					fileName = os.path.basename(filePath);
+					if not os.path.exists(_GG("g_DataPath")+"temp/zip"):
+						os.mkdir(_GG("g_DataPath")+"temp/zip");
+					zipFilePath = _GG("g_DataPath") + "temp/zip/" + "%s_%d.zip"%(fileName, int(time.time()));
+					def finishCallback():
+						self.updateDialogByZipFile(zipFilePath);
+					if self.zipFile(filePath, zipFilePath, finishCallback = finishCallback): # 压缩filePath为zip包
+						filePath = zipFilePath; # 重置filePath
+				else:
+					_GG("WindowObject").CreateMessageDialog("上传工程路径有误【缺失tool.json文件】，请重新选择！", "上传工具", style = wx.OK|wx.ICON_ERROR);
+					return callback("");
 			else:
 				self.updateDialogByZipFile(filePath);
 		return callback(zipFilePath);
