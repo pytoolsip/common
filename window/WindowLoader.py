@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JinZhang
 # @Date:   2018-04-19 14:19:46
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-17 00:38:48
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-23 16:39:12
 
 import wx;
 from ProjectConfig import ProjectConfig;
@@ -123,11 +123,11 @@ class WindowLoader(object):
 	def createDialogCtr(self, path, params = {}, isRecreate = False, isReset = True, isShow = True, callback = None):
 		# 判断是否重新创建弹窗
 		if path in self.__CtrMap:
-			if not isRecreate:
-				return self.__CtrMap[path]
-			DelCtr(self.__CtrMap[path]);
-		# 创建弹窗
-		self.__CtrMap[path] = CreateCtr(path, self._parentWindowUI, params = params);
+			if isRecreate:
+				DelCtr(self.__CtrMap.pop(path));
+		# 如果不存在弹窗，则创建弹窗
+		if path not in self.__CtrMap:
+			self.__CtrMap[path] = CreateCtr(path, self._parentWindowUI, params = params);
 		ui = self.__CtrMap[path].getUI();
 		if isReset and hasattr(ui, "resetDialog"):
 			ui.resetDialog();

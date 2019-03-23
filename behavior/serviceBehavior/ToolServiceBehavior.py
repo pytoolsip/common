@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-20 19:39:49
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-20 23:27:42
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-23 17:42:11
+import wx;
 
 from _Global import _GG;
 from function.base import *;
@@ -37,28 +38,64 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 	# 	pass;
 
 	def _uploadTool_(self, obj, _retTuple = None):
+		if _GG("CommonClient").getUserId() < 0:
+			_GG("WindowObject").CreateMessageDialog("请先登录账号！", "上传工具", style = wx.OK|wx.ICON_INFORMATION);
+			return;
 		def onBlurName(name, callback):
 			# 请求服务的回调
 			def checkName(respData):
 				if not respData:
 					callback("网络请求失败！", False);
 				elif respData.isSuccess:
-					callback("该分类路径下已存在相同工具名！", False);
+					data = _GG("CommonClient").decodeBytes(respData.data);
+					if "version" in data:
+						callback("", onlineVersion = data["version"]);
+					else:
+						callback("");
 				else:
-					callback("");
+					callback("该分类路径下已存在相同工具名！", False);
 			# 请求服务
 			_GG("CommonClient").callService("Request", "Req", {
 				"key" : "VertifyToolName",
 				"data" : _GG("CommonClient").encodeBytes({"name" : name}),
 			}, asynCallback = checkName);
 		def onUpload(uploadInfo):
-			respData = _GG("CommonClient").callService("Upload", "UploadReq", uploadInfo);
-			# if respData and respData.isPermit:
-			# 	respData = _GG("CommonClient").callService("Upload", "UploadReq", uploadInfo);
-			# 	_GG("WindowObject").CreateMessageDialog("登录成功，是否保存账户密码到本地？", "登录账号", callback = setIPInfoConfig, style = wx.OK|wx.CANCEL|wx.ICON_QUESTION)
-			# else:
-			# 	_GG("WindowObject").CreateMessageDialog("登录失败，请重新登录！", "登录账号", style = wx.OK|wx.ICON_INFORMATION);
-			return respData and respData.isSuccess or False;
+			respData = _GG("CommonClient").callService("Upload", "UploadReq", {
+				"uid" : _GG("CommonClient").getUserId(),
+				"category" : uploadInfo["category"],
+				"name" : uploadInfo["name"],
+				"version" : uploadInfo["version"],
+				"commonVersion" : uploadInfo["commonVersion"],
+				"description" : uploadInfo["description"],
+			});
+			if not respData:
+				_GG("WindowObject").CreateMessageDialog("网络请求失败！", "上传工具", style = wx.OK|wx.ICON_ERROR);
+			elif not respData.isPermit:
+				_GG("WindowObject").CreateMessageDialog("上传失败，请检测上传信息！", "上传工具", style = wx.OK|wx.ICON_ERROR);
+			else:
+				token = _GG("CommonClient").decodeBytes(respData.token);
+				try:
+					conf = _GG("ClientConfig").Config();
+					_HOST, _PORT = conf.Get("server", "host"), int(conf.Get("server", "port"));
+					def callback():
+						respData = _GG("CommonClient").callService("Uploaded", "UploadReq", {
+							"uid" : _GG("CommonClient").getUserId(),
+							"category" : uploadInfo["category"],
+							"name" : uploadInfo["name"],
+							"version" : uploadInfo["version"],
+							"commonVersion" : uploadInfo["commonVersion"],
+							"description" : uploadInfo["description"],
+						});
+					obj.upload(uploadInfo["filePath"], token["url"], {
+						"host" : _HOST,
+						"port" : token["port"],
+						"user" : token["user"],
+						"password" : token["password"],
+					}, callback = callback);
+				except Exception as e:
+					print(e)
+					_GG("WindowObject").CreateMessageDialog("上传失败！%s"%e, "上传工具", style = wx.OK|wx.CANCEL|wx.ICON_ERROR)
+			return respData and respData.isPermit or False;
 		# 显示弹窗
 		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/UploadDialog", params = {
 			"name" : {

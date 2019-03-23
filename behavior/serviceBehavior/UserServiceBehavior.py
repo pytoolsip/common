@@ -2,7 +2,8 @@
 # @Author: JimZhang
 # @Date:   2019-03-16 11:25:09
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 21:31:16
+# @Last Modified time: 2019-03-23 15:55:26
+import wx;
 
 from _Global import _GG;
 from function.base import *;

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-01-26 18:49:31
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-19 23:56:34
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-23 17:11:54
 import wx;
 import math;
 
@@ -305,16 +305,16 @@ class RegisterDialogUI(wx.Dialog):
 		if key in ["a", "email"]:
 			if not self.__email.isOk:
 				return False;
-		elif key in ["a", "name"]:
+		if key in ["a", "name"]:
 			if not self.__name.isOk:
 				return False;
-		elif key in ["a", "pwd"]:
+		if key in ["a", "pwd"]:
 			if not self.__pwd.isOk:
 				return False;
-		elif key in ["a", "confirmPwd"]:
+		if key in ["a", "confirmPwd"]:
 			if not self.__confirmPwd.isOk:
 				return False;
-		elif key in ["a", "veriCode"]:
+		if key in ["a", "veriCode"]:
 			if not self.__veriCode.isOk:
 				return False;
 		return True;

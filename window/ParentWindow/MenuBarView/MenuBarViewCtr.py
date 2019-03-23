@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-19 19:07:00
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-23 15:53:24
 import os;
 import wx;
 import time;
@@ -87,6 +87,7 @@ class MenuBarViewCtr(object):
 	def bindBehaviors(self):
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "copyBehavior/ShutilCopyBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/UserServiceBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/ToolServiceBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 		
 	def unbindBehaviors(self):
@@ -109,7 +110,7 @@ class MenuBarViewCtr(object):
 			return True;
 		return False;
 
-	def onClickToolDevelopment(self, event):
+	def onClickToolDevelopment(self, menuItem, event):
 		if not self.getCtrByKey("ToolDevelopInfoDialogCtr"):
 			self.createCtrByKey("ToolDevelopInfoDialogCtr", _GG("g_CommonPath") + "dialog/ToolDevelopInfoDialog");
 		if self.getUIByKey("ToolDevelopInfoDialogCtr").ShowModal() == wx.ID_OK :
@@ -124,12 +125,12 @@ class MenuBarViewCtr(object):
 			# 显示弹窗
 			self.showMessageDialog(message, "创建工具开发项目", style = wx.OK|wx.ICON_INFORMATION);
 
-	def onClickAboutIP(self, event):
+	def onClickAboutIP(self, menuItem, event):
 		if not self.getCtrByKey("AboutIPDialogCtr"):
 			self.createCtrByKey("AboutIPDialogCtr", _GG("g_CommonPath") + "dialog/AboutIPDialog");
 		self.getUIByKey("AboutIPDialogCtr").ShowModal();
 
-	def onOpenCurTabPagePath(self, event):
+	def onOpenCurTabPagePath(self, menuItem, event):
 		curTabPage = None;
 		try:
 			curTabPage = _GG("WindowObject").MainWindowCtr.getCtrByKey("WindowRightViewCtr").getCtrByKey("NoteBookViewCtr").getCurrentPage();
@@ -141,14 +142,14 @@ class MenuBarViewCtr(object):
 		else:
 			self.showMessageDialog("打开当前标签页目录失败！", "提示", style = wx.OK|wx.ICON_INFORMATION);
 
-	def onClickLogin(self, event):
+	def onClickLogin(self, menuItem, event):
 		self._loginIP_();
 
-	def onClickRegister(self, event):
+	def onClickRegister(self, menuItem, event):
 		self._registerIP_();
 
-	def onUploadTool(self, event):
-		pass;
+	def onUploadTool(self, menuItem, event):
+		self._uploadTool_();
 
 	def getMenuItemsData(self):
 		return [

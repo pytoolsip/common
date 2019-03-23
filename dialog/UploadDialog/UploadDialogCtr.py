@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-16 03:04:58
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-20 22:53:33
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-23 17:07:39
 import os;
 import wx;
 import zipfile, json;
@@ -125,3 +125,38 @@ class UploadDialogCtr(object):
 		if re.match(r"^[_a-zA-Z0-9\u4e00-\u9fa5]+$", name):
 			return True;
 		return False;
+
+	def checkVersion(self, version, onlineVersion, commonVersion):
+		newVerVal = None;
+		verList = [int(ver) for ver in version.replace(" ", "").split(".") if ver.isdigit()];
+		comVerList = [int(ver) for ver in commonVersion.split(".")];
+		if len(verList) != 3 or (verList[0] <= 0 and verList[1] <= 0 and verList[2] <= 0):
+			return False, "版本格式错误！", newVerVal;
+		if verList[0] != comVerList[0]:
+			return False, "版本第1位必须与common版本的相同！", newVerVal;
+		if onlineVersion == "无":
+			if verList[0] == comVerList[0] and verList[1] == 0 and verList[2] == 0:
+				return True, "", ".".join([str(ver) for ver in verList]);
+			return False, "初始版本必须为%d.0.0！"%comVerList[0], ".".join([str(ver) for ver in verList]);
+		olVerList = [int(ver) for ver in onlineVersion.split(".")];
+		if olVerList[1] > verList[1]:
+			return False, "版本第2位不能小于线上版本的！", ".".join([str(ver) for ver in verList]);
+		elif olVerList[1] < verList[1]:
+			if verList[1] - olVerList[1]:
+				return False, "版本第2位增量必须为1！", ".".join([str(ver) for ver in verList]);
+			if verList[2] != 0:
+				return False, "更新版本第2位时，第3位必须为0！", ".".join([str(ver) for ver in verList]);
+		else:
+			if olVerList[2] > verList[2]:
+				return False, "版本第3位不能小于线上版本的！", ".".join([str(ver) for ver in verList]);
+			if verList[2] - olVerList[2] != 1:
+				return False, "版本第3位增量必须为1！", ".".join([str(ver) for ver in verList]);
+		return True, "", ".".join([str(ver) for ver in verList]);
+
+	def checkExCategory(self, exCategory):
+		if not re.match(r"^[/_a-zA-Z0-9\u4e00-\u9fa5]+$", exCategory):
+			return False, "不能包含特殊字符！";
+		exList = exCategory.split("/");
+		if len(exList) > 2:
+			return False, "不能扩展分类超过2级！";
+		return True, "";

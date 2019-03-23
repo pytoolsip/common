@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2019-01-28 14:23:53
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:45:43
+# @Last Modified time: 2019-03-23 17:12:04
 
 import wx;
 import math;
@@ -175,7 +175,7 @@ class LoginDialogUI(wx.Dialog):
 		if key in ["a", "name"]:
 			if not self.__name.isOk:
 				return False;
-		elif key in ["a", "pwd"]:
+		if key in ["a", "pwd"]:
 			if not self.__pwd.isOk:
 				return False;
 		return True;

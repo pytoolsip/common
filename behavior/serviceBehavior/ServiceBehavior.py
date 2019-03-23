@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-06 23:14:13
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-16 15:09:24
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-23 16:28:47
 import os;
 
 from _Global import _GG;
@@ -61,7 +61,7 @@ class ServiceBehavior(_GG("BaseBehavior")):
 			# 登录回调
 			def onLogin(respData):
 				if respData and respData.isSuccess:
-					_GG("EventDispatcher").dispatch(_GG("EVENT_ID").LOGIN_SUCCESS_EVENT, respData);
+					_GG("EventDispatcher").dispatch(_GG("EVENT_ID").LOGIN_SUCCESS_EVENT, respData.userInfo);
 				pass;
 			# 请求服务
 			_GG("CommonClient").callService("Login", "LoginReq", {

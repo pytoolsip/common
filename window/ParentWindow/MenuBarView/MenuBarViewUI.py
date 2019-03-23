@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:46:20
+# @Last Modified time: 2019-03-23 15:50:43
 
 import wx;
 
@@ -17,7 +17,7 @@ class MenuBarViewUI(wx.Panel):
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
 		self.__parent = parent;
-		self.__itemCallDict = {}; # 菜单项回调函数【key值对应菜单项ID】
+		self.__itemInfoDict = {}; # 菜单项回调函数【key值对应菜单项ID】
 
 	def getCtr(self):
 		return self.__viewCtr;
@@ -87,12 +87,13 @@ class MenuBarViewUI(wx.Panel):
 						params = itemInfo["params"];
 					# 创建菜单项
 					theMenuItem = wx.MenuItem(parentMenu, itemId, text = showText, **params);
+					self.__itemInfoDict[theMenuItem.GetId()] = {"item" : theMenuItem};
 					# 创建菜单项Icon
 					if "iconImg" in itemInfo:
 						theMenuItem.SetBitmap(wx.Bitmap(itemInfo["iconImg"]));
 					# 绑定回调函数
 					if "callback" in itemInfo and callable(itemInfo["callback"]):
-						self.__itemCallDict[theMenuItem.GetId()] = itemInfo["callback"];
+						self.__itemInfoDict[theMenuItem.GetId()]["callback"] = itemInfo["callback"];
 					# 是否允许点击
 					if "enable" in itemInfo:
 						theMenuItem.Enable(itemInfo["enable"]);
@@ -114,5 +115,5 @@ class MenuBarViewUI(wx.Panel):
 		pass;
 
 	def onMenu(self, event):
-		if event.GetId() in self.__itemCallDict:
-			self.__itemCallDict[event.GetId()](event);
+		if event.GetId() in self.__itemInfoDict:
+			self.__itemInfoDict[event.GetId()]["callback"](self.__itemInfoDict[event.GetId()]["item"], event);

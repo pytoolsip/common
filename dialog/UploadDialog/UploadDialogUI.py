@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-16 03:04:58
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-20 23:26:57
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-23 17:19:51
 import wx, math;
 
 from _Global import _GG;
@@ -150,7 +150,6 @@ class UploadDialogUI(wx.Dialog):
 		params = self.__params.get("dirInput", {});
 		name = wx.StaticText(self, label = params.get("name", "工具路径"));
 		self.__dirInput = DirInputView(self, params = {"buttonLabel" : "选择目录", "buttonSize" : (60, 20), "onInput" : self.getCtr().onInputToolFile});
-		self.__dirInput.isOk = False;
 		self.__fileInput = wx.Button(self, -1, "选择zip包", size = (60, 20));
 		def onClickBtn(event):
 			filePath = wx.DirSelector();
@@ -168,29 +167,36 @@ class UploadDialogUI(wx.Dialog):
 	# 创建工具名输入框
 	def createNameView(self):
 		nameParams = self.__params.get("name", {});
-		def checkNameInput(panel):
-			if not panel.input.GetValue():
-				self.updateInputPanel(panel, "必须填写工具名！", False);
-			elif not self.getCtr().checkNameFormat(panel.input.GetValue()):
-				self.updateInputPanel(panel, "工具名不能包含特殊字符！", False);
-			else:
-				ret, fulName = self.checkToolFullName(panel.input.GetValue());
-				if ret:
-					callback = nameParams.get("onBlur", None);
-					if callback:
-						def update(label, isOk = True):
-							self.updateInputPanel(panel, label, isOk);
-						callback(fulName, update);
-					else:
-						self.updateInputPanel(panel, "工具名校验通过！");
-				else:
-					self.updateInputPanel(self.__exCategory, "必须选择工具分类！", False);
 		self.__name = self.createInfoInputPanel(params = {
 			"size" : (-1, -1),
 			"name" : nameParams.get("label", "工具名称"),
 			"tips" : "*（必填）",
-			"blurCallback" : checkNameInput,
+			"blurCallback" : self.checkNameInput,
 		});
+
+	def checkNameInput(self, panel = None):
+		nameParams = self.__params.get("name", {});
+		if not panel:
+			panel = self.__name;
+		if not panel.input.GetValue():
+			self.updateInputPanel(panel, "必须填写工具名！", False);
+		elif not self.getCtr().checkNameFormat(panel.input.GetValue()):
+			self.updateInputPanel(panel, "工具名不能包含特殊字符！", False);
+		else:
+			ret, fulName = self.checkToolFullName(panel.input.GetValue());
+			if ret:
+				callback = nameParams.get("onBlur", None);
+				if callback:
+					def update(label, isOk = True, onlineVersion = ""):
+						self.updateInputPanel(panel, label, isOk);
+						if onlineVersion:
+							self.updateOnlineVersionView(onlineVersion);
+					callback(fulName, update);
+				else:
+					self.updateInputPanel(panel, "工具名校验通过！");
+			else:
+				self.updateInputPanel(self.__exCategory, "必须选择工具分类！", False);
+
 
 	# 创建线上版本视图
 	def createOnlineVersionView(self):
@@ -211,16 +217,22 @@ class UploadDialogUI(wx.Dialog):
 		def checkVersionInput(panel):
 			if not panel.input.GetValue():
 				self.updateInputPanel(panel, "必须填写版本！", False);
-			elif not self.getCtr().checkVersion(panel.input.GetValue(), self.__onlineVersion.GetLabel()):
-				self.updateInputPanel(panel, "版本填写错误！", False);
 			else:
-				callback = versionParams.get("onBlur", None);
-				if callback:
-					def update(label, isOk = True):
-						self.updateInputPanel(panel, label, isOk);
-					callback(panel.input.GetValue(), update);
+				ret, tips, value = self.getCtr().checkVersion(panel.input.GetValue(), self.__onlineVersion.GetLabel(), self.__commonVersion.GetLabel());
+				# 重置输入框的值
+				if value:
+					panel.input.SetValue(value);
+				# 根据检测结果，更新视图
+				if not ret:
+					self.updateInputPanel(panel, tips, False);
 				else:
-					self.updateInputPanel(panel, "版本校验通过！");
+					callback = versionParams.get("onBlur", None);
+					if callback:
+						def update(label, isOk = True):
+							self.updateInputPanel(panel, label, isOk);
+						callback(panel.input.GetValue(), update);
+					else:
+						self.updateInputPanel(panel, "版本校验通过！");
 		self.__version = self.createInfoInputPanel(params = {
 			"size" : (-1, -1),
 			"name" : versionParams.get("label", "工具版本"),
@@ -263,7 +275,7 @@ class UploadDialogUI(wx.Dialog):
 		categoryParams = self.__params.get("category", {});
 		self.__category = self.createCategoryPanel(params = {
 			"name" : categoryParams.get("label", "工具分类"),
-			"tips" : "*（必填）",
+			"tips" : "*（必选）",
 			"choicesInfo" : categoryParams.get("choicesInfo", {}),
 		});
 
@@ -311,19 +323,31 @@ class UploadDialogUI(wx.Dialog):
 	def createExCategoryView(self):
 		exCategoryParams = self.__params.get("exCategory", {});
 		def checkExCategoryInput(panel):
-			callback = exCategoryParams.get("onBlur", None);
-			if callback:
-				def update(label, isOk = True):
-					self.updateInputPanel(panel, label, isOk);
-				callback(panel.input.GetValue(), update);
-			else:
+			panel.input.SetValue(panel.input.GetValue().replace(" ", ""));
+			if not panel.input.GetValue():
 				self.updateInputPanel(panel, "");
+			else:
+				ret, tips = self.getCtr().checkExCategory(panel.input.GetValue());
+				if not ret:
+					self.updateInputPanel(panel, tips, False);
+				else:
+					callback = exCategoryParams.get("onBlur", None);
+					if callback:
+						def update(label, isOk = True):
+							self.updateInputPanel(panel, label, isOk);
+						callback(panel.input.GetValue(), update);
+					else:
+						self.updateInputPanel(panel, "");
+			if panel.isOk:
+				if self.__name.input.GetValue():
+					self.checkNameInput();
 		self.__exCategory = self.createInfoInputPanel(params = {
 			"size" : (-1, -1),
 			"name" : exCategoryParams.get("label", "扩展分类"),
 			"tips" : "（请用/分割）",
 			"blurCallback" : checkExCategoryInput,
 		});
+		self.__exCategory.isOk = True;
 
 	# 检测工具全称【包含分类路径】
 	def checkToolFullName(self, name):
@@ -340,15 +364,38 @@ class UploadDialogUI(wx.Dialog):
 
 	def checkInputView(self, key = "a"):
 		if key in ["a", "dirInput"]:
-			if not self.__dirInput.isOk:
+			if not self.__dirInput.getInputValue():
+				print("dirInput")
 				return False;
-		elif key in ["a", "name"]:
+		if key in ["a", "name"]:
 			if not self.__name.isOk:
+				print("name")
 				return False;
-		elif key in ["a", "version"]:
+		if key in ["a", "version"]:
 			if not self.__version.isOk:
+				print("version")
 				return False;
-		elif key in ["a", "description"]:
+		if key in ["a", "description"]:
 			if not self.__description.isOk:
+				print("description")
+				return False;
+		if key in ["a", "category"]:
+			ret, _ = self.checkToolFullName("");
+			if not ret:
+				print("category1")
+				return False;
+			if not self.__exCategory.isOk:
+				print("category2")
 				return False;
 		return True;
+
+	def getLoginInfo(self):
+		_, category = self.checkToolFullName("");
+		return {
+			"filePath" : self.__dirInput.getInputValue(),
+			"category" : category,
+			"name" : self.__name.input.GetValue(),
+			"version" : self.__version.input.GetValue(),
+			"commonVersion" : self.__commonVersion.GetLabel(),
+			"description" : self.__description.input.GetValue(),
+		};
