@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-07 20:34:34
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-23 17:51:04
+# @Last Modified time: 2019-03-23 22:14:20
 import wx;
 import urllib;
 import paramiko;
@@ -48,17 +48,17 @@ class UpDownloadBehavior(_GG("BaseBehavior")):
 		dialogCtr.getUI().start(totalSize = totalSize);
 
 	# 上传文件
-	def upload(self, obj, filePath, url, data, callback = None, _retTuple = None):
-		def uploadFile(filePath, url, data, callback = None):
+	def upload(self, obj, filePath, data, callback = None, _retTuple = None):
+		def uploadFile(filePath, data, callback = None):
 			transport = paramiko.Transport((data["host"], int(data["port"])));
 			transport.banner_timeout = 300
 			transport.connect(username = data["user"], password = data["password"]);
 			sftp = paramiko.SFTPClient.from_transport(transport);
-			sftp.put(filePath, url);
+			sftp.put(filePath, data["url"]);
 			transport.close();
 			if callable(callback):
-				callback();
-		threading.Thread(target = uploadFile, args = (filePath, url, data, callback)).start();
+				wx.CallAfter(callback);
+		threading.Thread(target = uploadFile, args = (filePath, data, callback)).start();
 
 	# 压缩文件
 	def zipFile(self, obj, dirpath, filePath, finishCallback = None, _retTuple = None):
@@ -69,8 +69,9 @@ class UpDownloadBehavior(_GG("BaseBehavior")):
 			for root, _, files in os.walk(dirpath):
 				# 去掉目标根路径，只对目标文件夹下边的文件进行压缩
 				for file in files:
-					zf.write(os.path.join(root, file), os.path.join(root.replace(dirpath, ''), file));
-					completeSize += os.path.getsize(os.path.join(root, file));
+					if os.path.splitext(file)[-1] not in [".pyc"]: # 过滤文件
+						zf.write(os.path.join(root, file), os.path.join(root.replace(dirpath, ''), file));
+						completeSize += os.path.getsize(os.path.join(root, file));
 				callback(completeSize/totalSize, root); # 回调函数
 			zf.close();
 			if callable(lastCallback):

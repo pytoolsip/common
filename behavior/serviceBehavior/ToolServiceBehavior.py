@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-20 19:39:49
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-23 17:42:11
+# @Last Modified time: 2019-03-23 21:59:52
 import wx;
 
 from _Global import _GG;
@@ -73,28 +73,31 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 			elif not respData.isPermit:
 				_GG("WindowObject").CreateMessageDialog("上传失败，请检测上传信息！", "上传工具", style = wx.OK|wx.ICON_ERROR);
 			else:
+				msgDlg = _GG("WindowObject").CreateMessageDialog("正在上传工具【%s】..."%uploadInfo["name"], "上传工具", isShow = False, style = wx.OK|wx.ICON_INFORMATION)
 				token = _GG("CommonClient").decodeBytes(respData.token);
+				def callback():
+					def asynCallback(respData):
+						msgDlg.EndModal(wx.ID_OK);
+						if not respData:
+							_GG("WindowObject").CreateMessageDialog("网络连接失败！", "上传工具", style = wx.OK|wx.ICON_ERROR)
+						elif respData.isSuccess:
+							_GG("WindowObject").CreateMessageDialog("上传工具【%s】成功。"%uploadInfo["name"], "上传工具", style = wx.OK|wx.ICON_INFORMATION);
+						else:
+							_GG("WindowObject").CreateMessageDialog("保存工具【%s】包数据失败！"%uploadInfo["name"], "上传工具", style = wx.OK|wx.ICON_ERROR)
+					_GG("CommonClient").callService("Uploaded", "UploadReq", {
+						"uid" : _GG("CommonClient").getUserId(),
+						"category" : uploadInfo["category"],
+						"name" : uploadInfo["name"],
+						"version" : uploadInfo["version"],
+						"commonVersion" : uploadInfo["commonVersion"],
+						"description" : uploadInfo["description"],
+					}, asynCallback = asynCallback);
 				try:
-					conf = _GG("ClientConfig").Config();
-					_HOST, _PORT = conf.Get("server", "host"), int(conf.Get("server", "port"));
-					def callback():
-						respData = _GG("CommonClient").callService("Uploaded", "UploadReq", {
-							"uid" : _GG("CommonClient").getUserId(),
-							"category" : uploadInfo["category"],
-							"name" : uploadInfo["name"],
-							"version" : uploadInfo["version"],
-							"commonVersion" : uploadInfo["commonVersion"],
-							"description" : uploadInfo["description"],
-						});
-					obj.upload(uploadInfo["filePath"], token["url"], {
-						"host" : _HOST,
-						"port" : token["port"],
-						"user" : token["user"],
-						"password" : token["password"],
-					}, callback = callback);
+					obj.upload(uploadInfo["filePath"], token, callback = callback);
+					msgDlg.ShowModal();
 				except Exception as e:
-					print(e)
-					_GG("WindowObject").CreateMessageDialog("上传失败！%s"%e, "上传工具", style = wx.OK|wx.CANCEL|wx.ICON_ERROR)
+					msgDlg.EndModal(wx.ID_OK);
+					_GG("WindowObject").CreateMessageDialog("上传失败！%s"%e, "上传工具", style = wx.OK|wx.ICON_ERROR)
 			return respData and respData.isPermit or False;
 		# 显示弹窗
 		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/UploadDialog", params = {
