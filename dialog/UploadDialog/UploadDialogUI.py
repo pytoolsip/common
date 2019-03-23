@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-16 03:04:58
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-23 17:19:51
+# @Last Modified time: 2019-03-23 22:44:12
 import wx, math;
 
 from _Global import _GG;
@@ -61,9 +61,9 @@ class UploadDialogUI(wx.Dialog):
 
 	def updateDialog(self, data):
 		if "name" in data:
-			self.__name.input.SetValue(data["name"]);
+			self.setInputPanelValue(self.__name, data["name"]);
 		if "version" in data:
-			self.__version.input.SetValue(data["version"]);
+			self.setInputPanelValue(self.__version, data["version"]);
 		pass;
 
 	def resetDialog(self):
@@ -107,8 +107,14 @@ class UploadDialogUI(wx.Dialog):
 		self.__inputInfosList.append((tips, 0, wx.TOP|wx.LEFT, 8));
 		return inputPanel;
 
+	def setInputPanelValue(self, panel, value):
+		panel.input.SetValue(value);
+		if "blurCallback" in panel._params:
+			panel._params["blurCallback"](panel);
+
 	def createInputPanel(self, params):
 		panel = wx.Panel(self);
+		panel._params = params; # 保存params属性
 		panel.input = wx.TextCtrl(panel, -1, "", size = params.get("inputSize", (-1,20)), style = params.get("inputStyle", wx.TE_PROCESS_TAB));
 		panel.tips = wx.StaticText(panel, label = params.get("exTips", ""));
 		panel.tips.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL));
@@ -196,7 +202,6 @@ class UploadDialogUI(wx.Dialog):
 					self.updateInputPanel(panel, "工具名校验通过！");
 			else:
 				self.updateInputPanel(self.__exCategory, "必须选择工具分类！", False);
-
 
 	# 创建线上版本视图
 	def createOnlineVersionView(self):
@@ -319,6 +324,7 @@ class UploadDialogUI(wx.Dialog):
 		if nextIdx < len(self.__category._choiceList):
 			selectionStr = choiceCtl.GetString(choiceCtl.GetSelection());
 			self.__updateCategoryChoice__(self.__category._choiceList[nextIdx], choiceDict.get(selectionStr, []));
+		self.setInputPanelValue(self.__exCategory, self.__exCategory.input.GetValue());
 
 	def createExCategoryView(self):
 		exCategoryParams = self.__params.get("exCategory", {});
@@ -365,27 +371,21 @@ class UploadDialogUI(wx.Dialog):
 	def checkInputView(self, key = "a"):
 		if key in ["a", "dirInput"]:
 			if not self.__dirInput.getInputValue():
-				print("dirInput")
 				return False;
 		if key in ["a", "name"]:
 			if not self.__name.isOk:
-				print("name")
 				return False;
 		if key in ["a", "version"]:
 			if not self.__version.isOk:
-				print("version")
 				return False;
 		if key in ["a", "description"]:
 			if not self.__description.isOk:
-				print("description")
 				return False;
 		if key in ["a", "category"]:
 			ret, _ = self.checkToolFullName("");
 			if not ret:
-				print("category1")
 				return False;
 			if not self.__exCategory.isOk:
-				print("category2")
 				return False;
 		return True;
 
