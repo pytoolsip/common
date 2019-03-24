@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-16 03:04:58
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-23 17:07:39
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-24 12:27:37
 import os;
 import wx;
 import zipfile, json;
@@ -160,3 +160,9 @@ class UploadDialogCtr(object):
 		if len(exList) > 2:
 			return False, "不能扩展分类超过2级！";
 		return True, "";
+
+	def verifyCategory(self, category):
+		category = category.replace(" ", "");
+		if len(category) > 0 and category[-1] != "/":
+			category += "/";
+		return category;

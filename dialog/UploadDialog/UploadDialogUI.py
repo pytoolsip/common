@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-16 03:04:58
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-23 22:44:12
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-24 12:28:56
 import wx, math;
 
 from _Global import _GG;
@@ -333,6 +333,9 @@ class UploadDialogUI(wx.Dialog):
 			if not panel.input.GetValue():
 				self.updateInputPanel(panel, "");
 			else:
+				# 校验分类值
+				panel.input.SetValue(self.getCtr().verifyCategory(panel.input.GetValue()));
+				# 检测扩展分类
 				ret, tips = self.getCtr().checkExCategory(panel.input.GetValue());
 				if not ret:
 					self.updateInputPanel(panel, tips, False);
