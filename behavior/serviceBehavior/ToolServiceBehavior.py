@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-20 19:39:49
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-23 21:59:52
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-26 23:00:57
 import wx;
+import hashlib;
 
 from _Global import _GG;
 from function.base import *;
@@ -16,6 +17,7 @@ def __getExposeData__():
 def __getExposeMethod__(DoType):
 	return {
 		"_uploadTool_" : DoType.AddToRear,
+		"_showToolInfo_" : DoType.AddToRear,
 	};
 
 def __getDepends__():
@@ -116,4 +118,29 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 				},
 			},
 			"onOk" : onUpload,
+		});
+
+	def _showToolInfo_(self, obj, data, _retTuple = None):
+		def onDownload():
+			def onResp(respData):
+				if not respData:
+					_GG("WindowObject").CreateMessageDialog("网络请求失败！", "下载工具", style = wx.OK|wx.ICON_ERROR);
+				elif not respData.isExist:
+					_GG("WindowObject").CreateMessageDialog("所要下载的工具不存在！", "下载工具", style = wx.OK|wx.ICON_ERROR);
+				else:
+					fileNme = respData.url.split("/")[-1];
+					obj.download(respData.url, _GG("g_ProjectPath")+"date/tool/"+fileNme, respData.totalSize);
+			tKey = hashlib.md5(data.get("path", "").encode("utf-8")).hexdigest();
+			_GG("CommonClient").callService("Download", "DownloadReq", {
+				"name" : tKey,
+				"version" : _GG("AppConfig")["version"],
+			}, asynCallback = onResp);
+		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/ToolInfoDialog", params = {
+			"name" : data.get("name", ""),
+			"path" : data.get("path", ""),
+			"author" : data.get("author", ""),
+			"description" : data.get("description", {}),
+			"download" : data.get("download", {
+				"onDownload" : onDownload,
+			}),
 		});

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JinZhang
 # @Date:   2019-03-26 18:25:37
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-26 19:05:01
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-26 23:04:11
 
 import wx;
 
@@ -26,7 +26,7 @@ class ToolInfoDialogUI(wx.Dialog):
 		# 初始化参数
 		self.__params = {
 			"title" : "【%s】"%params.get("name", "标题"),
-			"size" : (-1,-1),
+			"size" : (300,-1),
 			"style" : wx.DEFAULT_DIALOG_STYLE,
 		};
 		for k,v in params.items():
@@ -43,7 +43,7 @@ class ToolInfoDialogUI(wx.Dialog):
 	def createControls(self):
 		# self.getCtr().createCtrByKey("key", self._curPath + "***Dialog"); # , parent = self, params = {}
 		self.createName();
-		self.createID();
+		self.createPath();
 		self.createAuthor();
 		self.createDescription();
 		self.createDownloadBtn();
@@ -51,11 +51,11 @@ class ToolInfoDialogUI(wx.Dialog):
 	def initDialogLayout(self):
 		box = wx.BoxSizer(wx.VERTICAL);
 		box.Add(self.__name, 0, flag = wx.TOP|wx.LEFT|wx.RIGHT, border = 8);
-		box.Add(self.__id, 0, flag = wx.TOP|wx.LEFT|wx.RIGHT, border = 8);
+		box.Add(self.__path, 0, flag = wx.TOP|wx.LEFT|wx.RIGHT, border = 8);
 		box.Add(self.__author, 0, flag = wx.TOP|wx.LEFT|wx.RIGHT, border = 8);
 		box.Add(self.__desc, 0, flag = wx.EXPAND|wx.TOP|wx.LEFT|wx.RIGHT, border = 8);
 		box.Add(self.__download, 2, flag = wx.TOP|wx.BOTTOM|wx.ALIGN_CENTER, border = 8);
-		self.SetSizer(box);
+		self.SetSizerAndFit(box);
 
 	def updatePosition(self):
 		if "pos" not in self.__params:
@@ -72,18 +72,18 @@ class ToolInfoDialogUI(wx.Dialog):
 		self.__name = wx.StaticText(self, label = self.__params.get("name", "工具名"));
 		self.__name.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD));
 
-	def createID(self):
+	def createPath(self):
 		panel = wx.Panel(self);
 		box = wx.BoxSizer(wx.HORIZONTAL);
 		font = wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL);
-		key = wx.StaticText(panel, label = "ID：");
+		key = wx.StaticText(panel, label = "路径：");
 		key.SetFont(font);
-		panel._id = wx.StaticText(panel, label = self.__params.get("id", "--"));
-		panel._id.SetFont(font);
+		panel._path = wx.StaticText(panel, label = self.__params.get("path", "--"));
+		panel._path.SetFont(font);
 		box.Add(key);
-		box.Add(panel._id);
+		box.Add(panel._path);
 		panel.SetSizer(box);
-		self.__id = panel;
+		self.__path = panel;
 
 	def createAuthor(self):
 		panel = wx.Panel(self);
@@ -91,7 +91,7 @@ class ToolInfoDialogUI(wx.Dialog):
 		font = wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL);
 		key = wx.StaticText(panel, label = "作者：");
 		key.SetFont(font);
-		panel._name = wx.StaticText(panel, label = self.__params.get("author", "作者名"));
+		panel._name = wx.StaticText(panel, label = self.__params.get("author", "--"));
 		panel._name.SetFont(font);
 		box.Add(key);
 		box.Add(panel._name);
@@ -99,12 +99,13 @@ class ToolInfoDialogUI(wx.Dialog):
 		self.__author = panel;
 
 	def createDescription(self):
+		params = self.__params.get("description", {});
 		panel = wx.Panel(self);
 		box = wx.BoxSizer(wx.HORIZONTAL);
 		font = wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL);
 		key = wx.StaticText(panel, label = "描述：");
 		key.SetFont(font);
-		panel._detail = wx.TextCtrl(panel, size = self.__params.get("descSize", (-1, 120)), style = wx.TE_MULTILINE|wx.TE_READONLY);
+		panel._detail = wx.TextCtrl(panel, size = (self.GetSize()[0], params.get("height", 120)), value = params.get("value", ""), style = wx.TE_MULTILINE|wx.TE_READONLY);
 		box.Add(key);
 		box.Add(panel._detail, 0, flag = wx.EXPAND);
 		panel.SetSizer(box);
@@ -116,8 +117,8 @@ class ToolInfoDialogUI(wx.Dialog):
 		def onBtn(self, event):
 			callback = params.get("onDownload", None);
 			if callable(callback):
-				if callback(self.__id._id.GetLabel()):
-					self.EndModal(wx.ID_OK);
-			else:
-				self.EndModal(wx.ID_OK);
+				callback();
+			self.EndModal(wx.ID_OK);
 		self.__download.Bind(wx.EVT_BUTTON, onBtn);
+		if not self.__params.get("path", None):
+			self.__download.Enable(False);
