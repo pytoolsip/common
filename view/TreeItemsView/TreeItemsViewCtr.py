@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:46:11
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-27 23:09:22
 
 import wx;
 
@@ -25,9 +25,8 @@ class TreeItemsViewCtr(object):
 		self.initUI(parent); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
 		self.bindBehaviors(); # 绑定组件
-
 		self.initParams(params); # 初始化相关参数/属性
-		self.initTreeItems();
+		self.updateView(params);
 
 	def __del__(self):
 		self.__dest__();
@@ -93,26 +92,16 @@ class TreeItemsViewCtr(object):
 			
 	def updateView(self, data):
 		# 判断要更新视图的类型ID
-		if self.type and ("type" in data):
-			if data["type"] != self.type:
+		if self.__type and ("type" in data):
+			if data["type"] != self.__type:
 				return; # 若不需要更新当前视图，则直接返回，不执行更新逻辑
 		self.__ui.updateView(data);
 
 	def initParams(self, params):
 		# 树节点的页面数据字典
-		self.itemPageDataDict = {};
-		# 默认树节点数据
-		self.defaultItemsData = [];
-		if params["defaultItemsData"]:
-			self.defaultItemsData = params["defaultItemsData"];
+		self.__itemPageDataDict = {};
 		# 用于标记当前类的类型ID
-		self.type = None;
-		if "type" in params:
-			self.type = params["type"];
-		pass;
-
-	def initTreeItems(self):
-		self.updateView({"itemsData" : self.defaultItemsData});
+		self.__type = params.get("type", None);
 		pass;
 
 	def bindEventToItem(self, treeCtr, item, itemInfo, pathList):
@@ -127,17 +116,17 @@ class TreeItemsViewCtr(object):
 		};
 		if "title" in itemInfo["pageData"]:
 			itemPageData["title"] = itemInfo["pageData"]["title"];
-		self.itemPageDataDict[item] = itemPageData;
+		self.__itemPageDataDict[item] = itemPageData;
 		treeCtr.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.onActivated);
 		pass;
 
 	def onActivated(self, event):
 		item = event.GetItem();
-		if item in self.itemPageDataDict:
+		if item in self.__itemPageDataDict:
 			data = {
 				"creatPage" : True,
-				"id" : self.itemPageDataDict[item]["id"],
-				"pagePath" : self.itemPageDataDict[item]["pagePath"],
-				"title" : self.itemPageDataDict[item]["title"]
+				"id" : self.__itemPageDataDict[item]["id"],
+				"pagePath" : self.__itemPageDataDict[item]["pagePath"],
+				"title" : self.__itemPageDataDict[item]["title"]
 			};
 			_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_RIGHT_VIEW, data);

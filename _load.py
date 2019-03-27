@@ -2,7 +2,7 @@
 # @Author: JimDreamHeart
 # @Date:   2018-04-19 14:22:56
 # @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-16 23:21:10
+# @Last Modified time: 2019-03-27 19:45:46
 import wx;
 import os,sys,time;
 import shutil;
@@ -137,3 +137,6 @@ class Loader(object):
 		if os.path.exists(_GG("g_DataPath")+"temp"):
 			shutil.rmtree(_GG("g_DataPath")+"temp");
 		os.mkdir(_GG("g_DataPath")+"temp");
+		# 校验工具文件夹
+		if not os.path.exists(_GG("g_DataPath")+"tools"):
+			os.mkdir(_GG("g_DataPath")+"tools");

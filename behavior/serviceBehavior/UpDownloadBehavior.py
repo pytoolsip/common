@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-07 20:34:34
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-23 22:14:20
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-27 19:41:24
 import wx;
 import urllib;
 import paramiko;
@@ -40,10 +40,12 @@ class UpDownloadBehavior(_GG("BaseBehavior")):
 		pass;
 
 	# 下载文件
-	def download(self, obj, url, filePath, totalSize, _retTuple = None):
+	def download(self, obj, url, filePath, totalSize, onComplete = None, _retTuple = None):
 		dialogCtr = _GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/DownloadDialog", params = {"title" : "文件下载", "size" : (200,-1)});
 		def schedule(block, size, totalSize):
 			dialogCtr.updateDialog({"size" : block*size});
+			if size >= totalSize and callable(onComplete):
+				wx.CallAfter(onComplete, filePath);
 		urllib.urlretrieve(url, filePath, schedule);
 		dialogCtr.getUI().start(totalSize = totalSize);
 

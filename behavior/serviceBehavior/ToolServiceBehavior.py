@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-20 19:39:49
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-26 23:00:57
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-27 23:10:45
 import wx;
 import hashlib;
+import os, shutil;
 
 from _Global import _GG;
 from function.base import *;
@@ -128,12 +129,24 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 				elif not respData.isExist:
 					_GG("WindowObject").CreateMessageDialog("所要下载的工具不存在！", "下载工具", style = wx.OK|wx.ICON_ERROR);
 				else:
-					fileNme = respData.url.split("/")[-1];
-					obj.download(respData.url, _GG("g_ProjectPath")+"date/tool/"+fileNme, respData.totalSize);
-			tKey = hashlib.md5(data.get("path", "").encode("utf-8")).hexdigest();
+					tollsPath = _GG("g_DataPath")+"tools/";
+					fileName = oa.path.basename(respData.url);
+					def onComplete(filePath):
+						# 重置文件夹
+						dirpath = tollsPath + fileName.split("_")[0];
+						if os.path.exists(dirpath):
+							shutil.rmtree(dirpath);
+						os.mkdir(dirpath);
+						# 解压文件
+						obj.unzipFile(filePath, dirpath);
+						# os.remove(filePath); # 删除压缩文件
+						# 更新工具树配置文件，并更新左侧工具树
+					# 下载文件
+					obj.download(respData.url, tollsPath+fileName, respData.totalSize);
 			_GG("CommonClient").callService("Download", "DownloadReq", {
-				"name" : tKey,
-				"version" : _GG("AppConfig")["version"],
+				"name" : data.get("name", ""),
+				"category" : data.get("path", ""),
+				"commonVersion" : _GG("AppConfig")["version"],
 			}, asynCallback = onResp);
 		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/ToolInfoDialog", params = {
 			"name" : data.get("name", ""),
