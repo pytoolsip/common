@@ -2,12 +2,13 @@
 # @Author: JimDreamHeart
 # @Date:   2018-09-15 10:23:21
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-15 19:57:55
+# @Last Modified time: 2019-03-27 18:40:21
 
 import wx;
 from ProjectConfig import ProjectConfig;
 
 AppConfig = {
+	"key" : "9efab2399c7c560b34de477b9aa0a465",
 	"version" : "1.0.1",
 	"AppTitle" : u"PyToolsIP【python工具集成环境】",
 	"AppSize" : (960,640),
@@ -20,7 +21,7 @@ AppConfig = {
 	"searchItemBlurColor" : wx.Colour(210,210,210),
 };
 
-_ExcludeKey = ["version", "AppTitle", "CopyrightInfo"];
+_ExcludeKey = ["key", "version", "AppTitle", "CopyrightInfo"];
 
 # 合并配置
 for k,v in ProjectConfig.items():

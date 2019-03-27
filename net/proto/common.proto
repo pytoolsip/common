@@ -71,9 +71,10 @@ message UploadResp{
 
 // 下载请求
 message DownloadReq{
-	int32 uid = 1; // 玩家ID【用于下载权限判断】
+	int32 uid = 1; // 玩家ID
 	string name = 2; // 工具名
-	string version = 3; // common版本号
+	string category = 3; // 工具分类
+	string commonVersion = 4; // common版本号
 }
 
 // 下载回应
@@ -85,8 +86,8 @@ message DownloadResp{
 
 // 更新请求
 message UpdateReq{
-	int32 uid = 1; // 玩家ID【用于更新权限判断】
-	string name = 2; // common或工具名
+	int32 uid = 1; // 玩家ID
+	string key = 2; // 工具键值
 	string version = 3; // 当前版本号
 	string commonVersion = 4; // common版本号
 }
@@ -99,8 +100,8 @@ message UpdateResp{
 
 // 评论请求
 message CommentReq{
-	int32 uid = 1; // 玩家ID【用于权限判断】
-	string name = 2; // common或工具名
+	int32 uid = 1; // 玩家ID
+	string key = 2; // 工具键值
 	string version = 3; // 当前版本号
 	string commonVersion = 4; // common版本号
 	float score = 5; // 评分
@@ -109,8 +110,8 @@ message CommentReq{
 
 // 收藏请求
 message CollectReq{
-	int32 uid = 1; // 玩家ID【用于权限判断】
-	string name = 2; // common或工具名
+	int32 uid = 1; // 玩家ID
+	string key = 2; // 工具键值
 	string version = 3; // 当前版本号
 	string commonVersion = 4; // common版本号
 }
