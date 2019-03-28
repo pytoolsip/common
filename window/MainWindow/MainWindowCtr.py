@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-07-29 10:53:54
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-28 20:07:20
+# @Last Modified time: 2019-03-28 21:02:39
 
 import wx;
 
@@ -108,7 +108,6 @@ class MainWindowCtr(object):
 
 	def createHomePage(self):
 		itemPageData = self.getCtrByKey("WindowLeftViewCtr").getFirstItemPageData();
-		print("itemPageData", itemPageData)
 		if itemPageData:
 			self.getCtrByKey("WindowRightViewCtr").createPageToNoteBook(itemPageData);
 

@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-28 20:07:33
+# @Last Modified time: 2019-03-28 21:02:26
 
 import wx;
 
@@ -121,5 +121,4 @@ class WindowLeftViewCtr(object):
 
 	def getFirstItemPageData(self):
 		itemData = self.getFirstItemData();
-		print("itemData", itemData)
 		return self.getCtrByKey("TreeItemsViewCtr").getItemPageData(itemData.get("key", ""));
