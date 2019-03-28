@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-28 18:53:40
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-28 20:07:33
 
 import wx;
 
@@ -113,3 +113,13 @@ class WindowLeftViewCtr(object):
 		self.createCtrByKey("TreeItemsViewCtr", _GG("g_CommonPath") + "view/TreeItemsView", parent = self.getUI(), params = {
 			"itemsData" : self.__treeItemsData,
 		});
+
+	def getFirstItemData(self):
+		if len(self.__treeItemsData) > 0:
+			return self.__treeItemsData[0];
+		return {};
+
+	def getFirstItemPageData(self):
+		itemData = self.getFirstItemData();
+		print("itemData", itemData)
+		return self.getCtrByKey("TreeItemsViewCtr").getItemPageData(itemData.get("key", ""));

@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-28 18:31:20
-
-import wx;
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-28 20:16:49
 
 from _Global import _GG;
 
@@ -105,27 +103,34 @@ class TreeItemsViewCtr(object):
 		pass;
 
 	def bindEventToItem(self, treeCtr, item, itemInfo, pathList):
-		basePath = _GG("g_ProjectPath") + itemInfo["trunk"] + "/";
-		if "branch" in itemInfo:
-			basePath += itemInfo["branch"] + "/";
-		self.__itemPageDataDict[id(item)] = {
-			"key" : itemInfo["key"],
-			"pagePath" : (basePath + itemInfo["path"]).replace("/", "/"),
-			"category" : "/".join(pathList),
-			"title" : itemInfo.get("title", itemInfo["name"]),
-		};
-		treeCtr.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.onActivated);
+		if "key" in itemInfo:
+			basePath = _GG("g_ProjectPath") + itemInfo["trunk"] + "/";
+			if "branch" in itemInfo:
+				basePath += itemInfo["branch"] + "/";
+			self.__itemPageDataDict[item] = {
+				"key" : itemInfo["key"],
+				"pagePath" : (basePath + itemInfo["path"]).replace("/", "/"),
+				"category" : "/".join(pathList),
+				"title" : itemInfo.get("title", itemInfo["name"]),
+			};
 		pass;
 
 	def onActivated(self, event):
-		itemId = id(event.GetItem());
-		if itemId in self.__itemPageDataDict:
-			itemInfo = self.__itemPageDataDict[itemId];
+		item = event.GetItem();
+		if item in self.__itemPageDataDict:
+			pageInfo = self.__itemPageDataDict[item];
 			data = {
 				"createPage" : True,
-				"key" : itemInfo["key"],
-				"pagePath" : itemInfo["pagePath"],
-				"category" : itemInfo["category"],
-				"title" : itemInfo["title"]
+				"key" : pageInfo["key"],
+				"pagePath" : pageInfo["pagePath"],
+				"category" : pageInfo["category"],
+				"title" : pageInfo["title"]
 			};
 			_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_RIGHT_VIEW, data);
+
+	def getItemPageData(self, itemKey):
+		for pageData in self.__itemPageDataDict.values():
+			if pageData["key"] == itemKey:
+				return pageData;
+		return {};
+

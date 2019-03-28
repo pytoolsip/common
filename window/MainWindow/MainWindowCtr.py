@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-07-29 10:53:54
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:46:15
+# @Last Modified time: 2019-03-28 20:07:20
 
 import wx;
 
@@ -107,7 +107,10 @@ class MainWindowCtr(object):
 		self.__ui.Size = (self.__ui.Size[0] + curSize[0] - PreUISize[0], self.__ui.Size[1] + curSize[1] - PreUISize[1]);
 
 	def createHomePage(self):
-		self.getCtrByKey("WindowRightViewCtr").createPageToNoteBook({"id" : 0, "pagePath" : _GG("g_CommonPath") + "view/HomePageView", "title" : "首页"});
+		itemPageData = self.getCtrByKey("WindowLeftViewCtr").getFirstItemPageData();
+		print("itemPageData", itemPageData)
+		if itemPageData:
+			self.getCtrByKey("WindowRightViewCtr").createPageToNoteBook(itemPageData);
 
 	def getToolWinSize(self):
 		noteBookSize = self.getCtrByKey("WindowRightViewCtr").getUIByKey("NoteBookViewCtr").GetSize();

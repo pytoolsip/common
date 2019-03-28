@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 18:27:07
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-28 18:32:44
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-28 19:56:43
 
 from enum import Enum, unique;
 
@@ -137,12 +137,12 @@ class NoteBookViewCtr(object):
 		return self.__ui.GetCurrentPage();
 
 	def getPageKey(self, page):
-		if hasattr(page, "_PAGE_ID"):
-			return page._PAGE_ID;
+		if hasattr(page, "_PAGE_KEY"):
+			return page._PAGE_KEY;
 		return "";
 
 	def setPageKey(self, page, key):
-		page._PAGE_ID = key;
+		page._PAGE_KEY = key;
 
 	def createPageViewCtr(self, path):
 		return CreateCtr(path, self.__ui);
@@ -168,7 +168,7 @@ class NoteBookViewCtr(object):
 				pageInfo["title"] = pageInfo["title"] + " *";
 		pass;
 
-	def check__RelievedPageKey(self, isDeleteOldPage = False):
+	def checkRelievedPageKey(self, isDeleteOldPage = False):
 		if self.__relievedPageKey == -1:
 			return True;
 		elif isDeleteOldPage:
@@ -187,7 +187,7 @@ class NoteBookViewCtr(object):
 			self.adjustPageTitle(pageInfo = pageInfo);
 			pageInt = self.addPageToNoteBook(pageInfo = pageInfo);
 			self.setCurrentPageInt(pageInt);
-			if self.check__RelievedPageKey(isDeleteOldPage = True):
+			if self.checkRelievedPageKey(isDeleteOldPage = True):
 				self.__relievedPageKey = pageKey;
 			self.__pageInfoDict[pageKey] = pageInfo;
 			return True;
@@ -222,7 +222,7 @@ class NoteBookViewCtr(object):
 
 	def onRelieveCurPage(self, event):
 		curPageKey = self.getPageKey(self.getCurrentPage());
-		if self.check__RelievedPageKey(isDeleteOldPage = True):
+		if self.checkRelievedPageKey(isDeleteOldPage = True):
 			self.__pageInfoDict[curPageKey]["pageType"] = PageType.Relieve;
 			self.adjustPageTitle(curPageKey);
 			self.setPageTitle(curPageKey, self.getCurrentPageInt());
