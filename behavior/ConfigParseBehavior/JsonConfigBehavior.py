@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-11-24 02:42:20
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-16 15:09:22
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-28 18:54:57
+import json;
 
 from _Global import _GG;
 from function.base import *;
@@ -46,6 +47,6 @@ class JsonConfigBehavior(BaseBehavior):
 	def readJsonFile(self, obj, filePath, _retTuple = None):
 		data = None;
 		with open(filePath, "rb") as f:
-			data = json.loads(f.read().decode("utf-8", "ignore"));
+			data = json.loads(f.read().decode("utf-8"));
 			f.close();
 		return data;

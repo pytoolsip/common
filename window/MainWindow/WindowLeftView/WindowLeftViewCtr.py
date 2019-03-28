@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 14:33:16
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-28 18:53:40
 
 import wx;
 
@@ -24,6 +24,7 @@ class WindowLeftViewCtr(object):
 		self.__CtrMap = {}; # 所创建的控制器
 		self.registerEventMap(); # 注册事件
 		self.bindBehaviors(); # 绑定组件
+		self.initTreeItemsData(); # 初始化树节点数据
 		self.initUI(parent); # 初始化视图UI
 
 	def __del__(self):
@@ -83,7 +84,7 @@ class WindowLeftViewCtr(object):
 			_GG("EventDispatcher").unregister(eventId, self, callbackName);
 
 	def bindBehaviors(self):
-		_GG("BehaviorManager").bindBehavior(self, {"path" : "configParseBehavior/XmlConfigParseBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "ConfigParseBehavior/JsonConfigBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/UserServiceBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 		
@@ -93,39 +94,11 @@ class WindowLeftViewCtr(object):
 	def updateView(self, data):
 		self.__ui.updateView(data);
 
-	def setTreeItemDictByItem(self, treeItem, itemDict):
-		for treeElem in treeItem.getchildren():
-			if treeElem.tag == "treeItem":
-				treeItemDict = {};
-				for k,v in treeElem.attrib.items():
-					treeItemDict[k] = v;
-				self.setTreeItemDictByItem(treeElem, treeItemDict);
-				if "items" not in itemDict:
-					itemDict["items"] = [];
-				itemDict["items"].append(treeItemDict);
-			elif treeElem.tag == "pageData":
-				itemDict["pageData"] = {};
-				for pageInfo in treeElem.getchildren():
-					for k,v in pageInfo.attrib.items():
-						itemDict["pageData"][k] = v;
-					if pageInfo.tag == "id":
-						itemDict["pageData"][pageInfo.tag] = int(pageInfo.text);
-					else:
-						itemDict["pageData"][pageInfo.tag] = pageInfo.text;
+	def initTreeItemsData(self):
+		self.__treeItemsData = [];
+		if os.path.exists(_GG("g_DataPath")+"tools_tree.json"):
+			self.__treeItemsData = self.readJsonFile(_GG("g_DataPath")+"tools_tree.json");
 
-	def getTreeItemsDataByFilePath(self, filePath = None):
-		treeItemsData = [];
-		if filePath and hasattr(self, "getElementTreesByFilePath"):
-			trees = self.getElementTreesByFilePath(filePath);
-			for treeElem in trees.getroot():
-				if treeElem.tag == "treeItem":
-					treeItemDict = {};
-					for k,v in treeElem.attrib.items():
-						treeItemDict[k] = v;
-					self.setTreeItemDictByItem(treeElem, treeItemDict);
-					treeItemsData.append(treeItemDict);
-		return treeItemsData;
-	
 	def updateUserNameView(self, data):
 		def onClick():
 			# 显示玩家信息的弹窗
@@ -134,3 +107,9 @@ class WindowLeftViewCtr(object):
 
 	def onClickLogin(self, event):
 		self._loginIP_();
+
+	# 创建树控件
+	def createTreeCtrl(self):
+		self.createCtrByKey("TreeItemsViewCtr", _GG("g_CommonPath") + "view/TreeItemsView", parent = self.getUI(), params = {
+			"itemsData" : self.__treeItemsData,
+		});

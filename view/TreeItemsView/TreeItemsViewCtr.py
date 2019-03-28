@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-27 23:09:22
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-28 18:31:20
 
 import wx;
 
@@ -105,28 +105,27 @@ class TreeItemsViewCtr(object):
 		pass;
 
 	def bindEventToItem(self, treeCtr, item, itemInfo, pathList):
-		basePath = _GG("g_ProjectPath") + itemInfo["pageData"]["trunk"] + "/";
-		if "branch" in itemInfo["pageData"]:
-			basePath += itemInfo["pageData"]["branch"] + "/";
-		itemPageData = {
-			"id" : itemInfo["pageData"]["id"],
-			"pagePath" : (basePath + itemInfo["pageData"]["path"]).replace("/", "/"),
-			"keyPath" : "/".join(pathList),
-			"title" : itemInfo["name"],
+		basePath = _GG("g_ProjectPath") + itemInfo["trunk"] + "/";
+		if "branch" in itemInfo:
+			basePath += itemInfo["branch"] + "/";
+		self.__itemPageDataDict[id(item)] = {
+			"key" : itemInfo["key"],
+			"pagePath" : (basePath + itemInfo["path"]).replace("/", "/"),
+			"category" : "/".join(pathList),
+			"title" : itemInfo.get("title", itemInfo["name"]),
 		};
-		if "title" in itemInfo["pageData"]:
-			itemPageData["title"] = itemInfo["pageData"]["title"];
-		self.__itemPageDataDict[item] = itemPageData;
 		treeCtr.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.onActivated);
 		pass;
 
 	def onActivated(self, event):
-		item = event.GetItem();
-		if item in self.__itemPageDataDict:
+		itemId = id(event.GetItem());
+		if itemId in self.__itemPageDataDict:
+			itemInfo = self.__itemPageDataDict[itemId];
 			data = {
-				"creatPage" : True,
-				"id" : self.__itemPageDataDict[item]["id"],
-				"pagePath" : self.__itemPageDataDict[item]["pagePath"],
-				"title" : self.__itemPageDataDict[item]["title"]
+				"createPage" : True,
+				"key" : itemInfo["key"],
+				"pagePath" : itemInfo["pagePath"],
+				"category" : itemInfo["category"],
+				"title" : itemInfo["title"]
 			};
 			_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_RIGHT_VIEW, data);

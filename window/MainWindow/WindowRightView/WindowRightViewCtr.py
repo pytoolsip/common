@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 18:09:36
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:46:18
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-28 18:32:15
 
 import wx;
 
@@ -90,11 +90,11 @@ class WindowRightViewCtr(object):
 			
 	def updateView(self, data):
 		# self.__ui.updateView(data);
-		if "creatPage" in data and data["creatPage"] == True:
+		if data.get("createPage", False):
 			self.createPageToNoteBook(data);
 		pass;
 
 	def createPageToNoteBook(self, data):
-		if("id" in data) and ("pagePath" in data) and ("title" in data):
-			self.getCtrByKey("NoteBookViewCtr").createPageToNoteBook(data["id"], data["pagePath"], data["title"]);
+		if("key" in data) and ("pagePath" in data) and ("title" in data) and ("category" in data):
+			self.getCtrByKey("NoteBookViewCtr").createPageToNoteBook(data["key"], data["pagePath"], data["title"], data["category"]);
 		pass;

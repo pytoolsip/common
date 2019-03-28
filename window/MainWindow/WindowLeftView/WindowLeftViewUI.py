@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-27 23:05:33
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-28 18:44:05
 
 import wx;
 
@@ -27,7 +27,7 @@ class WindowLeftViewUI(wx.Panel):
 	def createControls(self):
 		self.createTitleText();
 		self.createUserNameTextCtr();
-		self.createTreeCtrl();
+		self.getCtr().createTreeCtrl();
 		self.line = wx.StaticLine(self)
 		pass;
 		
@@ -65,12 +65,3 @@ class WindowLeftViewUI(wx.Panel):
 		self.getCtr().createCtrByKey("UserNameTextViewCtr", _GG("g_CommonPath") + "view/UserNameTextView", params = {
 			"onClick" : self.getCtr().onClickLogin,
 		}); # , parent = self, params = {}
-		
-	def createTreeCtrl(self):
-		params = {
-			"itemsData" : self.getCtr().getTreeItemsDataByFilePath(_GG("g_DataPath")+"tools_tree.xml"),
-		};
-		self.getCtr().createCtrByKey("TreeItemsViewCtr",
-			_GG("g_CommonPath") + "view/TreeItemsView",
-			parent = self, params = params);
-		pass;

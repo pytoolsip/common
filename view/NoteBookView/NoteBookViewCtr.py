@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 18:27:07
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:46:01
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-28 18:32:44
 
 from enum import Enum, unique;
 
@@ -35,8 +35,8 @@ class NoteBookViewCtr(object):
 		self.registerEventMap(); # 注册事件
 		self.bindBehaviors(); # 绑定组件
 
-		self.pageInfoDict = {}; # 页面信息字典
-		self.relievedPageId = -1; # 已释放页面Id
+		self.__pageInfoDict = {}; # 页面信息字典
+		self.__relievedPageKey = -1; # 已释放页面Id
 		self.initPopupMenus(); # 创建弹出菜单
 
 	def __del__(self):
@@ -114,16 +114,16 @@ class NoteBookViewCtr(object):
 		self.getCtrByKey("PopupMenuViewCtr").createNewMenu(key, data);
 		pass;
 
-	def resetData(self, pageId = -1):
-		if pageId == -1:
-			self.pageInfoDict = {};
-			self.relievedPageId = -1;
+	def resetData(self, pageKey = -1):
+		if pageKey == -1:
+			self.__pageInfoDict = {};
+			self.__relievedPageKey = -1;
 		else:
-			if pageId in self.pageInfoDict:
-				pageInfo = self.pageInfoDict.pop(pageId);
+			if pageKey in self.__pageInfoDict:
+				pageInfo = self.__pageInfoDict.pop(pageKey);
 				DelCtr(pageInfo["pageViewCtr"]); # 销毁页面视图控制类
-			if self.relievedPageId == pageId:
-				self.relievedPageId = -1;
+			if self.__relievedPageKey == pageKey:
+				self.__relievedPageKey = -1;
 		pass;
 
 	def setCurrentPageInt(self, curPageInt):
@@ -136,21 +136,29 @@ class NoteBookViewCtr(object):
 	def getCurrentPage(self):
 		return self.__ui.GetCurrentPage();
 
+	def getPageKey(self, page):
+		if hasattr(page, "_PAGE_ID"):
+			return page._PAGE_ID;
+		return "";
+
+	def setPageKey(self, page, key):
+		page._PAGE_ID = key;
+
 	def createPageViewCtr(self, path):
 		return CreateCtr(path, self.__ui);
 
-	def addPageToNoteBook(self, pageId = -1, pageInfo = None):
+	def addPageToNoteBook(self, pageKey = -1, pageInfo = None):
 		if not pageInfo:
-			pageInfo = self.pageInfoDict[pageId];
+			pageInfo = self.__pageInfoDict[pageKey];
 		return self.__ui.addPage(pageInfo["pageViewCtr"].getUI(), pageInfo["title"]);
 
-	def setPageTitle(self, pageId, pageInt):
-		pageInfo = self.pageInfoDict[pageId];
+	def setPageTitle(self, pageKey, pageInt):
+		pageInfo = self.__pageInfoDict[pageKey];
 		return self.__ui.SetPageText(pageInt, pageInfo["title"]);
 
-	def adjustPageTitle(self, pageId = -1, pageInfo = None):
+	def adjustPageTitle(self, pageKey = -1, pageInfo = None):
 		if not pageInfo:
-			pageInfo = self.pageInfoDict[pageId];
+			pageInfo = self.__pageInfoDict[pageKey];
 		isRelieveTitle = pageInfo["title"][-1] == "*";
 		if isRelieveTitle:
 			if pageInfo["pageType"] == PageType.Fix:
@@ -160,31 +168,31 @@ class NoteBookViewCtr(object):
 				pageInfo["title"] = pageInfo["title"] + " *";
 		pass;
 
-	def checkRelievedPageId(self, isDeleteOldPage = False):
-		if self.relievedPageId == -1:
+	def check__RelievedPageKey(self, isDeleteOldPage = False):
+		if self.__relievedPageKey == -1:
 			return True;
 		elif isDeleteOldPage:
-			pageInfo = self.pageInfoDict[self.relievedPageId];
+			pageInfo = self.__pageInfoDict[self.__relievedPageKey];
 			UI = self.getUI();
 			if UI.DeletePage(UI.FindPage(pageInfo["pageViewCtr"].getUI())):
-				self.resetData(self.relievedPageId);
+				self.resetData(self.__relievedPageKey);
 			return True;
 		return False;
 
-	def createPageToNoteBook(self, pageId, path, title):
-		if pageId not in self.pageInfoDict:
+	def createPageToNoteBook(self, pageKey, path, title, category):
+		if pageKey not in self.__pageInfoDict:
 			pageViewCtr = self.createPageViewCtr(path);
-			pageViewCtr.getUI().SetId(pageId);
-			pageInfo = {"pageViewCtr" : pageViewCtr, "pageType" : PageType.Relieve, "title" : title};
+			self.setPageKey(pageViewCtr.getUI(), pageKey);
+			pageInfo = {"pageViewCtr" : pageViewCtr, "pageType" : PageType.Relieve, "title" : title, "category" : category};
 			self.adjustPageTitle(pageInfo = pageInfo);
 			pageInt = self.addPageToNoteBook(pageInfo = pageInfo);
 			self.setCurrentPageInt(pageInt);
-			if self.checkRelievedPageId(isDeleteOldPage = True):
-				self.relievedPageId = pageId;
-			self.pageInfoDict[pageId] = pageInfo;
+			if self.check__RelievedPageKey(isDeleteOldPage = True):
+				self.__relievedPageKey = pageKey;
+			self.__pageInfoDict[pageKey] = pageInfo;
 			return True;
 		else:
-			pageInfo = self.pageInfoDict[pageId];
+			pageInfo = self.__pageInfoDict[pageKey];
 			page = pageInfo["pageViewCtr"].getUI();
 			self.setCurrentPageInt(self.getUI().FindPage(page));
 			return False;
@@ -193,40 +201,40 @@ class NoteBookViewCtr(object):
 		UI = self.getUI();
 		pageIndexs = UI.HitTest(event.GetPosition());
 		self.setCurrentPageInt(pageIndexs[0]);
-		popupMenu = self.getPopupMenu(UI.GetPage(pageIndexs[0]).GetId());
+		popupMenu = self.getPopupMenu(self.getPageKey(UI.GetPage(pageIndexs[0])));
 		if popupMenu:
 			UI.PopupMenu(popupMenu, event.GetPosition());
 		pass;
 		
-	def getPopupMenu(self, pageId = None):
-		if pageId in self.pageInfoDict:
-			pageType = self.pageInfoDict[pageId]["pageType"];
+	def getPopupMenu(self, pageKey = None):
+		if pageKey in self.__pageInfoDict:
+			pageType = self.__pageInfoDict[pageKey]["pageType"];
 			return self.getCtrByKey("PopupMenuViewCtr").getMenu(pageType);
 
 	def onFixCurPage(self, event):
-		curPageId = self.getCurrentPage().GetId();
-		if self.relievedPageId == curPageId:
-			self.pageInfoDict[curPageId]["pageType"] = PageType.Fix;
-			self.adjustPageTitle(curPageId);
-			self.setPageTitle(curPageId, self.getCurrentPageInt());
-			self.relievedPageId = -1;
+		curPageKey = self.getPageKey(self.getCurrentPage());
+		if self.__relievedPageKey == curPageKey:
+			self.__pageInfoDict[curPageKey]["pageType"] = PageType.Fix;
+			self.adjustPageTitle(curPageKey);
+			self.setPageTitle(curPageKey, self.getCurrentPageInt());
+			self.__relievedPageKey = -1;
 		pass;
 
 	def onRelieveCurPage(self, event):
-		curPageId = self.getCurrentPage().GetId();
-		if self.checkRelievedPageId(isDeleteOldPage = True):
-			self.pageInfoDict[curPageId]["pageType"] = PageType.Relieve;
-			self.adjustPageTitle(curPageId);
-			self.setPageTitle(curPageId, self.getCurrentPageInt());
-			self.relievedPageId = curPageId;
+		curPageKey = self.getPageKey(self.getCurrentPage());
+		if self.check__RelievedPageKey(isDeleteOldPage = True):
+			self.__pageInfoDict[curPageKey]["pageType"] = PageType.Relieve;
+			self.adjustPageTitle(curPageKey);
+			self.setPageTitle(curPageKey, self.getCurrentPageInt());
+			self.__relievedPageKey = curPageKey;
 		pass;
 
 	def onCloseCurPage(self, event):
-		curPageId = self.getCurrentPage().GetId();
+		curPageKey = self.getPageKey(self.getCurrentPage());
 		curPageInt = self.getCurrentPageInt();
 		UI = self.getUI();
 		if UI.DeletePage(curPageInt):
-			self.resetData(curPageId);
+			self.resetData(curPageKey);
 		pass;
 
 	def onCloseAllPage(self, event):

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:46:12
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-28 13:27:38
 
 import wx;
 
@@ -33,11 +33,11 @@ class TreeItemsViewUI(wx.TreeCtrl):
 
 	def updateView(self, data):
 		if "itemsData" in data:
-			self.updateTreeItems(data);
+			self.updateTreeItems(data["itemsData"]);
 		pass;
 
 	def createTreeItems(self):
-		self.treeCtrlRoot = self.AddRoot("root");
+		self.__treeCtrlRoot = self.AddRoot("root");
 		pass;
 
 	def createTreeItemsByItemsData(self, parentItem, itemsData, pathList = []):
@@ -46,12 +46,11 @@ class TreeItemsViewUI(wx.TreeCtrl):
 			item = self.AppendItem(parentItem, itemInfo["name"]);
 			if "items" in itemInfo:
 				self.createTreeItemsByItemsData(item, itemInfo["items"], pathList = pathList);
-			if "pageData" in itemInfo:
-				self.__viewCtr.bindEventToItem(self, item, itemInfo, pathList);
+			if "key" in itemInfo:
+				self.getCtr().bindEventToItem(self, item, itemInfo, pathList);
 			pathList.pop();
 		pass;
 
-	def updateTreeItems(self, data):
-		itemsData = data["itemsData"];
-		self.createTreeItemsByItemsData(self.treeCtrlRoot, itemsData);
+	def updateTreeItems(self, itemsData):
+		self.createTreeItemsByItemsData(self.__treeCtrlRoot, itemsData);
 		pass;

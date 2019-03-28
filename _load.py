@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-04-19 14:22:56
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-27 19:45:46
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-28 18:34:16
 import wx;
 import os,sys,time;
 import shutil;
@@ -131,8 +131,8 @@ class Loader(object):
 	def verifyDefaultData(self):
 		_GG = _G._GG;
 		# 校验工具树配置
-		if not os.path.exists(_GG("g_DataPath")+"tools_tree.xml"):
-			shutil.copyfile(_GG("g_CommonPath") + "config/xml/treeItems.xml", _GG("g_DataPath")+"tools_tree.xml");
+		if not os.path.exists(_GG("g_DataPath")+"tools_tree.json"):
+			shutil.copyfile(_GG("g_CommonPath") + "config/json/toolsTree.json", _GG("g_DataPath")+"tools_tree.json");
 		# 校验临时文件夹
 		if os.path.exists(_GG("g_DataPath")+"temp"):
 			shutil.rmtree(_GG("g_DataPath")+"temp");
