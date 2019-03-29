@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-29 18:30:15
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-03-29 21:02:27
 
 import wx;
 
@@ -25,7 +25,6 @@ class TreeItemsViewUI(wx.TreeCtrl):
 		self.initViewLayout(); # 初始化布局
 
 	def createControls(self):
-		self.createTreeRoot();
 		pass;
 		
 	def initViewLayout(self):
@@ -34,21 +33,38 @@ class TreeItemsViewUI(wx.TreeCtrl):
 	def updateView(self, data):
 		pass;
 
-	def createTreeRoot(self):
-		self.__treeCtrlRoot = self.AddRoot("root");
-		pass;
-
 	def createTreeItemsByItemsData(self, parentItem, itemsData, pathList = []):
 		for itemInfo in itemsData:
 			pathList.append(itemInfo["name"]);
 			item = self.AppendItem(parentItem, itemInfo["name"]);
 			if "items" in itemInfo:
 				self.createTreeItemsByItemsData(item, itemInfo["items"], pathList = pathList);
-			self.getCtr().bindEventToItem(self, item, itemInfo, pathList);
+			self.getCtr().bindEventToItem(item, itemInfo, pathList);
 			pathList.pop();
 		pass;
 
 	def createTreeItems(self, itemsData):
-		self.createTreeItemsByItemsData(self.__treeCtrlRoot, itemsData);
+		self.createTreeItemsByItemsData(self.AddRoot("root"), itemsData);
 		self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.getCtr().onActivated);
 
+	def checkTreeItem(self, nameList, parentItem = None):
+		if not parentItem:
+			parentItem = self.GetRootItem();
+		if len(nameList) == 0:
+			return parentItem;
+		item = self.GetFirstChild(parentItem);
+		while item.IsOk():
+			if self.GetItemText(item) == nameList[0]:
+				return self.checkTreeItem(nameList[1:]);
+			else:
+				item = self.GetNextSibling(item);
+		return self.checkTreeItem(nameList[1:], self.AppendItem(parentItem, nameList[0]));
+
+	def removeTreeItem(self, item):
+		while item.IsOk():
+			parentItem = self.GetItemParent(item);
+			self.Delete(item);
+			if self.GetChildrenCount(parentItem, recursively = False) == 0:
+				item = parentItem;
+			else:
+				break;

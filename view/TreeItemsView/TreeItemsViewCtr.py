@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-29 18:31:31
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-29 21:05:29
 
 from _Global import _GG;
 
@@ -104,7 +104,7 @@ class TreeItemsViewCtr(object):
 		self.__onActivated = params.get("onActivated", None);
 		pass;
 
-	def bindEventToItem(self, treeCtr, item, itemInfo, pathList):
+	def bindEventToItem(self, item, itemInfo, pathList):
 		if "key" in itemInfo:
 			basePath = _GG("g_ProjectPath") + itemInfo["trunk"] + "/";
 			if "branch" in itemInfo:
@@ -128,3 +128,17 @@ class TreeItemsViewCtr(object):
 				return pageData;
 		return {};
 
+	def getItem(self, itemKey):
+		for item, pageData in self.__itemPageDataDict.items():
+			if pageData["key"] == itemKey:
+				return item;
+		return None;
+
+	def addItem(self, nameList, itemInfo):
+		item = self.getUI().checkTreeItem(nameList);
+		self.bindEventToItem(item, itemInfo, nameList[:-1]);
+
+	def removeItem(self, itemKey):
+		item = self.getItem(itemKey);
+		if item:
+			self.getUI().removeTreeItem(item);

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-29 18:35:34
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-29 22:25:58
 
 import wx;
 
@@ -100,6 +100,9 @@ class WindowLeftViewCtr(object):
 		if os.path.exists(_GG("g_DataPath")+"tools_tree.json"):
 			self.__treeItemsData = self.readJsonFile(_GG("g_DataPath")+"tools_tree.json");
 
+	def saveTreeItemsData(self):
+		self.writeJsonFile(_GG("g_DataPath")+"tools_tree.json", self.__treeItemsData);
+
 	def updateUserNameView(self, data):
 		def onClick():
 			# 显示玩家信息的弹窗
@@ -136,24 +139,33 @@ class WindowLeftViewCtr(object):
 
 	def checkTreeItemsData(self, nameList, treeItemsData):
 		name = nameList.pop(0);
-		for itemData in treeItemsData:
+		for i in range(len(treeItemsData)):
+			itemData = treeItemsData[i];
 			if itemData["name"] == name:
 				if len(nameList) == 0:
-					return itemData;
+					return treeItemsData, i;
 				if "items" not in itemData:
 					itemData["items"] = [];
 				return self.checkTreeItemsData(nameList, itemData["items"]);
 			pass;
 		newItemData = {"name" : name};
 		treeItemsData.append(newItemData);
-		if len(nameList) == 0:
-			return newItemData;
-		else:
+		if len(nameList) > 0:
 			newItemData["items"] = [];
 			return self.checkTreeItemsData(nameList, newItemData["items"]);
-
+		else:
+			return treeItemsData, -1;
 
 	def updateTreeView(self, data):
-		if "key" not in data or "namePath" not in data:
+		if "key" not in data or not data.get("namePath", ""):
 			return;
+		nameList = data["namePath"].split("/");
+		pItemData, idx = self.checkTreeItemsData(nameList, self.__treeItemsData);
 		if data.get("action", "add"):
+			for key in ["key", "trunk", "branch", "path"]:
+				pItemData[i][key] = data.get(key, "");
+			self.getCtrByKey("TreeItemsViewCtr").addItem(nameList, pItemData[i]);
+		if data.get("action", "remove"):
+			pItemData.pop(i);
+			self.getCtrByKey("TreeItemsViewCtr").removeItem(data["key"]);
+		self.saveTreeItemsData();
