@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-20 19:39:49
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-27 23:10:45
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-29 17:46:58
 import wx;
 import hashlib;
 import os, shutil;
@@ -129,25 +129,38 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 				elif not respData.isExist:
 					_GG("WindowObject").CreateMessageDialog("所要下载的工具不存在！", "下载工具", style = wx.OK|wx.ICON_ERROR);
 				else:
-					tollsPath = _GG("g_DataPath")+"tools/";
+					toolsPath = _GG("g_DataPath")+"tools/";
 					fileName = oa.path.basename(respData.url);
 					def onComplete(filePath):
 						# 重置文件夹
-						dirpath = tollsPath + fileName.split("_")[0];
+						dirpath = toolsPath + respData.tkey;
 						if os.path.exists(dirpath):
 							shutil.rmtree(dirpath);
 						os.mkdir(dirpath);
 						# 解压文件
-						obj.unzipFile(filePath, dirpath);
-						# os.remove(filePath); # 删除压缩文件
-						# 更新工具树配置文件，并更新左侧工具树
+						def afterUnzip():
+							# 删除压缩文件
+							os.remove(filePath);
+							# 更新左侧工具树
+							_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_LEFT_VIEW, {
+								"action" : "add",
+								"key" : respData.tkey,
+								"trunk" : "data/tools",
+								"branch" : respData.tkey,
+								"path" : "MainView",
+								"namePath" : respData.namePath,
+							});
+						obj.unzipFile(filePath, dirpath, finishCallback = afterUnzip);
+						pass;
 					# 下载文件
-					obj.download(respData.url, tollsPath+fileName, respData.totalSize);
+					obj.download(respData.url, toolsPath+fileName, respData.totalSize, onComplete = onComplete);
+				pass;
 			_GG("CommonClient").callService("Download", "DownloadReq", {
 				"name" : data.get("name", ""),
 				"category" : data.get("path", ""),
 				"commonVersion" : _GG("AppConfig")["version"],
 			}, asynCallback = onResp);
+			pass;
 		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/ToolInfoDialog", params = {
 			"name" : data.get("name", ""),
 			"path" : data.get("path", ""),

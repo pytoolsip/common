@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-28 20:16:49
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-29 18:31:31
 
 from _Global import _GG;
 
@@ -24,7 +24,7 @@ class TreeItemsViewCtr(object):
 		self.registerEventMap(); # 注册事件
 		self.bindBehaviors(); # 绑定组件
 		self.initParams(params); # 初始化相关参数/属性
-		self.updateView(params);
+		self.getUI().createTreeItems(params.get("itemsData", []));
 
 	def __del__(self):
 		self.__dest__();
@@ -93,13 +93,15 @@ class TreeItemsViewCtr(object):
 		if self.__type and ("type" in data):
 			if data["type"] != self.__type:
 				return; # 若不需要更新当前视图，则直接返回，不执行更新逻辑
-		self.__ui.updateView(data);
+		self.getUI().updateView(data);
 
 	def initParams(self, params):
 		# 树节点的页面数据字典
 		self.__itemPageDataDict = {};
 		# 用于标记当前类的类型ID
 		self.__type = params.get("type", None);
+		# 选中树节点的回调
+		self.__onActivated = params.get("onActivated", None);
 		pass;
 
 	def bindEventToItem(self, treeCtr, item, itemInfo, pathList):
@@ -117,16 +119,8 @@ class TreeItemsViewCtr(object):
 
 	def onActivated(self, event):
 		item = event.GetItem();
-		if item in self.__itemPageDataDict:
-			pageInfo = self.__itemPageDataDict[item];
-			data = {
-				"createPage" : True,
-				"key" : pageInfo["key"],
-				"pagePath" : pageInfo["pagePath"],
-				"category" : pageInfo["category"],
-				"title" : pageInfo["title"]
-			};
-			_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_RIGHT_VIEW, data);
+		if item in self.__itemPageDataDict and callable(self.__onActivated):
+			self.__onActivated(self.__itemPageDataDict[item]);
 
 	def getItemPageData(self, itemKey):
 		for pageData in self.__itemPageDataDict.values():

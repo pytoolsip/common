@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-28 19:57:16
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-29 18:30:15
 
 import wx;
 
@@ -25,18 +25,16 @@ class TreeItemsViewUI(wx.TreeCtrl):
 		self.initViewLayout(); # 初始化布局
 
 	def createControls(self):
-		self.createTreeItems();
+		self.createTreeRoot();
 		pass;
 		
 	def initViewLayout(self):
 		pass;
 
 	def updateView(self, data):
-		if "itemsData" in data:
-			self.updateTreeItems(data["itemsData"]);
 		pass;
 
-	def createTreeItems(self):
+	def createTreeRoot(self):
 		self.__treeCtrlRoot = self.AddRoot("root");
 		pass;
 
@@ -48,9 +46,9 @@ class TreeItemsViewUI(wx.TreeCtrl):
 				self.createTreeItemsByItemsData(item, itemInfo["items"], pathList = pathList);
 			self.getCtr().bindEventToItem(self, item, itemInfo, pathList);
 			pathList.pop();
-		self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.getCtr().onActivated);
 		pass;
 
-	def updateTreeItems(self, itemsData):
+	def createTreeItems(self, itemsData):
 		self.createTreeItemsByItemsData(self.__treeCtrlRoot, itemsData);
-		pass;
+		self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.getCtr().onActivated);
+

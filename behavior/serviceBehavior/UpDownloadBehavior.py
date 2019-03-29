@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-07 20:34:34
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-27 19:41:24
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-29 17:06:43
 import wx;
 import urllib;
 import paramiko;
@@ -69,16 +69,17 @@ class UpDownloadBehavior(_GG("BaseBehavior")):
 			zf = zipfile.ZipFile(filePath,'w', zipfile.ZIP_DEFLATED);
 			completeSize = 0;
 			for root, _, files in os.walk(dirpath):
+				callback(completeSize/totalSize, root); # 回调函数
 				# 去掉目标根路径，只对目标文件夹下边的文件进行压缩
 				for file in files:
 					if os.path.splitext(file)[-1] not in [".pyc"]: # 过滤文件
 						zf.write(os.path.join(root, file), os.path.join(root.replace(dirpath, ''), file));
 						completeSize += os.path.getsize(os.path.join(root, file));
-				callback(completeSize/totalSize, root); # 回调函数
 			zf.close();
 			if callable(lastCallback):
 				wx.CallAfter(lastCallback); # 完成后的回调
-		proDialog = wx.ProgressDialog("压缩工具包", "", style = wx.PD_APP_MODAL|wx.PD_CAN_SKIP|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME);
+			pass;
+		proDialog = wx.ProgressDialog("压缩工具包", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME);
 		def updateProDialog(value, path):
 			value = proDialog.GetRange() * value;
 			if value >= proDialog.GetRange():
@@ -90,10 +91,30 @@ class UpDownloadBehavior(_GG("BaseBehavior")):
 		proDialog.ShowModal();
 
 	# 解压文件
-	def unzipFile(self, obj, filePath, dirpath, _retTuple = None):
-		zf = zipfile.ZipFile(filePath, "r");
-		for file in zf.namelist():
-			zf.extract(file, dirpath);
+	def unzipFile(self, obj, filePath, dirpath, finishCallback = None, _retTuple = None):
+		def unzipMethod(filePath, dirpath, callback, lastCallback):
+			zf = zipfile.ZipFile(filePath, "r");
+			totalLen = len(zf.namelist());
+			completeLen = 0;
+			for file in zf.namelist():
+				callback(completeLen/totalLen, file); # 回调函数
+				zf.extract(file, dirpath);
+				completeLen += 1;
+			zf.close();
+			if callable(lastCallback):
+				wx.CallAfter(lastCallback); # 完成后的回调
+			pass;
+		proDialog = wx.ProgressDialog("解压工具包", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME);
+		def updateProDialog(value, path):
+			value = proDialog.GetRange() * value;
+			if value >= proDialog.GetRange():
+				wx.CallAfter(proDialog.Update, proDialog.GetRange(), "已完成解压，包路径为：\n" + str(filePath));
+			else:
+				wx.CallAfter(proDialog.Update, value, "正在解压\n" + str(path));
+			pass;
+		threading.Thread(target = unzipMethod, args = (filePath, dirpath, updateProDialog, finishCallback)).start();
+		proDialog.Update(0, "开始解压\n" + str(filePath));
+		proDialog.ShowModal();
 
 	# 获取文件夹大小
 	def getDirPathSize(self, dirpath):

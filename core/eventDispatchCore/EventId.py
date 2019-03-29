@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-04-01 10:56:10
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-14 22:51:18
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-03-29 17:34:37
 
 from enum import Enum, unique;
 
@@ -37,3 +37,5 @@ class EVENT_ID(Enum):
 	ADD_LAUNCHER_EVENT = getNewEventId(); # 添加启动事件
 
 	LOGIN_SUCCESS_EVENT = getNewEventId(); # 登录成功事件
+
+	UPDATE_WINDOW_LEFT_VIEW = getNewEventId(); # 更新左窗口视图
