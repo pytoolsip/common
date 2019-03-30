@@ -2,11 +2,20 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-29 21:05:29
+# @Last Modified time: 2019-03-30 23:36:46
+
+import wx;
+from enum import Enum, unique;
 
 from _Global import _GG;
 
 from TreeItemsViewUI import *;
+
+# Item类型
+@unique
+class ItemType(Enum):
+	Tool = 0;
+	Catalog = 1;
 
 def getRegisterEventMap(G_EVENT):
 	return {
@@ -24,7 +33,8 @@ class TreeItemsViewCtr(object):
 		self.registerEventMap(); # 注册事件
 		self.bindBehaviors(); # 绑定组件
 		self.initParams(params); # 初始化相关参数/属性
-		self.getUI().createTreeItems(params.get("itemsData", []));
+		self.initPopupMenus(); # 创建弹出菜单
+		self.getUI().createTreeItems(params.get("itemsData", [])); # 创建树
 
 	def __del__(self):
 		self.__dest__();
@@ -48,6 +58,7 @@ class TreeItemsViewCtr(object):
 		# 创建视图UI类
 		self.__ui = TreeItemsViewUI(parent, curPath = self._curPath, viewCtr = self);
 		self.__ui.initView();
+		self.__ui.Bind(wx.EVT_RIGHT_DOWN, self.onMouseRightDown);
 
 	def getUI(self):
 		return self.__ui;
@@ -100,8 +111,14 @@ class TreeItemsViewCtr(object):
 		self.__itemPageDataDict = {};
 		# 用于标记当前类的类型ID
 		self.__type = params.get("type", None);
-		# 选中树节点的回调
+		# 选中树节点的回调函数
 		self.__onActivated = params.get("onActivated", None);
+		# 添加树节点的回调函数
+		self.__onAddItem = params.get("onAddItem", None);
+		# 移除树节点的回调函数
+		self.__onRemoveItem = params.get("onRemoveItem", None);
+		# 初始化弹出菜单的节点
+		self.__popupMenuItem = None;
 		pass;
 
 	def bindEventToItem(self, item, itemInfo, pathList):
@@ -110,6 +127,7 @@ class TreeItemsViewCtr(object):
 			if "branch" in itemInfo:
 				basePath += itemInfo["branch"] + "/";
 			self.__itemPageDataDict[item] = {
+				"item" : item,
 				"key" : itemInfo["key"],
 				"pagePath" : (basePath + itemInfo["path"]).replace("/", "/"),
 				"category" : "/".join(pathList),
@@ -122,6 +140,14 @@ class TreeItemsViewCtr(object):
 		if item in self.__itemPageDataDict and callable(self.__onActivated):
 			self.__onActivated(self.__itemPageDataDict[item]);
 
+	def onMouseRightDown(self, event):
+		UI = self.getUI();
+		item, flags = UI.HitTest(event.GetPosition());
+		if item.IsOk() and flags == wx.TREE_HITTEST_ONITEMLABEL:
+			UI.SetFocusedItem(item);
+			self.showPopupMenu(item, event.GetPosition());
+		pass;
+
 	def getItemPageData(self, itemKey):
 		for pageData in self.__itemPageDataDict.values():
 			if pageData["key"] == itemKey:
@@ -129,16 +155,90 @@ class TreeItemsViewCtr(object):
 		return {};
 
 	def getItem(self, itemKey):
-		for item, pageData in self.__itemPageDataDict.items():
-			if pageData["key"] == itemKey:
-				return item;
-		return None;
+		pageData = self.getItemPageData(itemKey);
+		return pageData.get("item", None);
 
 	def addItem(self, nameList, itemInfo):
 		item = self.getUI().checkTreeItem(nameList);
 		self.bindEventToItem(item, itemInfo, nameList[:-1]);
+		self.getUI().SetFocusedItem(item);
+		if callable(self.__onAddItem):
+			self.__onAddItem(self.__itemPageDataDict[item], itemInfo);
 
 	def removeItem(self, itemKey):
 		item = self.getItem(itemKey);
 		if item:
+			itemText = self.getUI().GetItemText(item);
+			pageData = self.__itemPageDataDict.pop(item);
 			self.getUI().removeTreeItem(item);
+			if callable(self.__onRemoveItem):
+				self.__onRemoveItem(pageData, itemText);
+
+	def initPopupMenus(self):
+		self.getCtrByKey("PopupMenuViewCtr").createNewMenu(ItemType.Tool, {"itemsData" : self.getToolPopupMenuItemsData()});
+		self.getCtrByKey("PopupMenuViewCtr").createNewMenu(ItemType.Catalog, {"itemsData" : self.getCatalogPopupMenuItemsData()});
+
+	def showPopupMenu(self, item, pos):
+		self.__popupMenuItem = item;
+		if item in self.__itemPageDataDict:
+			if not itemData["category"]:
+				return;
+			self.getUI().PopupMenu(self.getCtrByKey("PopupMenuViewCtr").getMenu(ItemType.Tool), pos);
+		else:
+			self.getUI().PopupMenu(self.getCtrByKey("PopupMenuViewCtr").getMenu(ItemType.Catalog), pos);
+
+	def showMessageDialog(self, message, caption = "删除工具", style = wx.YES_NO|wx.ICON_EXCLAMATION):
+		return wx.MessageDialog(self.getUI(), message, caption = caption, style = style).ShowModal();
+
+	def onDeleteItem(self, event):
+		if not self.__popupMenuItem:
+			return;
+		itemText = self.getUI().GetItemText(self.__popupMenuItem);
+		itemData = self.__itemPageDataDict.get(self.__popupMenuItem, None);
+		if itemData:
+			if not itemData["category"]:
+				self.showMessageDialog("不能删除该工具【%s】！"%itemText);
+				return;
+			if self.showMessageDialog("是否确认删除工具【%s】？"%(itemData["category"]+"/"+itemText)) == wx.ID_YES:
+				self.removeItem(itemData["key"]);
+		else:
+			itemDataList = self.getItemDataListByItem(self.__popupMenuItem);
+			if len(itemDataList) == 0:
+				return;
+			idx = itemDataList[0]["category"].find(itemText);
+			if idx == -1:
+				_GG("Log").w("There is not text[%s] in category[%s]！"%(itemText, itemDataList[0]["category"]));
+				return;
+			category = itemDataList[0]["category"][:idx] + itemText;
+			toolNamePathList = [];
+			for itemData in itemDataList:
+				toolNamePathList.append("/".join([itemData["category"][itemData["category"].find(itemText):], itemData["title"]]));
+			if self.showMessageDialog("是否确认删除分类【%s】？\n该分类包含工具：\n%s"%(category, "/".join(toolNamePathList))) == wx.ID_YES:
+				for itemData in itemDataList:
+					self.removeItem(itemData["key"]);
+
+	def getItemDataListByItem(self, item, itemDataList = []):
+		UI = self.getUI();
+		item, cookie = UI.GetFirstChild(item);
+		while item.IsOk():
+			if item in self.__itemPageDataDict:
+				itemDataList.append(self.__itemPageDataDict[item]);
+			self.getItemDataListByItem(item, itemDataList = itemDataList);
+			item, cookie = UI.GetNextChild(item, cookie);
+		return itemDataList;
+
+	def getToolPopupMenuItemsData(self):
+		return [
+			{
+				"title" : "删除工具",
+				"callback" : self.onDeleteItem,
+			},
+		];
+
+	def getCatalogPopupMenuItemsData(self):
+		return [
+			{
+				"title" : "删除分类",
+				"callback" : self.onDeleteItem,
+			},
+		];

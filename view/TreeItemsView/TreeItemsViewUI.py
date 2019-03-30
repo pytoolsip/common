@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-29 21:02:27
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-30 23:29:25
 
 import wx;
 
@@ -25,6 +25,7 @@ class TreeItemsViewUI(wx.TreeCtrl):
 		self.initViewLayout(); # 初始化布局
 
 	def createControls(self):
+		self.getCtr().createCtrByKey("PopupMenuViewCtr", _GG("g_CommonPath") + "view/PopupMenuView"); # , parent = self, params = {}
 		pass;
 		
 	def initViewLayout(self):
@@ -35,12 +36,12 @@ class TreeItemsViewUI(wx.TreeCtrl):
 
 	def createTreeItemsByItemsData(self, parentItem, itemsData, pathList = []):
 		for itemInfo in itemsData:
-			pathList.append(itemInfo["name"]);
 			item = self.AppendItem(parentItem, itemInfo["name"]);
 			if "items" in itemInfo:
+				pathList.append(itemInfo["name"]);
 				self.createTreeItemsByItemsData(item, itemInfo["items"], pathList = pathList);
+				pathList.pop();
 			self.getCtr().bindEventToItem(item, itemInfo, pathList);
-			pathList.pop();
 		pass;
 
 	def createTreeItems(self, itemsData):
@@ -52,19 +53,19 @@ class TreeItemsViewUI(wx.TreeCtrl):
 			parentItem = self.GetRootItem();
 		if len(nameList) == 0:
 			return parentItem;
-		item = self.GetFirstChild(parentItem);
+		item, cookie = self.GetFirstChild(parentItem);
 		while item.IsOk():
 			if self.GetItemText(item) == nameList[0]:
 				return self.checkTreeItem(nameList[1:]);
 			else:
-				item = self.GetNextSibling(item);
+				item = self.GetNextChild(item, cookie);
 		return self.checkTreeItem(nameList[1:], self.AppendItem(parentItem, nameList[0]));
 
 	def removeTreeItem(self, item):
 		while item.IsOk():
-			parentItem = self.GetItemParent(item);
+			ptItem = self.GetItemParent(item);
 			self.Delete(item);
-			if self.GetChildrenCount(parentItem, recursively = False) == 0:
-				item = parentItem;
+			if ptItem.IsOk() and self.GetChildrenCount(ptItem, recursively = False) == 0:
+				item = ptItem;
 			else:
 				break;

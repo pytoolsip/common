@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-29 22:25:58
+# @Last Modified time: 2019-03-31 00:30:56
 
 import wx;
 
@@ -122,10 +122,23 @@ class WindowLeftViewCtr(object):
 				"category" : pageInfo["category"],
 				"title" : pageInfo["title"]
 			});
+			pass;
+		def onAddItem(pageInfo, itemInfo):
+			itemData = self.checkTreeItemsData(self.getNameList(pageInfo["category"], itemInfo["name"]), self.__treeItemsData);
+			for key in ["key", "trunk", "branch", "path"]:
+				itemData[key] = itemInfo.get(key, "");
+			self.saveTreeItemsData();
+			pass;
+		def onRemoveItem(pageInfo, name):
+			self.checkTreeItemsData(self.getNameList(pageInfo["category"], name), self.__treeItemsData, exData = {"isRemove" : True});
+			self.saveTreeItemsData();
+			pass;
 		self.createCtrByKey("TreeItemsViewCtr", _GG("g_CommonPath") + "view/TreeItemsView", parent = self.getUI(), params = {
 			"itemsData" : self.__treeItemsData,
 			"type" : "WINDOW_LEFT_TREE",
 			"onActivated" : onActivated,
+			"onAddItem" : onAddItem,
+			"onRemoveItem" : onRemoveItem,
 		});
 
 	def getFirstItemData(self):
@@ -137,35 +150,53 @@ class WindowLeftViewCtr(object):
 		itemData = self.getFirstItemData();
 		return self.getCtrByKey("TreeItemsViewCtr").getItemPageData(itemData.get("key", ""));
 
-	def checkTreeItemsData(self, nameList, treeItemsData):
+	def getNameList(self, category, name, nameList = []):
+		if category:
+			nameList = category.split("/");
+		nameList.append(name);
+		return nameList;
+
+	def checkTreeItemsData(self, nameList, treeItemsData, exData = {}):
+		exData["__isRemoveChild"] = False; # 重置标记
 		name = nameList.pop(0);
 		for i in range(len(treeItemsData)):
 			itemData = treeItemsData[i];
 			if itemData["name"] == name:
 				if len(nameList) == 0:
-					return treeItemsData, i;
-				if "items" not in itemData:
-					itemData["items"] = [];
-				return self.checkTreeItemsData(nameList, itemData["items"]);
+					if exData.get("isRemove", False):
+						treeItemsData.pop(i);
+						exData["__isRemoveChild"] = True;
+					return itemData;
+				else:
+					if "items" not in itemData:
+						itemData["items"] = [];
+					result = self.checkTreeItemsData(nameList, itemData["items"], exData = exData);
+					if exData.get("__isRemoveChild", False):
+						if len(itemData["items"]) <= 1:
+							treeItemsData.pop(i);
+						else:
+							exData["__isRemoveChild"] = False;
+					return result;
 			pass;
+		if exData.get("isRemove", False):
+			return {};
+		# 添加新节点
 		newItemData = {"name" : name};
 		treeItemsData.append(newItemData);
-		if len(nameList) > 0:
-			newItemData["items"] = [];
-			return self.checkTreeItemsData(nameList, newItemData["items"]);
+		if len(nameList) == 0:
+			return newItemData;
 		else:
-			return treeItemsData, -1;
+			newItemData["items"] = [];
+			return self.checkTreeItemsData(nameList, newItemData["items"], exData = exData);
 
 	def updateTreeView(self, data):
 		if "key" not in data or not data.get("namePath", ""):
 			return;
-		nameList = data["namePath"].split("/");
-		pItemData, idx = self.checkTreeItemsData(nameList, self.__treeItemsData);
 		if data.get("action", "add"):
+			nameList = data["namePath"].split("/");
+			itemData = {"name" : nameList[-1]};
 			for key in ["key", "trunk", "branch", "path"]:
-				pItemData[i][key] = data.get(key, "");
-			self.getCtrByKey("TreeItemsViewCtr").addItem(nameList, pItemData[i]);
+				itemData[key] = data.get(key, "");
+			self.getCtrByKey("TreeItemsViewCtr").addItem(nameList, itemData);
 		if data.get("action", "remove"):
-			pItemData.pop(i);
 			self.getCtrByKey("TreeItemsViewCtr").removeItem(data["key"]);
-		self.saveTreeItemsData();
