@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-31 00:33:17
+# @Last Modified time: 2019-03-31 00:51:54
 
 import wx;
 from enum import Enum, unique;
@@ -144,7 +144,7 @@ class TreeItemsViewCtr(object):
 		UI = self.getUI();
 		item, flags = UI.HitTest(event.GetPosition());
 		if item.IsOk() and flags == wx.TREE_HITTEST_ONITEMLABEL:
-			UI.SetFocusedItem(item);
+			UI.SelectItem(item);
 			self.showPopupMenu(item, event.GetPosition());
 		pass;
 
@@ -161,7 +161,7 @@ class TreeItemsViewCtr(object):
 	def addItem(self, nameList, itemInfo):
 		item = self.getUI().checkTreeItem(nameList);
 		self.bindEventToItem(item, itemInfo, nameList[:-1]);
-		self.getUI().SetFocusedItem(item);
+		self.getUI().SelectItem(item);
 		if callable(self.__onAddItem):
 			self.__onAddItem(self.__itemPageDataDict[item], itemInfo);
 
