@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-30 23:36:46
+# @Last Modified time: 2019-03-31 00:33:17
 
 import wx;
 from enum import Enum, unique;
@@ -181,7 +181,7 @@ class TreeItemsViewCtr(object):
 	def showPopupMenu(self, item, pos):
 		self.__popupMenuItem = item;
 		if item in self.__itemPageDataDict:
-			if not itemData["category"]:
+			if not self.__itemPageDataDict[item]["category"]:
 				return;
 			self.getUI().PopupMenu(self.getCtrByKey("PopupMenuViewCtr").getMenu(ItemType.Tool), pos);
 		else:
