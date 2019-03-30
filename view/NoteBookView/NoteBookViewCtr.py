@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 18:27:07
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-28 19:56:43
+# @Last Modified time: 2019-03-31 00:41:43
 
 from enum import Enum, unique;
 
@@ -196,6 +196,13 @@ class NoteBookViewCtr(object):
 			page = pageInfo["pageViewCtr"].getUI();
 			self.setCurrentPageInt(self.getUI().FindPage(page));
 			return False;
+
+	def destroyPageByPageKey(self, pageKey):
+		if pageKey in self.__pageInfoDict:
+			pageInfo = self.__pageInfoDict[pageKey];
+			UI = self.getUI();
+			if UI.DeletePage(UI.FindPage(pageInfo["pageViewCtr"].getUI())):
+				self.resetData(pageKey);
 
 	def onMouseRightDown(self, event):
 		UI = self.getUI();

@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-31 00:30:56
+# @Last Modified time: 2019-03-31 00:44:53
 
 import wx;
 
@@ -132,6 +132,10 @@ class WindowLeftViewCtr(object):
 		def onRemoveItem(pageInfo, name):
 			self.checkTreeItemsData(self.getNameList(pageInfo["category"], name), self.__treeItemsData, exData = {"isRemove" : True});
 			self.saveTreeItemsData();
+			_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_RIGHT_VIEW, {
+				"destroyPage" : True,
+				"key" : pageInfo["key"],
+			});
 			pass;
 		self.createCtrByKey("TreeItemsViewCtr", _GG("g_CommonPath") + "view/TreeItemsView", parent = self.getUI(), params = {
 			"itemsData" : self.__treeItemsData,

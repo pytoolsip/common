@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 18:09:36
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-28 18:32:15
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-03-31 00:43:36
 
 import wx;
 
@@ -92,9 +92,16 @@ class WindowRightViewCtr(object):
 		# self.__ui.updateView(data);
 		if data.get("createPage", False):
 			self.createPageToNoteBook(data);
+		if data.get("destroyPage", False):
+			self.destroyPageByPageKey(data);
 		pass;
 
 	def createPageToNoteBook(self, data):
-		if("key" in data) and ("pagePath" in data) and ("title" in data) and ("category" in data):
+		if ("key" in data) and ("pagePath" in data) and ("title" in data) and ("category" in data):
 			self.getCtrByKey("NoteBookViewCtr").createPageToNoteBook(data["key"], data["pagePath"], data["title"], data["category"]);
+		pass;
+
+	def destroyPageByPageKey(self, data):
+		if "key" in data:
+			self.getCtrByKey("NoteBookViewCtr").destroyPageByPageKey(data["key"]);
 		pass;
