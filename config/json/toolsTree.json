@@ -3,8 +3,7 @@
 		"name":"首页",
 		"key":"db1c89e0f6e62f9642018cbb531bbd4f",
 		"trunk":"assets/common",
-		"path":"view/HomePageView",
-		"category":""
+		"path":"view/HomePageView"
 	},
 	{
 		"name":"娱乐工具",
@@ -17,7 +16,10 @@
 						"key":"652c6d94d954c5412fffb91b2f5b82ce",
 						"trunk":"assets/tools",
 						"branch":"games/klotskiGame",
-						"path":"MainView"
+						"path":"MainView",
+						"description":"自制小游戏",
+						"version":"1.0.0",
+						"author":"梦心DH"
 					}
 				]
 			}

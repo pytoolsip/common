@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-23 15:53:24
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-04-05 21:59:27
 import os;
 import wx;
 import time;
@@ -151,6 +151,9 @@ class MenuBarViewCtr(object):
 	def onUploadTool(self, menuItem, event):
 		self._uploadTool_();
 
+	def onAddLocalTool(self, menuItem, event):
+		pass;
+
 	def getMenuItemsData(self):
 		return [
 			{"name" : "文件", "items" : [
@@ -163,8 +166,7 @@ class MenuBarViewCtr(object):
 			{"name" : "工具", "items" : [
 				{"name" : "下载工具", "items" : [], "enable" : False},
 				{"name" : "上传工具", "items" : [], "callback" : self.onUploadTool},
-				{"name" : "从本地添加工具", "items" : [], "enable" : False},
-				{"name" : "从本地移除工具", "items" : [], "enable" : False},
+				{"name" : "从本地添加工具", "items" : [], "callback" : self.onAddLocalTool},
 				{"name" : "进行工具开发", "items" : [], "callback" : self.onClickToolDevelopment},
 			]},
 			{"name" : "升级", "items" : [

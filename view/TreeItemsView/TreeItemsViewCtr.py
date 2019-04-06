@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-31 00:51:54
+# @Last Modified time: 2019-04-06 11:38:57
 
 import wx;
 from enum import Enum, unique;
@@ -94,6 +94,7 @@ class TreeItemsViewCtr(object):
 			_GG("EventDispatcher").unregister(eventId, self, callbackName);
 
 	def bindBehaviors(self):
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/ToolServiceBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 		
 	def unbindBehaviors(self):
@@ -132,6 +133,9 @@ class TreeItemsViewCtr(object):
 				"pagePath" : (basePath + itemInfo["path"]).replace("/", "/"),
 				"category" : "/".join(pathList),
 				"title" : itemInfo.get("title", itemInfo["name"]),
+				"description" : itemInfo.get("description", ""),
+				"version" : itemInfo.get("version", ""),
+				"author" : itemInfo.get("author", ""),
 			};
 		pass;
 
@@ -227,11 +231,34 @@ class TreeItemsViewCtr(object):
 			item, cookie = UI.GetNextChild(item, cookie);
 		return itemDataList;
 
+	def onShowToolInfo(self, event):
+		if not self.__popupMenuItem:
+			return;
+		itemText = self.getUI().GetItemText(self.__popupMenuItem);
+		itemData = self.__itemPageDataDict.get(self.__popupMenuItem, None);
+		if itemData:
+			self._showToolInfo_({
+				"name" : itemText,
+				"path" : itemData["category"],
+				"author" : itemData["author"],
+				"version" : itemData["version"],
+				"description" : {
+					"value" : itemData["description"],
+				},
+				"download" : {},
+			});
+		else:
+			self.showMessageDialog("显示工具【%s】信息失败！"%itemText);
+
 	def getToolPopupMenuItemsData(self):
 		return [
 			{
 				"title" : "删除工具",
 				"callback" : self.onDeleteItem,
+			},
+			{
+				"title" : "显示工具信息",
+				"callback" : self.onShowToolInfo,
 			},
 		];
 

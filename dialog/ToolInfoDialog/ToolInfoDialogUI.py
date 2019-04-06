@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JinZhang
 # @Date:   2019-03-26 18:25:37
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-26 23:04:11
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-04-06 11:41:37
 
 import wx;
 
@@ -44,6 +44,7 @@ class ToolInfoDialogUI(wx.Dialog):
 		# self.getCtr().createCtrByKey("key", self._curPath + "***Dialog"); # , parent = self, params = {}
 		self.createName();
 		self.createPath();
+		self.createVersion();
 		self.createAuthor();
 		self.createDescription();
 		self.createDownloadBtn();
@@ -52,9 +53,10 @@ class ToolInfoDialogUI(wx.Dialog):
 		box = wx.BoxSizer(wx.VERTICAL);
 		box.Add(self.__name, 0, flag = wx.TOP|wx.LEFT|wx.RIGHT, border = 8);
 		box.Add(self.__path, 0, flag = wx.TOP|wx.LEFT|wx.RIGHT, border = 8);
+		box.Add(self.__version, 0, flag = wx.TOP|wx.LEFT|wx.RIGHT, border = 8);
 		box.Add(self.__author, 0, flag = wx.TOP|wx.LEFT|wx.RIGHT, border = 8);
-		box.Add(self.__desc, 0, flag = wx.EXPAND|wx.TOP|wx.LEFT|wx.RIGHT, border = 8);
-		box.Add(self.__download, 2, flag = wx.TOP|wx.BOTTOM|wx.ALIGN_CENTER, border = 8);
+		box.Add(self.__desc, 0, flag = wx.EXPAND|wx.TOP|wx.BOTTOM|wx.LEFT|wx.RIGHT, border = 8);
+		box.Add(self.__download, 2, flag = wx.BOTTOM|wx.ALIGN_CENTER, border = 8);
 		self.SetSizerAndFit(box);
 
 	def updatePosition(self):
@@ -85,6 +87,19 @@ class ToolInfoDialogUI(wx.Dialog):
 		panel.SetSizer(box);
 		self.__path = panel;
 
+	def createVersion(self):
+		panel = wx.Panel(self);
+		box = wx.BoxSizer(wx.HORIZONTAL);
+		font = wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL);
+		key = wx.StaticText(panel, label = "版本：");
+		key.SetFont(font);
+		panel._version = wx.StaticText(panel, label = self.__params.get("version", "-.-.-"));
+		panel._version.SetFont(font);
+		box.Add(key);
+		box.Add(panel._version);
+		panel.SetSizer(box);
+		self.__version = panel;
+
 	def createAuthor(self):
 		panel = wx.Panel(self);
 		box = wx.BoxSizer(wx.HORIZONTAL);
@@ -114,11 +129,13 @@ class ToolInfoDialogUI(wx.Dialog):
 	def createDownloadBtn(self):
 		params = self.__params.get("download", {});
 		self.__download = wx.Button(self, label = params.get("label", "下载"));
+		onDownload = params.get("onDownload", None);
 		def onBtn(self, event):
-			callback = params.get("onDownload", None);
-			if callable(callback):
-				callback();
+			if callable(onDownload):
+				onDownload();
 			self.EndModal(wx.ID_OK);
 		self.__download.Bind(wx.EVT_BUTTON, onBtn);
-		if not self.__params.get("path", None):
+		if not onDownload:
+			self.__download.Hide();
+		elif not callable(onDownload):
 			self.__download.Enable(False);

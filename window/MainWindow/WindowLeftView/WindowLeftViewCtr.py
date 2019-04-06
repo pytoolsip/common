@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-31 00:44:53
+# @Last Modified time: 2019-04-06 10:24:59
 
 import wx;
 
@@ -125,7 +125,7 @@ class WindowLeftViewCtr(object):
 			pass;
 		def onAddItem(pageInfo, itemInfo):
 			itemData = self.checkTreeItemsData(self.getNameList(pageInfo["category"], itemInfo["name"]), self.__treeItemsData);
-			for key in ["key", "trunk", "branch", "path"]:
+			for key in ["key", "name", "trunk", "branch", "path", "description", "version", "author"]:
 				itemData[key] = itemInfo.get(key, "");
 			self.saveTreeItemsData();
 			pass;
@@ -194,12 +194,15 @@ class WindowLeftViewCtr(object):
 			return self.checkTreeItemsData(nameList, newItemData["items"], exData = exData);
 
 	def updateTreeView(self, data):
-		if "key" not in data or not data.get("namePath", ""):
+		if "key" not in data or "name" not in data:
 			return;
 		if data.get("action", "add"):
-			nameList = data["namePath"].split("/");
-			itemData = {"name" : nameList[-1]};
-			for key in ["key", "trunk", "branch", "path"]:
+			nameList = [];
+			if data.get("category", None):
+				nameList = data["category"].split("/");
+			nameList.append(data["name"]);
+			itemData = {"name" : data["name"]};
+			for key in ["key", "name", "trunk", "branch", "path", "description", "version", "author"]:
 				itemData[key] = data.get(key, "");
 			self.getCtrByKey("TreeItemsViewCtr").addItem(nameList, itemData);
 		if data.get("action", "remove"):

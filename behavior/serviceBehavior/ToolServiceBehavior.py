@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-20 19:39:49
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-29 17:46:58
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-04-06 11:39:46
 import wx;
 import hashlib;
 import os, shutil;
@@ -123,6 +123,9 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 
 	def _showToolInfo_(self, obj, data, _retTuple = None):
 		def onDownload():
+			if "key" not in data:
+				return;
+			tkey = data.get("key", "");
 			def onResp(respData):
 				if not respData:
 					_GG("WindowObject").CreateMessageDialog("网络请求失败！", "下载工具", style = wx.OK|wx.ICON_ERROR);
@@ -133,7 +136,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 					fileName = oa.path.basename(respData.url);
 					def onComplete(filePath):
 						# 重置文件夹
-						dirpath = toolsPath + respData.tkey;
+						dirpath = toolsPath + tkey;
 						if os.path.exists(dirpath):
 							shutil.rmtree(dirpath);
 						os.mkdir(dirpath);
@@ -144,11 +147,15 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 							# 更新左侧工具树
 							_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_LEFT_VIEW, {
 								"action" : "add",
-								"key" : respData.tkey,
+								"key" : tkey,
 								"trunk" : "data/tools",
-								"branch" : respData.tkey,
+								"branch" : tkey,
 								"path" : "MainView",
-								"namePath" : respData.namePath,
+								"name" : respData.toolInfo.name,
+								"category" : respData.toolInfo.category,
+								"description" : respData.toolInfo.description,
+								"version" : respData.toolInfo.version,
+								"author" : respData.toolInfo.author,
 							});
 						obj.unzipFile(filePath, dirpath, finishCallback = afterUnzip);
 						pass;
@@ -156,14 +163,14 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 					obj.download(respData.url, toolsPath+fileName, respData.totalSize, onComplete = onComplete);
 				pass;
 			_GG("CommonClient").callService("Download", "DownloadReq", {
-				"name" : data.get("name", ""),
-				"category" : data.get("path", ""),
+				"key" : tkey,
 				"commonVersion" : _GG("AppConfig")["version"],
 			}, asynCallback = onResp);
 			pass;
 		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/ToolInfoDialog", params = {
 			"name" : data.get("name", ""),
 			"path" : data.get("path", ""),
+			"version" : data.get("version", ""),
 			"author" : data.get("author", ""),
 			"description" : data.get("description", {}),
 			"download" : data.get("download", {
