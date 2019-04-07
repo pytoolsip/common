@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-03-29 22:21:00
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-26 18:19:57
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-04-05 22:36:46
 
 from module.ModuleCreator import *;
 
@@ -43,7 +43,7 @@ if __name__ == "__main__":
 	# 创建弹窗的参数配置 dialog
 	theModule = {
 		"modName" : "dialog",
-		"targetModName" : "ToolInfoDialog",
+		"targetModName" : "AddLocalToolDialog",
 		"targetModPath" : commonPath + "dialog/",
 	};
 
