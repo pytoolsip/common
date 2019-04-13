@@ -2,9 +2,9 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-13 20:29:10
+# @Last Modified time: 2019-04-13 21:02:18
 
-import wx;
+import wx, os, shutil;
 
 from _Global import _GG;
 
@@ -136,6 +136,10 @@ class WindowLeftViewCtr(object):
 				"destroyPage" : True,
 				"key" : pageInfo["key"],
 			});
+			# 移除工具文件夹
+			toolPath = os.path.dirname(pageInfo["pagePath"]);
+			if os.path.exists(toolPath):
+				shutil.rmtree(toolPath);
 			pass;
 		self.createCtrByKey("TreeItemsViewCtr", _GG("g_CommonPath") + "view/TreeItemsView", parent = self.getUI(), params = {
 			"itemsData" : self.__treeItemsData,
@@ -194,7 +198,6 @@ class WindowLeftViewCtr(object):
 			return self.checkTreeItemsData(nameList, newItemData["items"], exData = exData);
 
 	def updateTreeView(self, data):
-		print("updateTreeView:::", data)
 		if "key" not in data or "name" not in data:
 			return;
 		action = data.get("action", "add");

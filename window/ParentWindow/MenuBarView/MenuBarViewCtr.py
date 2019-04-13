@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-13 20:27:02
+# @Last Modified time: 2019-04-13 21:05:10
 import os;
 import wx;
 import time;
@@ -166,6 +166,7 @@ class MenuBarViewCtr(object):
 				"version" : "无",
 				"author" : "本地",
 			});
+			return True;
 		def checkToolKey(tkey):
 			return not _GG("WindowObject").MainWindowCtr.getCtrByKey("WindowLeftViewCtr").checkItemKey(tkey);
 		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/AddLocalToolDialog", params = {
