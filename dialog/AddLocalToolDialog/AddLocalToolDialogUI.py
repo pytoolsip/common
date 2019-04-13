@@ -2,12 +2,13 @@
 # @Author: JimZhang
 # @Date:   2019-04-05 22:36:48
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-07 00:56:43
+# @Last Modified time: 2019-04-13 20:12:35
 
-import wx;
+import wx, math;
 
 from _Global import _GG;
 from function.base import *;
+from ui import DirInputView;
 
 class AddLocalToolDialogUI(wx.Dialog):
 	"""docstring for AddLocalToolDialogUI"""
@@ -17,6 +18,7 @@ class AddLocalToolDialogUI(wx.Dialog):
 		self._className_ = AddLocalToolDialogUI.__name__;
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
+		self.__inputInfosList = []; # 输入框列表
 		self.Bind(wx.EVT_CLOSE, self.onClose); # 绑定关闭事件
 
 	def onClose(self, event):
@@ -25,7 +27,7 @@ class AddLocalToolDialogUI(wx.Dialog):
 	def initParams(self, params):
 		# 初始化参数
 		self.__params = {
-			"title" : "标题",
+			"title" : "添加本地工具",
 			"size" : (-1,-1),
 			"style" : wx.DEFAULT_DIALOG_STYLE,
 			"baseCategory" : "本地工具",
@@ -68,24 +70,24 @@ class AddLocalToolDialogUI(wx.Dialog):
 	def resetDialog(self):
 		self.__dirInput.resetInputValue();
 		self.updateInputPanel(self.__name, isReset = True);
-		self.updateInputPanel(self.__category, isReset = True);
+		self.updateInputPanel(self.__category, label = self.getCategoryExTips(), isOk = True);
+		self.updateInputPanel(self.__description, isReset = True);
 
 	def createInputViewsList(self):
 		self.createDirInputView();
 		self.createCategoryView();
 		self.createNameView();
+		self.createDescriptionView();
 
 	def createOKButton(self):
 		self.__okButton = wx.Button(self, label = "确认添加", size = (-1, 30));
 		def onOkButton(event):
-			msgDlg = wx.MessageDialog(self, "正在添加本地工具...", caption = "添加本地工具", style = ion = "提示", style = wx.OK|wx.ICON_INFORMATION);
 			def onBtn(localToolInfo):
-				msgDlg.EndModal(wx.ID_OK);
 				callback = self.__params.get("onOk", None);
 				if not callback or callback(localToolInfo):
 					self.EndModal(wx.ID_OK);
-			self.getCtr().addLocalTool(self.getLocalToolInfo());
-			msgDlg.ShowModal();
+				wx.MessageDialog(self, "添加本地工具【%s%s】成功。"%(localToolInfo["category"], localToolInfo["name"]), caption = "添加本地工具", style = wx.OK|wx.ICON_INFORMATION).ShowModal();
+			self.getCtr().addLocalTool(self.getLocalToolInfo(), callback = onBtn);
 		self.__okButton.Bind(wx.EVT_BUTTON, onOkButton);
 		self.__okButton.Enable(False);
 
@@ -193,12 +195,16 @@ class AddLocalToolDialogUI(wx.Dialog):
 				else:
 					self.updateInputPanel(panel, "工具名校验通过！");
 
+	def getCategoryExTips(self):
+		return "注意：该分类位于【%s】类别下。"%self.__params["baseCategory"];
+
 	def createCategoryView(self):
 		categoryParams = self.__params.get("category", {});
+		exTips = self.getCategoryExTips();
 		def checkCategoryInput(panel):
 			panel.input.SetValue(panel.input.GetValue().replace(" ", ""));
 			if not panel.input.GetValue():
-				self.updateInputPanel(panel, "");
+				self.updateInputPanel(panel, exTips);
 			else:
 				# 校验分类值
 				panel.input.SetValue(self.getCtr().verifyCategory(panel.input.GetValue()));
@@ -213,7 +219,7 @@ class AddLocalToolDialogUI(wx.Dialog):
 							self.updateInputPanel(panel, label, isOk);
 						callback(panel.input.GetValue(), update);
 					else:
-						self.updateInputPanel(panel, "");
+						self.updateInputPanel(panel, exTips);
 			if panel.isOk:
 				if self.__name.input.GetValue():
 					self.checkNameInput();
@@ -221,16 +227,35 @@ class AddLocalToolDialogUI(wx.Dialog):
 			"size" : (-1, -1),
 			"name" : categoryParams.get("label", "工具分类"),
 			"tips" : "（请用/分割）",
-			"exTips" : "注意：该分类位于【%d】类别下。"%self.__params["baseCategory"],
+			"exTips" : exTips,
 			"blurCallback" : checkCategoryInput,
 		});
 		self.__category.isOk = True;
 
+	def createDescriptionView(self):
+		descriptionParams = self.__params.get("description", {});
+		def checkDescriptionInput(panel):
+			callback = descriptionParams.get("onBlur", None);
+			if callback:
+				def update(label, isOk = True):
+					self.updateInputPanel(panel, label, isOk);
+				callback(panel.input.GetValue(), update);
+			else:
+				self.updateInputPanel(panel, "");
+		self.__description = self.createInfoInputPanel(params = {
+			"size" : (-1, -1),
+			"name" : descriptionParams.get("label", "工具简介"),
+			"inputSize" : descriptionParams.get("inputSize", (-1, 100)),
+			"inputStyle" : wx.TE_MULTILINE,
+			"blurCallback" : checkDescriptionInput,
+		});
+
 	# 检测工具全称【包含分类路径】
 	def getToolFullName(self, name):
 		nameList = [self.__params["baseCategory"]];
-		if self.__category.input.GetValue() != "":
-			nameList.append(self.__category.input.GetValue());
+		category = self.__category.input.GetValue();
+		if category != "":
+			nameList.append(self.getCtr().verifyBackslash(category));
 		nameList.append(name);
 		return "/".join(nameList);
 
@@ -247,8 +272,11 @@ class AddLocalToolDialogUI(wx.Dialog):
 		return True;
 
 	def getLocalToolInfo(self):
+		fullName = self.getToolFullName(self.__name.input.GetValue());
 		return {
 			"filePath" : self.__dirInput.getInputValue(),
-			"category" : self.getToolFullName(""),
+			"category" : self.getCtr().verifyBackslash(self.getToolFullName("")),
 			"name" : self.__name.input.GetValue(),
+			"description" : self.__description.input.GetValue(),
+			"tkey" : self.getCtr().getKeyByName(fullName),
 		};

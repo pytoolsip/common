@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-30 23:29:25
+# @Last Modified time: 2019-04-13 19:55:27
 
 import wx;
 
@@ -58,7 +58,7 @@ class TreeItemsViewUI(wx.TreeCtrl):
 			if self.GetItemText(item) == nameList[0]:
 				return self.checkTreeItem(nameList[1:]);
 			else:
-				item = self.GetNextChild(item, cookie);
+				item, cookie = self.GetNextChild(item, cookie);
 		return self.checkTreeItem(nameList[1:], self.AppendItem(parentItem, nameList[0]));
 
 	def removeTreeItem(self, item):

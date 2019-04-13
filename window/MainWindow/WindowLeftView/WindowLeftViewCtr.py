@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-06 10:24:59
+# @Last Modified time: 2019-04-13 20:29:10
 
 import wx;
 
@@ -194,9 +194,11 @@ class WindowLeftViewCtr(object):
 			return self.checkTreeItemsData(nameList, newItemData["items"], exData = exData);
 
 	def updateTreeView(self, data):
+		print("updateTreeView:::", data)
 		if "key" not in data or "name" not in data:
 			return;
-		if data.get("action", "add"):
+		action = data.get("action", "add");
+		if action == "add":
 			nameList = [];
 			if data.get("category", None):
 				nameList = data["category"].split("/");
@@ -205,5 +207,8 @@ class WindowLeftViewCtr(object):
 			for key in ["key", "name", "trunk", "branch", "path", "description", "version", "author"]:
 				itemData[key] = data.get(key, "");
 			self.getCtrByKey("TreeItemsViewCtr").addItem(nameList, itemData);
-		if data.get("action", "remove"):
+		if action == "remove":
 			self.getCtrByKey("TreeItemsViewCtr").removeItem(data["key"]);
+
+	def checkItemKey(self, itemKey):
+		return self.getCtrByKey("TreeItemsViewCtr").getItem(itemKey) != None;

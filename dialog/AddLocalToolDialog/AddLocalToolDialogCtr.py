@@ -2,10 +2,10 @@
 # @Author: JimZhang
 # @Date:   2019-04-05 22:36:48
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-07 00:53:12
+# @Last Modified time: 2019-04-13 20:18:57
 import os;
 import wx;
-import hashlib;
+import hashlib,threading;
 
 from _Global import _GG;
 
@@ -113,6 +113,12 @@ class AddLocalToolDialogCtr(object):
 			category += "/";
 		return category;
 
+	def verifyBackslash(self, value):
+		value = value.replace(" ", "");
+		if len(value) > 0 and value[-1] == "/":
+			value = value[:-1];
+		return value;
+
 	def getKeyByName(self, name):
 		return hashlib.md5(name.encode("utf-8")).hexdigest();
 
@@ -120,8 +126,11 @@ class AddLocalToolDialogCtr(object):
 		def toAddTool(localToolInfo, callback):
 			localToolPath = _GG("g_DataPath")+"tools/local/";
 			filePath = localToolInfo["filePath"];
-			fullName = localToolInfo["category"] + localToolInfo["name"];
-			targetPath = localToolPath + self.getKeyByName(fullName);
+			fullName = localToolInfo["category"] + "/" + localToolInfo["name"];
+			targetPath = localToolPath + localToolInfo["tkey"];
+			if os.path.exists(targetPath):
+				wx.MessageDialog(self.getUI(), "已存在同名工具[%s]文件，无法创建该文件。"%fullName, caption = "添加本地工具", style = wx.OK|wx.ICON_ERROR).ShowModal();
+				return;
 			if os.path.splitext(filePath)[-1] == ".zip":
 				self.unzipFile(filePath, targetPath, finishCallback = afterUnzip);
 			else:

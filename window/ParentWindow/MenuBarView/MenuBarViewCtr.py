@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-04-05 21:59:27
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-04-13 20:27:02
 import os;
 import wx;
 import time;
@@ -152,7 +152,26 @@ class MenuBarViewCtr(object):
 		self._uploadTool_();
 
 	def onAddLocalTool(self, menuItem, event):
-		pass;
+		def onOk(localToolInfo):
+			# 更新左侧工具树
+			_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_LEFT_VIEW, {
+				"action" : "add",
+				"key" : localToolInfo["tkey"],
+				"trunk" : "data/tools/local",
+				"branch" : localToolInfo["tkey"],
+				"path" : "MainView",
+				"name" : localToolInfo["name"],
+				"category" : localToolInfo["category"],
+				"description" : localToolInfo["description"],
+				"version" : "无",
+				"author" : "本地",
+			});
+		def checkToolKey(tkey):
+			return not _GG("WindowObject").MainWindowCtr.getCtrByKey("WindowLeftViewCtr").checkItemKey(tkey);
+		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/AddLocalToolDialog", params = {
+			"onOk" : onOk,
+			"checkToolKey" : checkToolKey,
+		});
 
 	def getMenuItemsData(self):
 		return [
@@ -161,11 +180,12 @@ class MenuBarViewCtr(object):
 					{"name" : "当前标签页目录", "params" : {"helpString" : "打开当前标签页目录的文件路径..."}, "callback" : self.onOpenCurTabPagePath},
 				]},
 				{},
-				{"name" : "退出", "id" : wx.ID_EXIT, "shortcutKey" : "Ctr+Q", "enable" : False},
+				{"name" : "退出", "id" : wx.ID_EXIT, "enable" : False},
 			]},
 			{"name" : "工具", "items" : [
 				{"name" : "下载工具", "items" : [], "enable" : False},
 				{"name" : "上传工具", "items" : [], "callback" : self.onUploadTool},
+				{},
 				{"name" : "从本地添加工具", "items" : [], "callback" : self.onAddLocalTool},
 				{"name" : "进行工具开发", "items" : [], "callback" : self.onClickToolDevelopment},
 			]},
