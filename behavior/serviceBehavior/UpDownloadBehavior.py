@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-07 20:34:34
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-29 17:06:43
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-04-20 00:54:08
 import wx;
-import urllib;
+from urllib import request;
 import paramiko;
 import zipfile;
 import threading;
@@ -41,13 +41,26 @@ class UpDownloadBehavior(_GG("BaseBehavior")):
 
 	# 下载文件
 	def download(self, obj, url, filePath, totalSize, onComplete = None, _retTuple = None):
-		dialogCtr = _GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/DownloadDialog", params = {"title" : "文件下载", "size" : (200,-1)});
+		# dialogCtr = _GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/DownloadDialog", params = {"title" : "文件下载", "size" : (200,-1)});
+		# def schedule(block, size, totalSize):
+		# 	dialogCtr.updateDialog({"size" : block*size});
+		# 	if size >= totalSize and callable(onComplete):
+		# 		wx.CallAfter(onComplete, filePath);
+		# request.urlretrieve(url, filePath, schedule);
+		# dialogCtr.getUI().start(totalSize = totalSize);
+		proDialog = wx.ProgressDialog("下载工具包", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME);
 		def schedule(block, size, totalSize):
-			dialogCtr.updateDialog({"size" : block*size});
-			if size >= totalSize and callable(onComplete):
+			rate = block*size / totalSize;
+			value = proDialog.GetRange() * rate;
+			if value >= proDialog.GetRange():
+				wx.CallAfter(proDialog.Update, proDialog.GetRange(), "已完成下载，包路径为：\n" + str(filePath));
 				wx.CallAfter(onComplete, filePath);
-		urllib.urlretrieve(url, filePath, schedule);
-		dialogCtr.getUI().start(totalSize = totalSize);
+			else:
+				wx.CallAfter(proDialog.Update, value, "正在下载\n" + str(rate));
+			pass;
+		request.urlretrieve(url, filePath, schedule);
+		proDialog.Update(0, "开始下载\n" + str(url));
+		proDialog.ShowModal();
 
 	# 上传文件
 	def upload(self, obj, filePath, data, callback = None, _retTuple = None):

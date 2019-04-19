@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-13 19:55:27
+# @Last Modified time: 2019-04-20 01:06:39
 
 import wx;
 
@@ -56,7 +56,7 @@ class TreeItemsViewUI(wx.TreeCtrl):
 		item, cookie = self.GetFirstChild(parentItem);
 		while item.IsOk():
 			if self.GetItemText(item) == nameList[0]:
-				return self.checkTreeItem(nameList[1:]);
+				return self.checkTreeItem(nameList[1:], parentItem = item);
 			else:
 				item, cookie = self.GetNextChild(item, cookie);
 		return self.checkTreeItem(nameList[1:], self.AppendItem(parentItem, nameList[0]));

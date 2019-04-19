@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2019-03-26 18:25:37
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-06 11:41:37
+# @Last Modified time: 2019-04-20 00:23:01
 
 import wx;
 
@@ -130,7 +130,7 @@ class ToolInfoDialogUI(wx.Dialog):
 		params = self.__params.get("download", {});
 		self.__download = wx.Button(self, label = params.get("label", "下载"));
 		onDownload = params.get("onDownload", None);
-		def onBtn(self, event):
+		def onBtn(event):
 			if callable(onDownload):
 				onDownload();
 			self.EndModal(wx.ID_OK);

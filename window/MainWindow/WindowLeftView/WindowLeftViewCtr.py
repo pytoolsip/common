@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-13 21:02:18
+# @Last Modified time: 2019-04-20 00:59:10
 
 import wx, os, shutil;
 
@@ -204,7 +204,10 @@ class WindowLeftViewCtr(object):
 		if action == "add":
 			nameList = [];
 			if data.get("category", None):
-				nameList = data["category"].split("/");
+				if data["category"][-1] == "/":
+					nameList = data["category"][:-1].split("/");
+				else:
+					nameList = data["category"].split("/");
 			nameList.append(data["name"]);
 			itemData = {"name" : data["name"]};
 			for key in ["key", "name", "trunk", "branch", "path", "description", "version", "author"]:

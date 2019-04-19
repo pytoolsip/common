@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 19:05:42
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:45:59
+# @Last Modified time: 2019-04-20 00:00:41
 
 import wx;
 
@@ -117,8 +117,8 @@ class HomePageViewCtr(object):
 			gridsData.append({
 				"title" : info["title"],
 				"version" : info["version"],
-				"detail" : info["detail"],
-				"name" : info["userName"],
+				"detail" : info["description"],
+				"name" : info["author"],
 			});
 		self.getCtrByKey("NewestGridsViewCtr").updateView({"gridsData" : gridsData});
 		self.getCtrByKey("RecommendToolsCtr").updateView({"gridsData" : gridsData});

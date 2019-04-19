@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-20 19:39:49
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-19 23:24:49
+# @Last Modified time: 2019-04-20 00:33:26
 import wx;
 import hashlib;
 import os, shutil;
@@ -134,7 +134,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 					_GG("WindowObject").CreateMessageDialog("所要下载的工具不存在！", "下载工具", style = wx.OK|wx.ICON_ERROR);
 				else:
 					toolsPath = _GG("g_DataPath")+"tools/";
-					fileName = oa.path.basename(respData.url);
+					fileName = os.path.basename(respData.url);
 					def onComplete(filePath):
 						# 重置文件夹
 						dirpath = toolsPath + tkey;
@@ -194,7 +194,9 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 						"path" : data.get("category", ""),
 						"version" : data.get("version", ""),
 						"author" : data.get("author", ""),
-						"description" : data.get("description", {}),
+						"description" : {
+							"value" : data.get("description", ""),
+						},
 					});
 				else:
 					if _GG("WindowObject").CreateMessageDialog("输入的工具ID不存在！\n请重新输入!", "下载工具", style = wx.OK|wx.ICON_ERROR) == wx.ID_OK:
