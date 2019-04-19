@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-20 19:39:49
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-04-19 21:56:38
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-04-19 23:24:49
 import wx;
 import hashlib;
 import os, shutil;
@@ -81,7 +81,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 				token = _GG("CommonClient").decodeBytes(respData.token);
 				def callback():
 					def asynCallback(respData):
-						msgDlg.EndModal(wx.ID_OK);
+						msgDlg.Destroy();
 						if not respData:
 							_GG("WindowObject").CreateMessageDialog("网络连接失败！", "上传工具", style = wx.OK|wx.ICON_ERROR)
 						elif respData.isSuccess:
@@ -100,7 +100,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 					obj.upload(uploadInfo["filePath"], token, callback = callback);
 					msgDlg.ShowModal();
 				except Exception as e:
-					msgDlg.EndModal(wx.ID_OK);
+					msgDlg.Destroy();
 					_GG("WindowObject").CreateMessageDialog("上传失败！%s"%e, "上传工具", style = wx.OK|wx.ICON_ERROR)
 			return respData and respData.isPermit or False;
 		# 显示弹窗

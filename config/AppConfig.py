@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-09-15 10:23:21
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-27 18:40:21
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-04-19 23:37:56
 
 import wx;
 from ProjectConfig import ProjectConfig;
 
 AppConfig = {
 	"key" : "9efab2399c7c560b34de477b9aa0a465",
-	"version" : "1.0.1",
+	"version" : "1.0.0",
 	"AppTitle" : u"PyToolsIP【python工具集成环境】",
 	"AppSize" : (960,640),
 	"AppBGColor" : wx.Colour(230,230,230),
