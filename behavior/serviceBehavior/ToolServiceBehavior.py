@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-20 19:39:49
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-06 11:39:46
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-04-19 21:56:38
 import wx;
 import hashlib;
 import os, shutil;
@@ -19,6 +19,7 @@ def __getExposeMethod__(DoType):
 	return {
 		"_uploadTool_" : DoType.AddToRear,
 		"_showToolInfo_" : DoType.AddToRear,
+		"_downloadTool_" : DoType.AddToRear,
 	};
 
 def __getDepends__():
@@ -177,3 +178,29 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 				"onDownload" : onDownload,
 			}),
 		});
+
+	def _downloadTool_(self, obj, _retTuple = None):
+		teDialog = _GG("WindowObject").CreateWxDialog("TextEntryDialog", "请输入工具ID：", "下载工具");
+		if teDialog.ShowModal() == wx.ID_OK:
+			tkey = teDialog.GetValue();
+			def onRequestToolInfo(respData):
+				if not respData:
+					_GG("WindowObject").CreateMessageDialog("网络请求失败！", "下载工具", style = wx.OK|wx.ICON_ERROR);
+				elif respData.isSuccess:
+					data = _GG("CommonClient").decodeBytes(respData.data);
+					obj._showToolInfo_({
+						"key" : tkey,
+						"name" : data.get("title", ""),
+						"path" : data.get("category", ""),
+						"version" : data.get("version", ""),
+						"author" : data.get("author", ""),
+						"description" : data.get("description", {}),
+					});
+				else:
+					if _GG("WindowObject").CreateMessageDialog("输入的工具ID不存在！\n请重新输入!", "下载工具", style = wx.OK|wx.ICON_ERROR) == wx.ID_OK:
+						wx.CallAfter(obj._downloadTool_);
+			# 请求服务
+			_GG("CommonClient").callService("Request", "Req", {
+				"key" : "RequestToolInfo",
+				"data" : _GG("CommonClient").encodeBytes({"key" : tkey, "commonVersion" : _GG("AppConfig")["version"]}),
+			}, asynCallback = onRequestToolInfo);

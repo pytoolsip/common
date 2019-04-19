@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-13 21:05:10
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-04-19 21:27:28
 import os;
 import wx;
 import time;
@@ -148,6 +148,9 @@ class MenuBarViewCtr(object):
 	def onClickRegister(self, menuItem, event):
 		self._registerIP_();
 
+	def onDownloadTool(self, menuItem, event):
+		self._downloadTool_();
+
 	def onUploadTool(self, menuItem, event):
 		self._uploadTool_();
 
@@ -184,7 +187,8 @@ class MenuBarViewCtr(object):
 				{"name" : "退出", "id" : wx.ID_EXIT, "enable" : False},
 			]},
 			{"name" : "工具", "items" : [
-				{"name" : "下载工具", "items" : [], "enable" : False},
+				{"name" : "搜索工具", "items" : [], "enable" : False},
+				{"name" : "下载工具", "items" : [], "callback" : self.onDownloadTool},
 				{"name" : "上传工具", "items" : [], "callback" : self.onUploadTool},
 				{},
 				{"name" : "从本地添加工具", "items" : [], "callback" : self.onAddLocalTool},

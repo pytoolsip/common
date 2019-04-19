@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2018-04-19 14:19:46
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-23 16:39:12
+# @Last Modified time: 2019-04-19 22:06:27
 
 import wx;
 from ProjectConfig import ProjectConfig;
@@ -62,6 +62,7 @@ class WindowLoader(object):
 		self.initMainWindowMethods();
 		_GG("WindowObject").CreateMessageDialog = self.createMessageDialog; # 设置显示消息弹窗函数
 		_GG("WindowObject").CreateDialogCtr = self.createDialogCtr; # 设置显示弹窗控制器
+		_GG("WindowObject").CreateWxDialog = self.createWxDialog; # 设置显示wx弹窗函数
 
 	def initMainWindowMethods(self):
 		_GG("WindowObject").GetToolWinSize = _GG("WindowObject").MainWindowCtr.getToolWinSize; # 设置获取工具窗口大小的函数
@@ -136,3 +137,16 @@ class WindowLoader(object):
 			if callable(callback):
 				callback(ui, result);
 		return ui;
+
+	def createWxDialog(self, dialog, message, caption = "wx弹窗", style = None, isShow = False, callback = None):
+		if not hasattr(wx, dialog):
+			return;
+		if style:
+			wxDialog = getattr(wx, dialog)(self._parentWindowUI, message, caption = caption, style = style);
+		else:
+			wxDialog = getattr(wx, dialog)(self._parentWindowUI, message, caption = caption);
+		if isShow:
+			result = wxDialog.ShowModal();
+			if callable(callback):
+				callback(wxDialog, result);
+		return wxDialog;
