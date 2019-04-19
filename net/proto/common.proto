@@ -72,16 +72,23 @@ message UploadResp{
 // 下载请求
 message DownloadReq{
 	int32 uid = 1; // 玩家ID
-	string name = 2; // 工具名
-	string category = 3; // 工具分类
-	string commonVersion = 4; // common版本号
+	string key = 2; // 工具键值
+	string commonVersion = 3; // common版本号
 }
 
 // 下载回应
 message DownloadResp{
+	message ToolInfo{
+		string name = 1; // 工具名
+		string category = 2; // 工具所属分类
+		string description = 3; // 工具描述
+		string version = 4; // 工具版本
+		string author = 5; // 工具作者
+	}
 	bool isExist = 1; // 是否存在
 	string url = 2; // 下载地址
 	int64 totalSize = 3; // 下载文件总大小
+	ToolInfo toolInfo = 4; // 工具信息
 }
 
 // 更新请求
