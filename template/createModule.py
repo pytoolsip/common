@@ -2,7 +2,7 @@
 # @Author: JimDreamHeart
 # @Date:   2018-03-29 22:21:00
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-05 22:36:46
+# @Last Modified time: 2019-04-20 12:29:21
 
 from module.ModuleCreator import *;
 
@@ -26,12 +26,12 @@ if __name__ == "__main__":
 	# 	"targetModPath" : commonPath + "behavior/serviceBehavior/",
 	# };
 
-	# # 创建视图的参数配置 view
-	# theModule = {
-	# 	"modName" : "view",
-	# 	"targetModName" : "RuleView",
-	# 	"targetModPath" : assetsPath + "tool/view/",
-	# };
+	# 创建视图的参数配置 view
+	theModule = {
+		"modName" : "view",
+		"targetModName" : "SearchToolView",
+		"targetModPath" : commonPath + "view/",
+	};
 
 	# # 创建窗口的参数配置 window
 	# theModule = {
@@ -40,12 +40,12 @@ if __name__ == "__main__":
 	# 	"targetModPath" : scriptPath + "launcher/window/",
 	# };
 
-	# 创建弹窗的参数配置 dialog
-	theModule = {
-		"modName" : "dialog",
-		"targetModName" : "AddLocalToolDialog",
-		"targetModPath" : commonPath + "dialog/",
-	};
+	# # 创建弹窗的参数配置 dialog
+	# theModule = {
+	# 	"modName" : "dialog",
+	# 	"targetModName" : "AddLocalToolDialog",
+	# 	"targetModPath" : commonPath + "dialog/",
+	# };
 
 
 	# # 创建module的对象

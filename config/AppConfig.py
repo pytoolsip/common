@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-09-15 10:23:21
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-19 23:37:56
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2019-04-20 11:41:00
 
 import wx;
 from ProjectConfig import ProjectConfig;
@@ -14,6 +14,7 @@ AppConfig = {
 	"AppSize" : (960,640),
 	"AppBGColor" : wx.Colour(230,230,230),
 	"CopyrightInfo" : u"Copyright(C) 2018-2019 JimDreamHeart. All Rights Reserved",
+	"SearchToolUrl" : "http://jimdreamheart.club",
 
 	"SearchPanelSize" : (380,320),
 	"SearchPanelBGColor" : wx.Colour(220,220,220),

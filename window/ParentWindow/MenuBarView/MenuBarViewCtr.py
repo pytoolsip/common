@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-04-19 21:27:28
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-04-20 13:34:20
 import os;
 import wx;
 import time;
@@ -177,6 +177,16 @@ class MenuBarViewCtr(object):
 			"checkToolKey" : checkToolKey,
 		});
 
+	def onSearchTool(self, menuItem, event):
+		wx.LaunchDefaultBrowser(_GG("AppConfig")["SearchToolUrl"]);
+		# _GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_RIGHT_VIEW, {
+		# 	"createPage" : True,
+		# 	"key" : "e3a0dfe5561d51fdfb75c3b7d2909b47",
+		# 	"pagePath" : _GG("g_CommonPath") + "view/SearchToolView",
+		# 	"category" : "菜单/",
+		# 	"title" : "工具-搜索工具"
+		# });
+
 	def getMenuItemsData(self):
 		return [
 			{"name" : "文件", "items" : [
@@ -187,7 +197,7 @@ class MenuBarViewCtr(object):
 				{"name" : "退出", "id" : wx.ID_EXIT, "enable" : False},
 			]},
 			{"name" : "工具", "items" : [
-				{"name" : "搜索工具", "items" : [], "enable" : False},
+				{"name" : "搜索工具", "items" : [], "callback" : self.onSearchTool},
 				{"name" : "下载工具", "items" : [], "callback" : self.onDownloadTool},
 				{"name" : "上传工具", "items" : [], "callback" : self.onUploadTool},
 				{},
