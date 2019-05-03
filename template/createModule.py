@@ -22,22 +22,22 @@ if __name__ == "__main__":
 	# # 创建组件的参数配置 behavior
 	# theModule = {
 	# 	"modName" : "behavior",
-	# 	"targetModName" : "ToolServiceBehavior",
-	# 	"targetModPath" : commonPath + "behavior/serviceBehavior/",
+	# 	"targetModName" : "VerifyEnvBehavior",
+	# 	"targetModPath" : assetsPath + "../../installer/behavior/",
 	# };
 
 	# 创建视图的参数配置 view
 	theModule = {
 		"modName" : "view",
-		"targetModName" : "SearchToolView",
-		"targetModPath" : commonPath + "view/",
+		"targetModName" : "InstallerGaugeView",
+		"targetModPath" : assetsPath + "../../installer/view/",
 	};
 
 	# # 创建窗口的参数配置 window
 	# theModule = {
 	# 	"modName" : "window",
-	# 	"targetModName" : "MainWindow",
-	# 	"targetModPath" : scriptPath + "launcher/window/",
+	# 	"targetModName" : "InstallerWindow",
+	# 	"targetModPath" : assetsPath + "../../installer/window/",
 	# };
 
 	# # 创建弹窗的参数配置 dialog
