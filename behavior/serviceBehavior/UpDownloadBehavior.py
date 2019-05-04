@@ -54,7 +54,8 @@ class UpDownloadBehavior(_GG("BaseBehavior")):
 			value = proDialog.GetRange() * rate;
 			if value >= proDialog.GetRange():
 				wx.CallAfter(proDialog.Update, proDialog.GetRange(), "已完成下载，包路径为：\n" + str(filePath));
-				wx.CallAfter(onComplete, filePath);
+				if callable(onComplete):
+					wx.CallAfter(onComplete, filePath);
 			else:
 				wx.CallAfter(proDialog.Update, value, "正在下载\n" + str(rate));
 			pass;

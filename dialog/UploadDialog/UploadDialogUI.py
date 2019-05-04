@@ -158,7 +158,7 @@ class UploadDialogUI(wx.Dialog):
 		self.__dirInput = DirInputView(self, params = {"buttonLabel" : "选择目录", "buttonSize" : (60, 20), "onInput" : self.getCtr().onInputToolFile});
 		self.__fileInput = wx.Button(self, -1, "选择zip包", size = (60, 20));
 		def onClickBtn(event):
-			filePath = wx.DirSelector();
+			filePath = wx.FileSelector("选择zip格式的工具包");
 			if filePath != "":
 				if os.path.splitext(filePath)[-1] == ".zip":
 					self.__dirInput.setInputValue(filePath);
