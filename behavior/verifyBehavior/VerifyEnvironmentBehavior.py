@@ -17,6 +17,7 @@ def __getExposeData__():
 def __getExposeMethod__(DoType):
 	return {
 		"verifyPythonEnvironment" : DoType.AddToRear,
+		"verifyPythonVersion" : DoType.AddToRear,
 		"verifyPipEnvironment" : DoType.AddToRear,
 	};
 
@@ -42,6 +43,23 @@ class VerifyEnvironmentBehavior(_GG("BaseBehavior")):
 		else:
 			if os.system("python -V") == 0:
 				return True;
+		return False;
+
+	# 校验python版本
+	def verifyPythonVersion(self, obj, fVer = 3, sVer = 4, pythonPath = None, _retTuple = None):
+		ret = "";
+		if pythonPath:
+			ret = os.popen("cd /d " + pythonPath.replace("\\", "/") + "&python.exe -V").read();
+		else:
+			ret = os.popen("python -V").read();
+		if ret:
+			retList = ret.split(" ");
+			if len(retList) > 1:
+				vList = retList[1].split(".");
+				if len(vList) < 3:
+					return False;
+				if int(vList[0]) >= fVer and int(vList[1]) >= sVer:
+					return True;
 		return False;
 
 	def verifyPipEnvironment(self, obj, pythonPath = None, _retTuple = None):
