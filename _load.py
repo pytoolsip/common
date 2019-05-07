@@ -54,6 +54,7 @@ class Loader(object):
 	def loadGlobalInfo(self):
 		self.loadUniqueIdFunc(); # 加载唯一Id的全局函数
 		self.loadPaths(); # 加载全局路径名变量
+		self.loadPyPath(); # 加载全局python路径变量
 		self.loadObjects(); # 加载全局对象变量
 		self.loadConfigs(); # 加载全局配置变量
 		self.loadResources(); # 加载全局资源变量
@@ -81,6 +82,13 @@ class Loader(object):
 		_G.setGlobalVarTo_Global("g_CommonPath", self.__mainPath + "/common/");
 		_G.setGlobalVarTo_Global("g_CommonCorePath", self.__mainPath + "/common/core/");
 		pass;
+
+	# 加载全局python路径变量
+	def loadPyPath(self):
+		if os.path.exists(os.path.join(_G._GG("g_ProjectPath"), "include/python/python.exe")):
+			_G.setGlobalVarTo_Global("g_PythonPath", os.path.join(_G._GG("g_ProjectPath"), "include/python"));
+		else:
+			_G.setGlobalVarTo_Global("g_PythonPath", "");
 
 	# 加载全局对象变量
 	def loadObjects(self):
