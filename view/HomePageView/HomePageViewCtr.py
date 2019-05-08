@@ -99,17 +99,30 @@ class HomePageViewCtr(object):
 		 "praise", "好评", params = {"size" : (self.__ui.getRankingSizeX(), self.__ui.GetSize()[1])});
 		self.getCtrByKey("RankingPagesViewCtr").addDownPage(_GG("g_CommonPath") + "view/RankingListView",
 		 "download", "下载", params = {"size" : (self.__ui.getRankingSizeX(), self.__ui.GetSize()[1])});
-		self.updateRankingPage();
 
-	def updateRankingPage(self):
-		self.getUIByKey("RankingPagesViewCtr").pageDict["popularity"].getCtr().updateViewByDefaultData();
-		self.getUIByKey("RankingPagesViewCtr").pageDict["praise"].getCtr().updateViewByDefaultData();
-		self.getUIByKey("RankingPagesViewCtr").pageDict["download"].getCtr().updateViewByDefaultData();
+	def updateRankingPage(self, toolInfos):
+		def onClickItem(item, itemData):
+			_GG("Log").d("click item", itemData);
+		listData, index = [], 1;
+		for info in infos:
+			listData.append({
+				"index" : index,
+				"num" : 0,
+				"title" : info["title"],
+				"detail" : info["author"],
+				"key" : info["key"],
+				"onClick" : onClickItem,
+			});
+		self.getUIByKey("RankingPagesViewCtr").pageDict["popularity"].getCtr().updateView({"listData" : listData});
+		self.getUIByKey("RankingPagesViewCtr").pageDict["praise"].getCtr().updateView({"listData" : listData});
+		self.getUIByKey("RankingPagesViewCtr").pageDict["download"].getCtr().updateView({"listData" : listData});
 
 	# 请求工具信息列表的回调
 	def onRequestToolInfos(self, retData):
 		if not retData or not retData.isSuccess:
 			return;
+		def onClickItem(item, itemData):
+			_GG("Log").d("click item", itemData);
 		# 处理返回的工具信息列表
 		infos = _GG("CommonClient").decodeBytes(retData.data);
 		gridsData = [];
@@ -119,9 +132,12 @@ class HomePageViewCtr(object):
 				"version" : info["version"],
 				"detail" : info["description"],
 				"name" : info["author"],
+				"key" : info["key"],
+				"onClick" : onClickItem,
 			});
 		self.getCtrByKey("NewestGridsViewCtr").updateView({"gridsData" : gridsData});
 		self.getCtrByKey("RecommendToolsCtr").updateView({"gridsData" : gridsData});
+		self.updateRankingPage(infos);
 
 	def callService(self):
 		# 请求工具信息列表

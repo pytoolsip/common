@@ -129,6 +129,7 @@ class RankingListViewUI(wx.ScrolledWindow):
 		for k,v in itemData.items():
 			params[k] = v;
 		item.titleDetail = TitleDetailText(item, params = params);
+		item.titleDetail.m_itemData = itemData;
 		self.bindEventToItem(item.titleDetail);
 
 	def initItemLayout(self, item):
@@ -143,7 +144,9 @@ class RankingListViewUI(wx.ScrolledWindow):
 		item.onEnter = self.onEnterItem; # 设置Item的鼠标进入回调函数
 
 	def onClickItem(self, item, event):
-		_GG("Log").d("----onClickItem----");
+		_GG("Log").d("RankingListViewUI -> onClickItem");
+		if "onClick" in item.m_itemData:
+			item.m_itemData["onClick"](item, item.m_itemData);
 		pass;
 
 	def onEnterItem(self, item, event):

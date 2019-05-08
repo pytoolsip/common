@@ -112,6 +112,7 @@ class SketchGridViewUI(wx.Panel):
 			for k,v in itemData.items():
 				params[k] = v;
 			item = TitleSketchText(self, params = params);
+			item.m_itemData = itemData;
 			self.bindEventToItem(item);
 			self.GetSizer().Add(item, flag = wx.LEFT|wx.RIGHT, border = border);
 			self.gridDataList.append(itemData);
@@ -141,7 +142,9 @@ class SketchGridViewUI(wx.Panel):
 			self.updateItemBgColorTimer.Stop();
 
 	def onClickItem(self, item, event):
-		_GG("Log").d("SketchGridView -> onClickItem")
+		_GG("Log").d("SketchGridView -> onClickItem");
+		if "onClick" in item.m_itemData:
+			item.m_itemData["onClick"](item, item.m_itemData);
 
 	def addGridView(self, gridData):
 		self.createItems(gridData, self.GetSizer().GetRows());
