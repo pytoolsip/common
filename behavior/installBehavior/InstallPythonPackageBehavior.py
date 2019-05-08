@@ -77,7 +77,9 @@ class InstallPythonPackageBehavior(_GG("BaseBehavior")):
 			imp.find_module(packageName);
 			isInstalled = True;
 		except Exception:
-			isInstalled = False;
+			pkgDict = obj.getInstalledPackagesByPip(pythonPath = pythonPath);
+			if packageName in pkgDict:
+				isInstalled = True;
 		return isInstalled;
 
 	def uninstallPackageByPip(self, obj, packageName, pythonPath = None, _retTuple = None):
