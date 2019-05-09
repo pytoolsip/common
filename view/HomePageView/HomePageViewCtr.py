@@ -84,6 +84,7 @@ class HomePageViewCtr(object):
 			_GG("EventDispatcher").unregister(eventId, self, callbackName);
 
 	def bindBehaviors(self):
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/ToolServiceBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 		
 	def unbindBehaviors(self):
@@ -100,17 +101,22 @@ class HomePageViewCtr(object):
 		self.getCtrByKey("RankingPagesViewCtr").addDownPage(_GG("g_CommonPath") + "view/RankingListView",
 		 "download", "下载", params = {"size" : (self.__ui.getRankingSizeX(), self.__ui.GetSize()[1])});
 
-	def updateRankingPage(self, toolInfos):
-		def onClickItem(item, itemData):
-			_GG("Log").d("click item", itemData);
+	def updateRankingPage(self, toolInfos, onClickItem):
 		listData, index = [], 1;
-		for info in infos:
+		for info in toolInfos:
 			listData.append({
 				"index" : index,
 				"num" : 0,
 				"title" : info["title"],
 				"detail" : info["author"],
-				"key" : info["key"],
+				"toolInfo" : {
+					"key" : info["key"],
+					"title" : info["title"],
+					"category" : info["category"],
+					"description" : info["description"],
+					"version" : info["version"],
+					"author" : info["author"],
+				},
 				"onClick" : onClickItem,
 			});
 		self.getUIByKey("RankingPagesViewCtr").pageDict["popularity"].getCtr().updateView({"listData" : listData});
@@ -122,7 +128,17 @@ class HomePageViewCtr(object):
 		if not retData or not retData.isSuccess:
 			return;
 		def onClickItem(item, itemData):
-			_GG("Log").d("click item", itemData);
+			toolInfo = itemData["toolInfo"];
+			self._showToolInfo_({
+				"key" : toolInfo["key"],
+				"name" : toolInfo.get("title", ""),
+				"path" : toolInfo.get("category", ""),
+				"version" : toolInfo.get("version", ""),
+				"author" : toolInfo.get("author", ""),
+				"description" : {
+					"value" : toolInfo.get("description", ""),
+				},
+			});
 		# 处理返回的工具信息列表
 		infos = _GG("CommonClient").decodeBytes(retData.data);
 		gridsData = [];
@@ -132,12 +148,19 @@ class HomePageViewCtr(object):
 				"version" : info["version"],
 				"detail" : info["description"],
 				"name" : info["author"],
-				"key" : info["key"],
+				"toolInfo" : {
+					"key" : info["key"],
+					"title" : info["title"],
+					"category" : info["category"],
+					"description" : info["description"],
+					"version" : info["version"],
+					"author" : info["author"],
+				},
 				"onClick" : onClickItem,
 			});
 		self.getCtrByKey("NewestGridsViewCtr").updateView({"gridsData" : gridsData});
 		self.getCtrByKey("RecommendToolsCtr").updateView({"gridsData" : gridsData});
-		self.updateRankingPage(infos);
+		self.updateRankingPage(infos, onClickItem);
 
 	def callService(self):
 		# 请求工具信息列表
