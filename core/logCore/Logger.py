@@ -98,5 +98,7 @@ class Logger(logging.Logger):
 	def __getMethod__(self, level):
 		def method(msg, *args, **kwargs):
 			if self.isEnabledFor(LevelKeyMap[level]):
-				self._log(LevelKeyMap[level], msg, args, **kwargs);
+				argList = list(args);
+				argList.append("");
+				self._log(LevelKeyMap[level], msg, argList, **kwargs);
 		return method;
