@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-09-15 10:23:21
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-04-20 11:41:00
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-05-10 20:21:12
 
 import wx;
 from ProjectConfig import ProjectConfig;
@@ -14,6 +14,7 @@ AppConfig = {
 	"AppSize" : (960,640),
 	"AppBGColor" : wx.Colour(230,230,230),
 	"CopyrightInfo" : u"Copyright(C) 2018-2019 JimDreamHeart. All Rights Reserved",
+	"PyToolsIPUrl" : "http://jimdreamheart.club/pytoolsip",
 	"SearchToolUrl" : "http://jimdreamheart.club/pytoolsip/search",
 
 	"SearchPanelSize" : (380,320),

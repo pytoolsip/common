@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-11-13 23:07:38
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:45:40
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2019-05-10 20:20:57
 
 import wx;
 
@@ -82,8 +82,7 @@ class AboutIPDialogUI(wx.Dialog):
 		self.websiteTitle.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD));
 
 	def createWebsiteUrl(self):
-		# self.websiteUrl = wx.TextCtrl(self, value = "https://legacy.gitbook.com/book/jimdreamheart/jimsbook", style = wx.TE_AUTO_URL);
-		self.websiteUrl = wx.StaticText(self, label = "https://legacy.gitbook.com/book/jimdreamheart/jimsbook");
+		self.websiteUrl = wx.StaticText(self, label = _GG("AppConfig")["PyToolsIPUrl"]);
 		self.websiteUrl.SetForegroundColour("blue");
 		self.websiteUrl.Bind(wx.EVT_ENTER_WINDOW, self.onEnterUrl);
 		self.websiteUrl.Bind(wx.EVT_LEAVE_WINDOW, self.onLeaveUrl);
