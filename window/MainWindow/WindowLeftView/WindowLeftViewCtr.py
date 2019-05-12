@@ -104,7 +104,7 @@ class WindowLeftViewCtr(object):
 		self.writeJsonFile(_GG("g_DataPath")+"tools_tree.json", self.__treeItemsData);
 
 	def updateUserNameView(self, data):
-		def onClick():
+		def onClick(event):
 			# 显示玩家信息的弹窗
 			pass;
 		self.getCtrByKey("UserNameTextViewCtr").updateView({"name" : data.name, "onClick" : onClick});
