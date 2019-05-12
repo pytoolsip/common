@@ -75,18 +75,18 @@ class Logger(logging.Logger):
 
 	# 设置日志窗口输出
 	def __setStreamHandler__(self, level = "debug"):
-		if not hasattr(self, "__streamHandler"):
-			self.__streamHandler = logging.StreamHandler();
-			self.__addHandler__(self.__streamHandler, level = level);
+		if not hasattr(self, "_streamHandler"):
+			self._streamHandler = logging.StreamHandler();
+			self.__addHandler__(self._streamHandler, level = level);
 
 	# 设置日志文件输出
 	def __setFileHandler__(self, fileName, maxBytes, backupCount, level = "debug"):
-		if not hasattr(self, "__fileHandler"):
+		if not hasattr(self, "_fileHandler"):
 			dirName = os.path.abspath(os.path.dirname(fileName));
 			if not os.path.exists(dirName):
 				os.mkdir(dirName);
-			self.__fileHandler = RotatingFileHandler(fileName, maxBytes = maxBytes, backupCount = backupCount, encoding = "utf-8");
-			self.__addHandler__(self.__fileHandler, level = level);
+			self._fileHandler = RotatingFileHandler(fileName, maxBytes = maxBytes, backupCount = backupCount, encoding = "utf-8");
+			self.__addHandler__(self._fileHandler, level = level);
 
 	# 初始化方法
 	def __initMethods__(self, methodKeyMap = None):

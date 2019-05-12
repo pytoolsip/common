@@ -44,22 +44,22 @@ class BaseBehavior(object):
 
 	# 设置组件名称
 	def setBehaviorName(self, name):
-		self.__BEHAVIOR_NAME__ = name;
+		self._BEHAVIOR_NAME__ = name;
 
 	# 获取组件路径
 	def getBehaviorName(self):
-		if hasattr(self, "__BEHAVIOR_NAME__"):
-			return self.__BEHAVIOR_NAME__;
+		if hasattr(self, "_BEHAVIOR_NAME__"):
+			return self._BEHAVIOR_NAME__;
 		return self._className_;
 
 	# 设置组件路径
 	def setBehaviorPath(self, path):
-		self.__BEHAVIOR_PATH__ = path;
+		self._BEHAVIOR_PATH__ = path;
 
 	# 获取组件路径
 	def getBehaviorPath(self):
-		if hasattr(self, "__BEHAVIOR_PATH__"):
-			return self.__BEHAVIOR_PATH__;
+		if hasattr(self, "_BEHAVIOR_PATH__"):
+			return self._BEHAVIOR_PATH__;
 		return "";
 
 	# 获取组件导出数据
