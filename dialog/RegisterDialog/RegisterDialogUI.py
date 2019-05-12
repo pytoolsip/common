@@ -220,15 +220,19 @@ class RegisterDialogUI(wx.Dialog):
 			callback = veriCodeParams.get("onBtn", None);
 			if callback:
 				def onCallback(expire):
-					self.__veriCodeBtn.SetLabel(str(expire)+"s");
+					ex = expire;
+					self.__veriCodeBtn.SetLabel(str(ex)+"s");
 					def onTimer():
-						expire -= 1;
-						self.__veriCodeBtn.SetLabel(str(expire)+"s");
-						if expire == 0:
+						ex -= 1;
+						self.__veriCodeBtn.SetLabel(str(ex)+"s");
+						if ex <= 0:
 							self.__veriCodeBtn.SetLabel("发送验证码");
 							self.__veriCodeBtn.Enable();
 							self.stopTimer();
-					self.startTimer(onTimer);
+					if ex <= 0:
+						onTimer();
+					else:
+						self.startTimer(onTimer);
 				callback(self.__email.input.GetValue(), onCallback);
 			self.__veriCodeBtn.SetLabel("已发送");
 			self.__veriCodeBtn.Enable(False);

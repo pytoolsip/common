@@ -124,6 +124,7 @@ class UserServiceBehavior(_GG("BaseBehavior")):
 					callback(respData.data["expire"]);
 				else:
 					_GG("WindowObject").CreateMessageDialog("发送失败，请检测邮箱是否正确！", "发送校验码", style = wx.OK|wx.ICON_ERROR);
+					callback(0); # 清除倒计时
 			# 请求服务
 			_GG("CommonClient").callService("Request", "Req", {
 				"key" : "SendVerificationCode",
