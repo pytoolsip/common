@@ -60,7 +60,7 @@ class AddLocalToolDialogUI(wx.Dialog):
 	def updatePosition(self):
 		if "pos" not in self.__params:
 			winCenterPoint = _GG("WindowObject").GetMainWindowCenterPoint();
-			self.SetPosition(wx.Point(winCenterPoint.x - self.GetSize()[0]/2, winCenterPoint.y - self.GetSize()[1]));
+			self.SetPosition(wx.Point(winCenterPoint.x - self.GetSize()[0]/2, winCenterPoint.y - self.GetSize()[1]/2));
 
 	def updateDialog(self, data):
 		if "name" in data:
