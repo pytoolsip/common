@@ -39,3 +39,5 @@ class EVENT_ID(Enum):
 	LOGIN_SUCCESS_EVENT = getNewEventId(); # 登录成功事件
 
 	UPDATE_WINDOW_LEFT_VIEW = getNewEventId(); # 更新左窗口视图
+	
+	LOGOUT_SUCCESS_EVENT = getNewEventId(); # 注销成功事件

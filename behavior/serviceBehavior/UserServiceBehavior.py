@@ -17,6 +17,7 @@ def __getExposeMethod__(DoType):
 	return {
 		"_loginIP_" : DoType.AddToRear,
 		"_registerIP_" : DoType.AddToRear,
+		"_logoutIP_" : DoType.AddToRear,
 	};
 
 def __getDepends__():
@@ -157,3 +158,9 @@ class UserServiceBehavior(_GG("BaseBehavior")):
 			},
 			"onOk" : onRegister,
 		});
+	
+	def _logoutIP_(self, obj, _retTuple = None):
+		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").LOGOUT_SUCCESS_EVENT, {
+			"userName" : obj.getIPInfoConfig("user", "name"),
+		});
+		obj.removeIPInfoConfig("user"); # 移除配置

@@ -14,6 +14,7 @@ def getRegisterEventMap(G_EVENT):
 	return {
 		G_EVENT.LOGIN_SUCCESS_EVENT : "updateUserNameView",
 		G_EVENT.UPDATE_WINDOW_LEFT_VIEW : "updateTreeView",
+		G_EVENT.LOGOUT_SUCCESS_EVENT : "resetUserNameView",
 	};
 
 class WindowLeftViewCtr(object):
@@ -108,6 +109,9 @@ class WindowLeftViewCtr(object):
 			# 显示玩家信息的弹窗
 			pass;
 		self.getCtrByKey("UserNameTextViewCtr").updateView({"name" : data.name, "onClick" : onClick});
+
+	def resetUserNameView(self, data):
+		self.getCtrByKey("UserNameTextViewCtr").updateView({"name" : "点击登录", "onClick" : self.onClickLogin});
 
 	def onClickLogin(self, event):
 		self._loginIP_();

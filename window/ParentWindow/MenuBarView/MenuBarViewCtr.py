@@ -15,6 +15,8 @@ from MenuBarViewUI import *;
 def getRegisterEventMap(G_EVENT):
 	return {
 		# G_EVENT.TO_UPDATE_VIEW : "updateView",
+		G_EVENT.LOGIN_SUCCESS_EVENT : "loginSuccessEvent",
+		G_EVENT.LOGOUT_SUCCESS_EVENT : "logoutSuccessEvent",
 	};
 
 class MenuBarViewCtr(object):
@@ -178,7 +180,8 @@ class MenuBarViewCtr(object):
 		});
 
 	def onSearchTool(self, menuItem, event):
-		wx.LaunchDefaultBrowser(_GG("AppConfig")["SearchToolUrl"]);
+		if self.showMessageDialog("搜索工具需要打开浏览器，是否确认打开？", "打开浏览器提示", style = wx.OK|wx.CANCEL|wx.ICON_QUESTION) == wx.ID_OK:
+			wx.LaunchDefaultBrowser(_GG("AppConfig")["SearchToolUrl"]);
 		# _GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_RIGHT_VIEW, {
 		# 	"createPage" : True,
 		# 	"key" : "e3a0dfe5561d51fdfb75c3b7d2909b47",
@@ -186,6 +189,27 @@ class MenuBarViewCtr(object):
 		# 	"category" : "菜单/",
 		# 	"title" : "工具-搜索工具"
 		# });
+
+	def onClickLogout(self, menuItem, event):
+		self._logoutIP_();
+
+	def loginSuccessEvent(self, data):
+		topMenu = self.getUI().getTopMenu();
+		itemIdList = [topMenu.FindMenuItem("用户", "登录"), topMenu.FindMenuItem("用户", "注册")];
+		for itemId in itemIdList:
+			topMenu.Enable(itemId, False);
+		itemId = topMenu.FindMenuItem("用户", "登出");
+		topMenu.Enable(itemId, True);
+		pass;
+
+	def logoutSuccessEvent(self, data):
+		topMenu = self.getUI().getTopMenu();
+		itemId = topMenu.FindMenuItem("用户", "登出");
+		topMenu.Enable(itemId, False);
+		itemIdList = [topMenu.FindMenuItem("用户", "登录"), topMenu.FindMenuItem("用户", "注册")];
+		for itemId in itemIdList:
+			topMenu.Enable(itemId, True);
+		pass;
 
 	def getMenuItemsData(self):
 		return [
@@ -211,7 +235,7 @@ class MenuBarViewCtr(object):
 			{"name" : "用户", "items" : [
 				# {"name" : "用户详情", "items" : []},
 				# {"name" : "需求开发", "items" : []},
-				{"name" : "注销", "items" : [], "enable" : False},
+				{"name" : "登出", "items" : [], "callback" : self.onClickLogout},
 				{"name" : "登录", "items" : [], "callback" : self.onClickLogin},
 				{"name" : "注册", "items" : [], "callback" : self.onClickRegister},
 			]},
