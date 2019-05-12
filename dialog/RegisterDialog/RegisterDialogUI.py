@@ -20,6 +20,10 @@ class RegisterDialogUI(wx.Dialog):
 		self.__inputInfosList = []; # 输入框列表
 		self.Bind(wx.EVT_CLOSE, self.onClose); # 绑定关闭事件
 		self.createTimer(); # 创建校验验证码定时器
+		self.resetVeriExpire();
+
+	def resetVeriExpire(self):
+		self.__veriExpire = {"email" : None, "expire" : 0};
 
 	def __del__(self):
 		self.stopTimer(True);
@@ -80,7 +84,7 @@ class RegisterDialogUI(wx.Dialog):
 		if self.__timer.IsRunning():
 			self.__timer.Stop();
 		self.__timer.Start(1000);
-		self.__timerCallback = callback;
+		self._timerCallback = callback;
 
 	def stopTimer(self, isDestroy = False):
 		if self.__timer.IsRunning():
@@ -89,8 +93,8 @@ class RegisterDialogUI(wx.Dialog):
 			_GG("TimerManager").deleteTimer(self.__timer);
 
 	def onTimerEvent(self, event):
-		if hasattr(self, "__timerCallback"):
-			self.__timerCallback();
+		if hasattr(self, "_timerCallback"):
+			self._timerCallback();
 
 	def updateDialog(self, data):
 		pass;
@@ -219,21 +223,24 @@ class RegisterDialogUI(wx.Dialog):
 		def onVeriCodeBtn(event):
 			callback = veriCodeParams.get("onBtn", None);
 			if callback:
+				email = self.__email.input.GetValue();
 				def onCallback(expire):
-					ex = expire;
-					self.__veriCodeBtn.SetLabel(str(ex)+"s");
+					self.__veriExpire = {"email" : email, "expire" : expire};
+					self.__veriCodeBtn.SetLabel(str(self.__veriExpire["expire"])+"s");
 					def onTimer():
-						ex -= 1;
-						self.__veriCodeBtn.SetLabel(str(ex)+"s");
-						if ex <= 0:
+						self.__veriExpire["expire"] -= 1;
+						self.__veriCodeBtn.SetLabel(str(self.__veriExpire["expire"])+"s");
+						if self.__veriExpire["expire"] <= 0:
+							self.resetVeriExpire();
 							self.__veriCodeBtn.SetLabel("发送验证码");
 							self.__veriCodeBtn.Enable();
 							self.stopTimer();
-					if ex <= 0:
+					if self.__veriExpire["expire"] <= 0:
+						self.resetVeriExpire();
 						onTimer();
 					else:
 						self.startTimer(onTimer);
-				callback(self.__email.input.GetValue(), onCallback);
+				callback(email, onCallback);
 			self.__veriCodeBtn.SetLabel("已发送");
 			self.__veriCodeBtn.Enable(False);
 		self.__veriCodeBtn.Bind(wx.EVT_BUTTON, onVeriCodeBtn);
@@ -301,7 +308,10 @@ class RegisterDialogUI(wx.Dialog):
 		panel.tips.SetForegroundColour(color);
 		# 检测输入框，并设置相应按钮的可点击逻辑
 		if self.checkInputView("email"):
-			self.__veriCodeBtn.Enable();
+			if self.__email.input.GetValue() != self.__veriExpire["email"] or self.__veriExpire["expire"] <= 0:
+				self.resetVeriExpire();
+				self.__veriCodeBtn.SetLabel("发送验证码");
+				self.__veriCodeBtn.Enable();
 		if self.checkInputView():
 			self.__okButton.Enable();
 
