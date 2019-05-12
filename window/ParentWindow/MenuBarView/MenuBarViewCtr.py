@@ -235,7 +235,7 @@ class MenuBarViewCtr(object):
 			{"name" : "用户", "items" : [
 				# {"name" : "用户详情", "items" : []},
 				# {"name" : "需求开发", "items" : []},
-				{"name" : "登出", "items" : [], "callback" : self.onClickLogout},
+				{"name" : "登出", "items" : [], "callback" : self.onClickLogout, "enable" : False},
 				{"name" : "登录", "items" : [], "callback" : self.onClickLogin},
 				{"name" : "注册", "items" : [], "callback" : self.onClickRegister},
 			]},
