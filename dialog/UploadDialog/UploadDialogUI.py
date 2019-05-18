@@ -216,34 +216,37 @@ class UploadDialogUI(wx.Dialog):
 	# 更新线上版本视图
 	def updateOnlineVersionView(self, version):
 		self.__onlineVersion.SetLabel(version);
+		self.checkVersionInput(self.__version);
 
 	def createVersionView(self):
 		versionParams = self.__params.get("version", {});
-		def checkVersionInput(panel):
-			if not panel.input.GetValue():
-				self.updateInputPanel(panel, "必须填写版本！", False);
-			else:
-				ret, tips, value = self.getCtr().checkVersion(panel.input.GetValue(), self.__onlineVersion.GetLabel(), self.__commonVersion.GetLabel());
-				# 重置输入框的值
-				if value:
-					panel.input.SetValue(value);
-				# 根据检测结果，更新视图
-				if not ret:
-					self.updateInputPanel(panel, tips, False);
-				else:
-					callback = versionParams.get("onBlur", None);
-					if callback:
-						def update(label, isOk = True):
-							self.updateInputPanel(panel, label, isOk);
-						callback(panel.input.GetValue(), update);
-					else:
-						self.updateInputPanel(panel, "版本校验通过！");
 		self.__version = self.createInfoInputPanel(params = {
 			"size" : (-1, -1),
 			"name" : versionParams.get("label", "工具版本"),
 			"tips" : "*（必填）",
-			"blurCallback" : checkVersionInput,
+			"blurCallback" : self.checkVersionInput,
 		});
+
+	def checkVersionInput(self, panel):
+		versionParams = self.__params.get("version", {});
+		if not panel.input.GetValue():
+			self.updateInputPanel(panel, "必须填写版本！", False);
+		else:
+			ret, tips, value = self.getCtr().checkVersion(panel.input.GetValue(), self.__onlineVersion.GetLabel(), self.__commonVersion.GetLabel());
+			# 重置输入框的值
+			if value:
+				panel.input.SetValue(value);
+			# 根据检测结果，更新视图
+			if not ret:
+				self.updateInputPanel(panel, tips, False);
+			else:
+				callback = versionParams.get("onBlur", None);
+				if callback:
+					def update(label, isOk = True):
+						self.updateInputPanel(panel, label, isOk);
+					callback(panel.input.GetValue(), update);
+				else:
+					self.updateInputPanel(panel, "版本校验通过！");
 
 	def createConmonVersionView(self):
 		params = self.__params.get("conmonVersion", {});

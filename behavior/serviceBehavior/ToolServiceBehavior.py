@@ -45,23 +45,25 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 		if _GG("CommonClient").getUserId() < 0:
 			_GG("WindowObject").CreateMessageDialog("请先登录账号！", "上传工具", style = wx.OK|wx.ICON_INFORMATION);
 			return;
-		def onBlurName(name, callback):
+		def onBlurName(fullName, callback):
 			# 请求服务的回调
 			def checkName(respData):
 				if not respData:
 					callback("网络请求失败！", False);
-				elif respData.isSuccess:
-					data = _GG("CommonClient").decodeBytes(respData.data);
-					if "version" in data:
-						callback("", onlineVersion = data["version"]);
-					else:
-						callback("");
 				else:
-					callback("该分类路径下已存在相同工具名！", False);
+					data = _GG("CommonClient").decodeBytes(respData.data);
+					print("data::", data)
+					if respData.isSuccess:
+						if "version" in data:
+							callback("", onlineVersion = data["version"]);
+						else:
+							callback("");
+					else:
+						callback(data.get("tips", "本次上传出错，请稍后上传！"), False);
 			# 请求服务
 			_GG("CommonClient").callService("Request", "Req", {
 				"key" : "VertifyToolName",
-				"data" : _GG("CommonClient").encodeBytes({"name" : name}),
+				"data" : _GG("CommonClient").encodeBytes({"fullName" : fullName, "uid" : _GG("CommonClient").getUserId()}),
 			}, asynCallback = checkName);
 		def onUpload(uploadInfo):
 			respData = _GG("CommonClient").callService("Upload", "UploadReq", {
