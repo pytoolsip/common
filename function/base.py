@@ -10,7 +10,7 @@ import re;
 import time;
 
 # 动态加载模块
-def require(filePath, moduleName, subModuleName = None, isReload = False, isReserve = False):
+def require(filePath, moduleName, subModuleName = None, isReload = False, isReserve = False, modulePathBase = ""):
 	modulePath = "/".join([filePath, moduleName]).replace("\\", "/");
 	# 判断是否重新加载模块
 	if isReload and modulePath in sys.modules:
@@ -20,12 +20,24 @@ def require(filePath, moduleName, subModuleName = None, isReload = False, isRese
 	# 判断缓存中是否已存在模块
 	module = sys.modules.get(modulePath, None);
 	if not module:
+		# 拷贝sys.modules
+		oriMods = {};
+		for k,v in sys.modules.items():
+			oriMods[k] = v;
 		# 加载模块
 		sys.path.insert(0, filePath);
-		__import__(moduleName);
+		module = __import__(moduleName);
 		sys.path.remove(filePath);
-		# 修改模块缓存的key值
-		module = sys.modules.pop(moduleName);
+		# 恢复sys.modules
+		popKList = [];
+		for k in sys.modules.keys():
+			if k in oriMods:
+				sys.modules[k] = oriMods[k];
+			elif modulePathBase and VerifyPath(modulePathBase) not in VerifyPath(k):
+				popKList.append(k);
+		for k in popKList:
+				sys.modules.pop(k);
+		# 添加缓存模块的key值
 		sys.modules[modulePath] = module;
 	# 获取子模块
 	if subModuleName:
@@ -54,12 +66,12 @@ def GetPathByRelativePath(path, basePath = ""):
 	return "/".join(basePathList).strip();
 
 # 创建控制类（视图或窗口）
-def CreateCtr(path, parent, params = {}, isReload = False, isReserve = False):
+def CreateCtr(path, parent, params = {}, isReload = False, isReserve = False, modulePathBase = ""):
 	path = re.sub(r"\\", r"/", path);
 	if path[-1] == "/":
 		path = path[:-1];
 	ctrName = path.split("/")[-1] + "Ctr";
-	Ctr = require(path, ctrName, ctrName, isReload, isReserve);
+	Ctr = require(path, ctrName, ctrName, isReload, isReserve, modulePathBase = modulePathBase);
 	return Ctr(parent, params = params);
 
 # 销毁控制类【需先销毁UI】（视图或窗口）
