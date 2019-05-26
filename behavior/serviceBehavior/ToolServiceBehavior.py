@@ -197,7 +197,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 				"onDownload" : onDownload,
 				"checkDownload" : checkDownload,
 			}),
-		});
+		}, isRecreate = True);
 
 	def _downloadTool_(self, obj, _retTuple = None):
 		teDialog = _GG("WindowObject").CreateWxDialog("TextEntryDialog", "请输入工具ID：", "下载工具");

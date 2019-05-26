@@ -129,7 +129,7 @@ class ToolInfoDialogUI(wx.Dialog):
 	def createDownloadBtn(self):
 		params = self.__params.get("download", {});
 		# 创建按钮，并绑定事件
-		self.__download = wx.Button(self, label = params.get("label", "下载"));
+		self.__download = wx.Button(self, label = params.get("label", "已是最新版本"));
 		self.__download.m_isUpdate = params.get("isUpdate", False); # 是否更新的标记
 		onDownload = params.get("onDownload", None);
 		def onBtn(event):
@@ -138,9 +138,10 @@ class ToolInfoDialogUI(wx.Dialog):
 			self.EndModal(wx.ID_OK);
 		self.__download.Bind(wx.EVT_BUTTON, onBtn);
 		# 校验下载函数
-		def checkOnDownloadFunc(isUpdate = False):
-			self.__download.m_isUpdate = isUpdate;  # 是否更新的标记
-			self.__download.SetLabel(isUpdate and "更新工具" or "下载工具");
+		def checkOnDownloadFunc(isUpdate = False, isInit = False):
+			if not isInit:
+				self.__download.m_isUpdate = isUpdate;  # 是否更新的标记
+				self.__download.SetLabel(isUpdate and "更新工具" or "下载工具");
 			if not onDownload:
 				self.__download.Hide();
 			elif not callable(onDownload):
@@ -148,11 +149,10 @@ class ToolInfoDialogUI(wx.Dialog):
 			else:
 				self.__download.Show();
 				self.__download.Enable(True);
+		checkOnDownloadFunc(isInit = True);
 		# 检测是否下载
 		checkDownload = params.get("checkDownload", None);
 		if callable(checkDownload):
-			self.__download.Hide();
+			self.__download.Enable(False);
 			checkDownload(callback = checkOnDownloadFunc);
-		else:
-			checkOnDownloadFunc();
 		
