@@ -61,6 +61,7 @@ message UploadReq{
 	string commonVersion = 4; // common版本号
 	string description = 5; // 工具简述
 	string category = 6; // 工具分类
+	string changelog = 7; // 工具更新日志
 }
 
 // 上传回应
@@ -84,6 +85,7 @@ message DownloadResp{
 		string description = 3; // 工具描述
 		string version = 4; // 工具版本
 		string author = 5; // 工具作者
+		string changelog = 6; // 更新日志
 	}
 	bool isExist = 1; // 是否存在
 	string url = 2; // 下载地址
