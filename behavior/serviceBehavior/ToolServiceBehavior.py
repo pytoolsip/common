@@ -138,7 +138,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 					toolsPath = _GG("g_DataPath")+"tools/";
 					fileName = os.path.basename(respData.url);
 					def onComplete(filePath):
-						# 重置文件夹
+						# 重置文件夹【会移除原有文件夹】
 						dirpath = toolsPath + tkey;
 						if os.path.exists(dirpath):
 							shutil.rmtree(dirpath);
@@ -170,6 +170,23 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 				"commonVersion" : _GG("AppConfig")["version"],
 			}, asynCallback = onResp);
 			pass;
+		def checkDownload(callback = None):
+			def onRequestToolInfo(respData):
+				if not respData:
+					_GG("WindowObject").CreateMessageDialog("网络请求失败！", "下载工具", style = wx.OK|wx.ICON_ERROR);
+				elif respData.isSuccess:
+					if _GG("WindowObject").MainWindowCtr.checkTreeItemKey(tkey):
+						msgData = _GG("CommonClient").decodeBytes(respData.data);
+						if CheckVersion(msgData.get("version", ""), data.get("version", "")) and callable(callback):
+							callback(True);
+					elif callable(callback):
+						callback();
+				pass;
+			_GG("CommonClient").callService("Request", "Req", {
+				"key" : "RequestToolInfo",
+				"data" : _GG("CommonClient").encodeBytes({"key" : tkey, "commonVersion" : _GG("AppConfig")["version"]}),
+			}, asynCallback = onRequestToolInfo);
+			pass;
 		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/ToolInfoDialog", params = {
 			"name" : data.get("name", ""),
 			"path" : data.get("path", ""),
@@ -178,6 +195,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 			"description" : data.get("description", {}),
 			"download" : data.get("download", {
 				"onDownload" : onDownload,
+				"checkDownload" : checkDownload,
 			}),
 		});
 

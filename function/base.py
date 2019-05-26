@@ -91,3 +91,16 @@ def VerifyPath(path):
 		return path.replace("/", "\\");
 	else:
 		return path.replace("\\", "/");
+
+# 检测版本
+def CheckVersion(v1, v2, isCheckFirst = True, isIncludeEqu = False):
+	vList1, vList2 = [int(v) for v in v1.replace(" ", "").split(".") if v.isdigit()], [int(v) for v in v2.replace(" ", "").split(".") if v.isdigit()];
+	if len(vList1) != 3 and len(vList2) != 3:
+		return False;
+	if isCheckFirst and vList1[0] != vList2[0]:
+		return vList1[0] > vList2[0];
+	if vList1[1] != vList2[1]:
+		return vList1[1] > vList2[1];
+	if vList1[2] != vList2[2]:
+		return vList1[2] > vList2[2];
+	return isIncludeEqu;

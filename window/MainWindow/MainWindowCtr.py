@@ -156,3 +156,6 @@ class MainWindowCtr(object):
 		if isToScreen == True:
 			pos = self.__ui.ClientToScreen(pos);
 		return wx.Point(pos[0] + self.__ui.GetSize().x/2, pos[1] + self.__ui.GetSize().y/2);
+
+	def checkTreeItemKey(self, itemKey):
+		return self.getCtrByKey("WindowLeftViewCtr").checkItemKey(itemKey);
