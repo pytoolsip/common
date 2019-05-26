@@ -125,10 +125,10 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 		});
 
 	def _showToolInfo_(self, obj, data, _retTuple = None):
+		if "key" not in data:
+			return;
+		tkey = data.get("key", "");
 		def onDownload():
-			if "key" not in data:
-				return;
-			tkey = data.get("key", "");
 			def onResp(respData):
 				if not respData:
 					_GG("WindowObject").CreateMessageDialog("网络请求失败！", "下载工具", style = wx.OK|wx.ICON_ERROR);
