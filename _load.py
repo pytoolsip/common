@@ -148,3 +148,6 @@ class Loader(object):
 		# 校验工具文件夹
 		if not os.path.exists(_GG("g_DataPath")+"tools"):
 			os.mkdir(_GG("g_DataPath")+"tools");
+		# 校验更新文件夹
+		if not os.path.exists(_GG("g_DataPath")+"update"):
+			os.mkdir(_GG("g_DataPath")+"update");

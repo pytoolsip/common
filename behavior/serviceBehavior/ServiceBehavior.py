@@ -43,7 +43,7 @@ class ServiceBehavior(_GG("BaseBehavior")):
 		if resp and not resp.isUpToDate:
 			msgDialog = wx.MessageDialog(obj, "检测有更新版本，是否确认更新？", "检测平台版本！", style = wx.YES_NO|wx.ICON_QUESTION);
 			if msgDialog.ShowModal() == wx.ID_YES:
-				dirPath = _GG("g_ProjectPath")+"date/update/pytoolsip/";
+				dirPath = _GG("g_DataPath")+"update/pytoolsip/";
 				if not os.path.exists(dirPath):
 					os.mkdir(dirPath);
 				fileNme = resp.url.split("/")[-1];
