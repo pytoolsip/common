@@ -166,5 +166,5 @@ class HomePageViewCtr(object):
 		# 请求工具信息列表
 		_GG("CommonClient").callService("Request", "Req", {
 			"key" : "RequestToolInfos",
-			"data" : _GG("CommonClient").encodeBytes({"commonVersion" : _GG("AppConfig")["version"]}),
+			"data" : _GG("CommonClient").encodeBytes({"IPVersion" : _GG("AppConfig")["version"]}),
 		}, asynCallback = self.onRequestToolInfos);

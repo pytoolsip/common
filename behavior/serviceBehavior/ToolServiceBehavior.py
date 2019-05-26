@@ -71,7 +71,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 				"category" : uploadInfo["category"],
 				"name" : uploadInfo["name"],
 				"version" : uploadInfo["version"],
-				"commonVersion" : uploadInfo["commonVersion"],
+				"IPVersion" : uploadInfo["IPVersion"],
 				"description" : uploadInfo["description"],
 			});
 			if not respData:
@@ -95,7 +95,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 						"category" : uploadInfo["category"],
 						"name" : uploadInfo["name"],
 						"version" : uploadInfo["version"],
-						"commonVersion" : uploadInfo["commonVersion"],
+						"IPVersion" : uploadInfo["IPVersion"],
 						"description" : uploadInfo["description"],
 					}, asynCallback = asynCallback);
 				try:
@@ -167,7 +167,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 				pass;
 			_GG("CommonClient").callService("Download", "DownloadReq", {
 				"key" : tkey,
-				"commonVersion" : _GG("AppConfig")["version"],
+				"IPVersion" : _GG("AppConfig")["version"],
 			}, asynCallback = onResp);
 			pass;
 		def checkDownload(callback = None):
@@ -184,7 +184,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 				pass;
 			_GG("CommonClient").callService("Request", "Req", {
 				"key" : "RequestToolInfo",
-				"data" : _GG("CommonClient").encodeBytes({"key" : tkey, "commonVersion" : _GG("AppConfig")["version"]}),
+				"data" : _GG("CommonClient").encodeBytes({"key" : tkey, "IPVersion" : _GG("AppConfig")["version"]}),
 			}, asynCallback = onRequestToolInfo);
 			pass;
 		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/ToolInfoDialog", params = {
@@ -224,5 +224,5 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 			# 请求服务
 			_GG("CommonClient").callService("Request", "Req", {
 				"key" : "RequestToolInfo",
-				"data" : _GG("CommonClient").encodeBytes({"key" : tkey, "commonVersion" : _GG("AppConfig")["version"]}),
+				"data" : _GG("CommonClient").encodeBytes({"key" : tkey, "IPVersion" : _GG("AppConfig")["version"]}),
 			}, asynCallback = onRequestToolInfo);

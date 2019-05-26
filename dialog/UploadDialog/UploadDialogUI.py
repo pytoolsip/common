@@ -73,7 +73,7 @@ class UploadDialogUI(wx.Dialog):
 		self.updateInputPanel(self.__version, isReset = True);
 		self.resetCategoryPanel();
 		self.updateInputPanel(self.__exCategory, isReset = True);
-		self.__commonVersion.SetLabel(_GG("AppConfig")["version"]);
+		self.__IPVersion.SetLabel(_GG("AppConfig")["version"]);
 		self.updateInputPanel(self.__description, isReset = True);
 
 	def createInputViewsList(self):
@@ -232,7 +232,7 @@ class UploadDialogUI(wx.Dialog):
 		if not panel.input.GetValue():
 			self.updateInputPanel(panel, "必须填写版本！", False);
 		else:
-			ret, tips, value = self.getCtr().checkVersion(panel.input.GetValue(), self.__onlineVersion.GetLabel(), self.__commonVersion.GetLabel());
+			ret, tips, value = self.getCtr().checkVersion(panel.input.GetValue(), self.__onlineVersion.GetLabel(), self.__IPVersion.GetLabel());
 			# 重置输入框的值
 			if value:
 				panel.input.SetValue(value);
@@ -251,10 +251,10 @@ class UploadDialogUI(wx.Dialog):
 	def createConmonVersionView(self):
 		params = self.__params.get("conmonVersion", {});
 		name = wx.StaticText(self, label = params.get("name", "IP版本"));
-		self.__commonVersion = wx.StaticText(self, label = _GG("AppConfig")["version"]);
+		self.__IPVersion = wx.StaticText(self, label = _GG("AppConfig")["version"]);
 		# 添加到信息列表中
 		self.__inputInfosList.append((name, 0, wx.ALIGN_RIGHT|wx.TOP|wx.LEFT, 8));
-		self.__inputInfosList.append((self.__commonVersion, 0, wx.ALIGN_LEFT|wx.TOP|wx.LEFT, 8));
+		self.__inputInfosList.append((self.__IPVersion, 0, wx.ALIGN_LEFT|wx.TOP|wx.LEFT, 8));
 		self.__inputInfosList.append((wx.Panel(self)));
 
 	def createDescriptionView(self):
@@ -402,6 +402,6 @@ class UploadDialogUI(wx.Dialog):
 			"category" : category,
 			"name" : self.__name.input.GetValue(),
 			"version" : self.__version.input.GetValue(),
-			"commonVersion" : self.__commonVersion.GetLabel(),
+			"IPVersion" : self.__IPVersion.GetLabel(),
 			"description" : self.__description.input.GetValue(),
 		};

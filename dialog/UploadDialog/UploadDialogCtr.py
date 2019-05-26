@@ -126,10 +126,10 @@ class UploadDialogCtr(object):
 			return True;
 		return False;
 
-	def checkVersion(self, version, onlineVersion, commonVersion):
+	def checkVersion(self, version, onlineVersion, IPVersion):
 		newVerVal = None;
 		verList = [int(ver) for ver in version.replace(" ", "").split(".") if ver.isdigit()];
-		comVerList = [int(ver) for ver in commonVersion.split(".")];
+		comVerList = [int(ver) for ver in IPVersion.split(".")];
 		if len(verList) != 3 or (verList[0] <= 0 and verList[1] <= 0 and verList[2] <= 0):
 			return False, "版本格式错误！", newVerVal;
 		if verList[0] != comVerList[0]:

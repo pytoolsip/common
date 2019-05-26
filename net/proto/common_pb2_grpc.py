@@ -59,6 +59,11 @@ class CommonStub(object):
         request_serializer=proto_dot_common__pb2.CollectReq.SerializeToString,
         response_deserializer=proto_dot_common__pb2.Resp.FromString,
         )
+    self.UpdateIP = channel.unary_unary(
+        '/pbcommon.Common/UpdateIP',
+        request_serializer=proto_dot_common__pb2.UpdateIPReq.SerializeToString,
+        response_deserializer=proto_dot_common__pb2.UpdateIPResp.FromString,
+        )
 
 
 class CommonServicer(object):
@@ -128,6 +133,13 @@ class CommonServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def UpdateIP(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
 
 def add_CommonServicer_to_server(servicer, server):
   rpc_method_handlers = {
@@ -175,6 +187,11 @@ def add_CommonServicer_to_server(servicer, server):
           servicer.Collect,
           request_deserializer=proto_dot_common__pb2.CollectReq.FromString,
           response_serializer=proto_dot_common__pb2.Resp.SerializeToString,
+      ),
+      'UpdateIP': grpc.unary_unary_rpc_method_handler(
+          servicer.UpdateIP,
+          request_deserializer=proto_dot_common__pb2.UpdateIPReq.FromString,
+          response_serializer=proto_dot_common__pb2.UpdateIPResp.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
