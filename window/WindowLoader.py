@@ -30,6 +30,7 @@ class WindowLoader(object):
 	def __unload__(self):
 		if isExist_G(): # window加载类中的析构函数，涉及到全局变量时，要判断全局变量是否存在
 			self.unregisterEvent(); # 注销事件
+			self.unbindKeyDownEvent(); # 注销键盘点击事件
 		pass;
 
 	def checkIsOpenLogWin(self):
@@ -81,20 +82,32 @@ class WindowLoader(object):
 
 	def registerEvent(self):
 		_GG("EventDispatcher").register(_GG("EVENT_ID").RESTART_APP_EVENT, self, "restartApp");
+		_GG("EventDispatcher").register(_GG("EVENT_ID").UPDATE_APP_EVENT, self, "updateApp");
 
 	def unregisterEvent(self):
 		_GG("EventDispatcher").unregister(_GG("EVENT_ID").RESTART_APP_EVENT, self, "restartApp");
+		_GG("EventDispatcher").unregister(_GG("EVENT_ID").UPDATE_APP_EVENT, self, "updateApp");
 
 	def restartApp(self, data):
 		self._mainApp.ExitMainLoop(); # 退出App的主循环
+		self.__dest__(); # 销毁回调
 		if sys.platform == "win32":
 			if ProjectConfig["isOpenLogWin"] :
-				os.system('start ../run/run.bat'); # 启动app【有日志窗口】
+				os.system("start ../run/run.bat"); # 启动app【有日志窗口】
 			else :
-				os.system('cd ../run/&&run.vbs'); # 启动app【无日志窗口】
-		# 解绑事件
-		self.unregisterEvent();
-		self.unbindKeyDownEvent();
+				os.system("cd ../run/&&run.vbs"); # 启动app【无日志窗口】
+
+	def updateApp(self, data):
+		exePath =  _GG("g_ProjectPath")+"run/update.exe";
+		if "updatePath" not in data or sys.platform != "win32" or not os.path.exists(exePath):
+			self.createMessageDialog("更新平台失败！", "更新平台", style = wx.OK|wx.ICON_ERROR);
+			return;
+		# 退出App的主循环
+		self._mainApp.ExitMainLoop();
+		# 销毁回调
+		self.__dest__();
+		# 启动更新程序
+		os.system(" ".join(["start", exePath, data["updatePath"]]));
 
 	def runWindows(self):
 		self._parentWindowUI.Tile();

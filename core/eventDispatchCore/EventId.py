@@ -41,3 +41,5 @@ class EVENT_ID(Enum):
 	UPDATE_WINDOW_LEFT_VIEW = getNewEventId(); # 更新左窗口视图
 	
 	LOGOUT_SUCCESS_EVENT = getNewEventId(); # 注销成功事件
+
+	UPDATE_APP_EVENT = getNewEventId(); # 更新APP事件

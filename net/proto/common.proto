@@ -129,12 +129,17 @@ message CollectReq{
 message UpdateIPReq{
 	int32 uid = 1; // 玩家ID
 	string version = 2; // 当前版本号
+	string updateExeVersion = 3; // 当前更新程序版本号
 }
 
 // 更新平台应答
 message UpdateIPResp{
-	bool isUpToDate = 1; // 是否为最新版本
-	string url = 2; // 下载地址
-	int64 totalSize = 3; // 下载文件总大小
-	bool isFull = 4; // 是否全量下载
+	message UpdateInfo{
+		bool isUpToDate = 1; // 是否为最新版本
+		string url = 2; // 下载地址
+		int64 totalSize = 3; // 下载文件总大小
+	}
+	bool isAllowQuit = 1; // 是否允许放弃升级
+	UpdateInfo IPInfo = 2; // 平台更新信息
+	UpdateInfo exeInfo = 3; // 更新程序信息
 }
