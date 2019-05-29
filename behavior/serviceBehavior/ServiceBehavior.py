@@ -40,7 +40,7 @@ class ServiceBehavior(_GG("BaseBehavior")):
 
 	# 检测更新平台
 	def checkUpdateIP(self, obj, _retTuple = None):
-		resp = _GG("CommonClient").callService("Update", "UpdateIPReq", {"uid" : _GG("CommonClient").getUserId(), "version" : _GG("AppConfig")["version"]});
+		resp = _GG("CommonClient").callService("UpdateIP", "UpdateIPReq", {"uid" : _GG("CommonClient").getUserId(), "version" : _GG("AppConfig")["version"]});
 		if resp and resp.IPInfo and not resp.IPInfo.isUpToDate:
 			def onComplete(filePath):
 				# 重置文件夹【会移除原有文件夹】
