@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='pbcommon',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x12proto/common.proto\x12\x08pbcommon\" \n\x03Req\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\"\'\n\x04Resp\x12\x11\n\tisSuccess\x18\x01 \x01(\x08\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\"*\n\x08LoginReq\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"4\n\x08UserInfo\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\"D\n\tLoginResp\x12\x11\n\tisSuccess\x18\x01 \x01(\x08\x12$\n\x08userInfo\x18\x02 \x01(\x0b\x32\x12.pbcommon.UserInfo\"N\n\x0bRegisterReq\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x10\n\x08veriCode\x18\x04 \x01(\t\"\x84\x01\n\tUploadReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x11\n\tIPVersion\x18\x04 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x05 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x06 \x01(\t\x12\x11\n\tchangelog\x18\x07 \x01(\t\"-\n\nUploadResp\x12\x10\n\x08isPermit\x18\x01 \x01(\x08\x12\r\n\x05token\x18\x02 \x01(\x0c\":\n\x0b\x44ownloadReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0b\n\x03key\x18\x02 \x01(\t\x12\x11\n\tIPVersion\x18\x03 \x01(\t\"\xe7\x01\n\x0c\x44ownloadResp\x12\x0f\n\x07isExist\x18\x01 \x01(\x08\x12\x0b\n\x03url\x18\x02 \x01(\t\x12\x11\n\ttotalSize\x18\x03 \x01(\x03\x12\x31\n\x08toolInfo\x18\x04 \x01(\x0b\x32\x1f.pbcommon.DownloadResp.ToolInfo\x1as\n\x08ToolInfo\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x02 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x03 \x01(\t\x12\x0f\n\x07version\x18\x04 \x01(\t\x12\x0e\n\x06\x61uthor\x18\x05 \x01(\t\x12\x11\n\tchangelog\x18\x06 \x01(\t\"I\n\tUpdateReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0b\n\x03key\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x11\n\tIPVersion\x18\x04 \x01(\t\"L\n\nUpdateResp\x12\x12\n\nisUpToDate\x18\x01 \x01(\x08\x12*\n\nupdateInfo\x18\x02 \x01(\x0b\x32\x16.pbcommon.DownloadResp\"Y\n\nCommentReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0b\n\x03key\x18\x02 \x01(\t\x12\x11\n\tIPVersion\x18\x03 \x01(\t\x12\r\n\x05score\x18\x04 \x01(\x02\x12\x0f\n\x07\x63ontent\x18\x05 \x01(\t\"J\n\nCollectReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0b\n\x03key\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x11\n\tIPVersion\x18\x04 \x01(\t\"E\n\x0bUpdateIPReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0f\n\x07version\x18\x02 \x01(\t\x12\x18\n\x10updateExeVersion\x18\x03 \x01(\t\"\xcc\x01\n\x0cUpdateIPResp\x12\x13\n\x0bisAllowQuit\x18\x01 \x01(\x08\x12\x31\n\x06IPInfo\x18\x02 \x01(\x0b\x32!.pbcommon.UpdateIPResp.UpdateInfo\x12\x32\n\x07\x65xeInfo\x18\x03 \x01(\x0b\x32!.pbcommon.UpdateIPResp.UpdateInfo\x1a@\n\nUpdateInfo\x12\x12\n\nisUpToDate\x18\x01 \x01(\x08\x12\x0b\n\x03url\x18\x02 \x01(\t\x12\x11\n\ttotalSize\x18\x03 \x01(\x03\x32\x8a\x04\n\x06\x43ommon\x12(\n\x07Request\x12\r.pbcommon.Req\x1a\x0e.pbcommon.Resp\x12\x30\n\x05Login\x12\x12.pbcommon.LoginReq\x1a\x13.pbcommon.LoginResp\x12\x31\n\x08Register\x12\x15.pbcommon.RegisterReq\x1a\x0e.pbcommon.Resp\x12\x33\n\x06Upload\x12\x13.pbcommon.UploadReq\x1a\x14.pbcommon.UploadResp\x12/\n\x08Uploaded\x12\x13.pbcommon.UploadReq\x1a\x0e.pbcommon.Resp\x12\x39\n\x08\x44ownload\x12\x15.pbcommon.DownloadReq\x1a\x16.pbcommon.DownloadResp\x12\x33\n\x06Update\x12\x13.pbcommon.UpdateReq\x1a\x14.pbcommon.UpdateResp\x12/\n\x07\x43omment\x12\x14.pbcommon.CommentReq\x1a\x0e.pbcommon.Resp\x12/\n\x07\x43ollect\x12\x14.pbcommon.CollectReq\x1a\x0e.pbcommon.Resp\x12\x39\n\x08UpdateIP\x12\x15.pbcommon.UpdateIPReq\x1a\x16.pbcommon.UpdateIPRespb\x06proto3')
+  serialized_pb=_b('\n\x12proto/common.proto\x12\x08pbcommon\" \n\x03Req\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\"\'\n\x04Resp\x12\x11\n\tisSuccess\x18\x01 \x01(\x08\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\"*\n\x08LoginReq\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"4\n\x08UserInfo\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\"D\n\tLoginResp\x12\x11\n\tisSuccess\x18\x01 \x01(\x08\x12$\n\x08userInfo\x18\x02 \x01(\x0b\x32\x12.pbcommon.UserInfo\"N\n\x0bRegisterReq\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x10\n\x08veriCode\x18\x04 \x01(\t\"\x84\x01\n\tUploadReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x11\n\tIPVersion\x18\x04 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x05 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x06 \x01(\t\x12\x11\n\tchangelog\x18\x07 \x01(\t\"-\n\nUploadResp\x12\x10\n\x08isPermit\x18\x01 \x01(\x08\x12\r\n\x05token\x18\x02 \x01(\x0c\":\n\x0b\x44ownloadReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0b\n\x03key\x18\x02 \x01(\t\x12\x11\n\tIPVersion\x18\x03 \x01(\t\"\xe7\x01\n\x0c\x44ownloadResp\x12\x0f\n\x07isExist\x18\x01 \x01(\x08\x12\x0b\n\x03url\x18\x02 \x01(\t\x12\x11\n\ttotalSize\x18\x03 \x01(\x03\x12\x31\n\x08toolInfo\x18\x04 \x01(\x0b\x32\x1f.pbcommon.DownloadResp.ToolInfo\x1as\n\x08ToolInfo\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x02 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x03 \x01(\t\x12\x0f\n\x07version\x18\x04 \x01(\t\x12\x0e\n\x06\x61uthor\x18\x05 \x01(\t\x12\x11\n\tchangelog\x18\x06 \x01(\t\"I\n\tUpdateReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0b\n\x03key\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x11\n\tIPVersion\x18\x04 \x01(\t\"L\n\nUpdateResp\x12\x12\n\nisUpToDate\x18\x01 \x01(\x08\x12*\n\nupdateInfo\x18\x02 \x01(\x0b\x32\x16.pbcommon.DownloadResp\"Y\n\nCommentReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0b\n\x03key\x18\x02 \x01(\t\x12\x11\n\tIPVersion\x18\x03 \x01(\t\x12\r\n\x05score\x18\x04 \x01(\x02\x12\x0f\n\x07\x63ontent\x18\x05 \x01(\t\"J\n\nCollectReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0b\n\x03key\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x11\n\tIPVersion\x18\x04 \x01(\t\"E\n\x0bUpdateIPReq\x12\x0b\n\x03uid\x18\x01 \x01(\x05\x12\x0f\n\x07version\x18\x02 \x01(\t\x12\x18\n\x10updateExeVersion\x18\x03 \x01(\t\"W\n\x0cUpdateIPResp\x12\x12\n\nisUpToDate\x18\x01 \x01(\x08\x12\x0b\n\x03url\x18\x02 \x01(\t\x12\x11\n\ttotalSize\x18\x03 \x01(\x03\x12\x13\n\x0bisAllowQuit\x18\x04 \x01(\x08\x32\x8a\x04\n\x06\x43ommon\x12(\n\x07Request\x12\r.pbcommon.Req\x1a\x0e.pbcommon.Resp\x12\x30\n\x05Login\x12\x12.pbcommon.LoginReq\x1a\x13.pbcommon.LoginResp\x12\x31\n\x08Register\x12\x15.pbcommon.RegisterReq\x1a\x0e.pbcommon.Resp\x12\x33\n\x06Upload\x12\x13.pbcommon.UploadReq\x1a\x14.pbcommon.UploadResp\x12/\n\x08Uploaded\x12\x13.pbcommon.UploadReq\x1a\x0e.pbcommon.Resp\x12\x39\n\x08\x44ownload\x12\x15.pbcommon.DownloadReq\x1a\x16.pbcommon.DownloadResp\x12\x33\n\x06Update\x12\x13.pbcommon.UpdateReq\x1a\x14.pbcommon.UpdateResp\x12/\n\x07\x43omment\x12\x14.pbcommon.CommentReq\x1a\x0e.pbcommon.Resp\x12/\n\x07\x43ollect\x12\x14.pbcommon.CollectReq\x1a\x0e.pbcommon.Resp\x12\x39\n\x08UpdateIP\x12\x15.pbcommon.UpdateIPReq\x1a\x16.pbcommon.UpdateIPRespb\x06proto3')
 )
 
 
@@ -794,31 +794,38 @@ _UPDATEIPREQ = _descriptor.Descriptor(
 )
 
 
-_UPDATEIPRESP_UPDATEINFO = _descriptor.Descriptor(
-  name='UpdateInfo',
-  full_name='pbcommon.UpdateIPResp.UpdateInfo',
+_UPDATEIPRESP = _descriptor.Descriptor(
+  name='UpdateIPResp',
+  full_name='pbcommon.UpdateIPResp',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='isUpToDate', full_name='pbcommon.UpdateIPResp.UpdateInfo.isUpToDate', index=0,
+      name='isUpToDate', full_name='pbcommon.UpdateIPResp.isUpToDate', index=0,
       number=1, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='url', full_name='pbcommon.UpdateIPResp.UpdateInfo.url', index=1,
+      name='url', full_name='pbcommon.UpdateIPResp.url', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='totalSize', full_name='pbcommon.UpdateIPResp.UpdateInfo.totalSize', index=2,
+      name='totalSize', full_name='pbcommon.UpdateIPResp.totalSize', index=2,
       number=3, type=3, cpp_type=2, label=1,
       has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='isAllowQuit', full_name='pbcommon.UpdateIPResp.isAllowQuit', index=3,
+      number=4, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -834,61 +841,14 @@ _UPDATEIPRESP_UPDATEINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1363,
-  serialized_end=1427,
-)
-
-_UPDATEIPRESP = _descriptor.Descriptor(
-  name='UpdateIPResp',
-  full_name='pbcommon.UpdateIPResp',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='isAllowQuit', full_name='pbcommon.UpdateIPResp.isAllowQuit', index=0,
-      number=1, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='IPInfo', full_name='pbcommon.UpdateIPResp.IPInfo', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='exeInfo', full_name='pbcommon.UpdateIPResp.exeInfo', index=2,
-      number=3, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[_UPDATEIPRESP_UPDATEINFO, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1223,
-  serialized_end=1427,
+  serialized_start=1222,
+  serialized_end=1309,
 )
 
 _LOGINRESP.fields_by_name['userInfo'].message_type = _USERINFO
 _DOWNLOADRESP_TOOLINFO.containing_type = _DOWNLOADRESP
 _DOWNLOADRESP.fields_by_name['toolInfo'].message_type = _DOWNLOADRESP_TOOLINFO
 _UPDATERESP.fields_by_name['updateInfo'].message_type = _DOWNLOADRESP
-_UPDATEIPRESP_UPDATEINFO.containing_type = _UPDATEIPRESP
-_UPDATEIPRESP.fields_by_name['IPInfo'].message_type = _UPDATEIPRESP_UPDATEINFO
-_UPDATEIPRESP.fields_by_name['exeInfo'].message_type = _UPDATEIPRESP_UPDATEINFO
 DESCRIPTOR.message_types_by_name['Req'] = _REQ
 DESCRIPTOR.message_types_by_name['Resp'] = _RESP
 DESCRIPTOR.message_types_by_name['LoginReq'] = _LOGINREQ
@@ -1021,19 +981,11 @@ UpdateIPReq = _reflection.GeneratedProtocolMessageType('UpdateIPReq', (_message.
 _sym_db.RegisterMessage(UpdateIPReq)
 
 UpdateIPResp = _reflection.GeneratedProtocolMessageType('UpdateIPResp', (_message.Message,), dict(
-
-  UpdateInfo = _reflection.GeneratedProtocolMessageType('UpdateInfo', (_message.Message,), dict(
-    DESCRIPTOR = _UPDATEIPRESP_UPDATEINFO,
-    __module__ = 'proto.common_pb2'
-    # @@protoc_insertion_point(class_scope:pbcommon.UpdateIPResp.UpdateInfo)
-    ))
-  ,
   DESCRIPTOR = _UPDATEIPRESP,
   __module__ = 'proto.common_pb2'
   # @@protoc_insertion_point(class_scope:pbcommon.UpdateIPResp)
   ))
 _sym_db.RegisterMessage(UpdateIPResp)
-_sym_db.RegisterMessage(UpdateIPResp.UpdateInfo)
 
 
 
@@ -1043,8 +995,8 @@ _COMMON = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=1430,
-  serialized_end=1952,
+  serialized_start=1312,
+  serialized_end=1834,
   methods=[
   _descriptor.MethodDescriptor(
     name='Request',

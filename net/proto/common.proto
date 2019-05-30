@@ -134,12 +134,8 @@ message UpdateIPReq{
 
 // 更新平台应答
 message UpdateIPResp{
-	message UpdateInfo{
-		bool isUpToDate = 1; // 是否为最新版本
-		string url = 2; // 下载地址
-		int64 totalSize = 3; // 下载文件总大小
-	}
-	bool isAllowQuit = 1; // 是否允许放弃升级
-	UpdateInfo IPInfo = 2; // 平台更新信息
-	UpdateInfo exeInfo = 3; // 更新程序信息
+	bool isUpToDate = 1; // 是否为最新版本
+	string url = 2; // 下载地址
+	int64 totalSize = 3; // 下载文件总大小
+	bool isAllowQuit = 4; // 是否允许放弃升级
 }

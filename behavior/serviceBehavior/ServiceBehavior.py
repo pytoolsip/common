@@ -3,7 +3,7 @@
 # @Date:   2019-03-06 23:14:13
 # @Last Modified by:   JinZhang
 # @Last Modified time: 2019-03-27 18:38:07
-import os;
+import os,re;
 import shutil;
 
 from _Global import _GG;
@@ -41,7 +41,7 @@ class ServiceBehavior(_GG("BaseBehavior")):
 	# 检测更新平台
 	def checkUpdateIP(self, obj, _retTuple = None):
 		resp = _GG("CommonClient").callService("UpdateIP", "UpdateIPReq", {"uid" : _GG("CommonClient").getUserId(), "version" : _GG("AppConfig")["version"]});
-		if resp and resp.IPInfo and not resp.IPInfo.isUpToDate:
+		if resp and not resp.isUpToDate:
 			def onComplete(filePath):
 				# 重置文件夹【会移除原有文件夹】
 				dirPath = _GG("g_DataPath")+"update/pytoolsip/";
@@ -55,21 +55,14 @@ class ServiceBehavior(_GG("BaseBehavior")):
 					# 更新程序
 					_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_APP_EVENT, {
 						"updatePath" : dirPath,
+						"updateFile" : self.checkAndUpdateScript(dirPath),
 					});
 				obj.unzipFile(filePath, dirPath, finishCallback = afterUnzip);
 				pass;
 			def updateIP():
-				exeInfo = resp.exeInfo;
-				if not exeInfo.isUpToDate:
-					# 下载更新程序
-					exePath =  _GG("g_ProjectPath")+"run/update.exe";
-					if os.path.exists(exePath):
-						os.remove(exePath);
-					obj.download(exeInfo.url, exePath, exeInfo.totalSize);
 				# 下载平台包
-				ipInfo = resp.IPInfo;
-				filePath = os.path.join(_GG("g_DataPath"), "temp/", ipInfo.url.split("/")[-1]);
-				obj.download(ipInfo.url, filePath, ipInfo.totalSize, onComplete = onComplete);
+				filePath = os.path.join(_GG("g_DataPath"), "temp/", resp.url.split("/")[-1]);
+				obj.download(resp.url, filePath, resp.totalSize, onComplete = onComplete);
 			if resp.isAllowQuit:
 				def callbackFunc(status):
 					if status == wx.ID_YES:
@@ -100,3 +93,23 @@ class ServiceBehavior(_GG("BaseBehavior")):
 				"name" : userName,
 				"password" : password,
 			}, asynCallback = onLogin);
+
+	# 更新update脚本
+	def checkAndUpdateScript(self, dirPath):
+		assetsPath = os.path.join(dirPath, "assets");
+		if not os.path.exists(assetsPath):
+			return;
+		def getUpdateFile(dPath):
+			for fileName in os.listdir(dPath):
+				filePath = os.path.join(dPath, fileName);
+				if os.path.isfile(filePath) and re.search(r"^update\.py.*$", fileName):
+					return filePath;
+		# 获取更新文件名
+		filePath, updateFile = getUpdateFile(assetsPath), getUpdateFile(_GG("g_AssetsPath"));
+		if filePath:
+			if updateFile:
+				os.remove(updateFile);
+			updateFile = os.path.join(_GG("g_AssetsPath"), fileName);
+			shutil.copyfile(filePath, updateFile);
+		return updateFile;
+

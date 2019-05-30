@@ -98,8 +98,9 @@ class WindowLoader(object):
 				os.system("cd ../run/&&run.vbs"); # 启动app【无日志窗口】
 
 	def updateApp(self, data):
-		exePath =  _GG("g_ProjectPath")+"run/update.exe";
-		if "updatePath" not in data or sys.platform != "win32" or not os.path.exists(exePath):
+		if "updateFile" not in data or not os.path.exists(data["updateFile"]) or
+		 "updatePath" not in data or not os.path.exists(data["updatePath"]) or
+		 sys.platform != "win32":
 			self.createMessageDialog("更新平台失败！", "更新平台", style = wx.OK|wx.ICON_ERROR);
 			return;
 		# 退出App的主循环
@@ -107,7 +108,7 @@ class WindowLoader(object):
 		# 销毁回调
 		self.__dest__();
 		# 启动更新程序
-		os.system(" ".join(["start", exePath, data["updatePath"]]));
+		os.system(" ".join(["start", exePath, data["updateFile"], data["updatePath"]]));
 
 	def runWindows(self):
 		self._parentWindowUI.Tile();
