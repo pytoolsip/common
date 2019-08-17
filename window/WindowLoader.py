@@ -98,9 +98,7 @@ class WindowLoader(object):
 				os.system("cd ../run/&&run.vbs"); # 启动app【无日志窗口】
 
 	def updateApp(self, data):
-		if "updateFile" not in data or not os.path.exists(data["updateFile"]) or
-		 "updatePath" not in data or not os.path.exists(data["updatePath"]) or
-		 sys.platform != "win32":
+		if not os.path.exists(data.get("updateFile", "")) or not os.path.exists(data.get("updatePath", "")) or sys.platform != "win32":
 			self.createMessageDialog("更新平台失败！", "更新平台", style = wx.OK|wx.ICON_ERROR);
 			return;
 		# 退出App的主循环

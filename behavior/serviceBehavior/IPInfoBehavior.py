@@ -37,7 +37,7 @@ class IPInfoBehavior(_GG("BaseBehavior")):
 	def __init__(self):
 		super(IPInfoBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__, __file__);
 		self._className_ = IPInfoBehavior.__name__;
-		self.__filePath = _GG("g_DataPath") + "ptip_info.ini";
+		self.__filePath = _GG("g_DataPath") + "config/ptip_info.ini";
 
 	# 默认方法【obj为绑定该组件的对象，argList和argDict为可变参数，_retTuple为该组件的前个函数返回值】
 	# def defaultFun(self, obj, *argList, _retTuple = None, **argDict):

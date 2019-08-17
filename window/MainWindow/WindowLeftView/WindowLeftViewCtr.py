@@ -98,11 +98,11 @@ class WindowLeftViewCtr(object):
 
 	def initTreeItemsData(self):
 		self.__treeItemsData = [];
-		if os.path.exists(_GG("g_DataPath")+"tools_tree.json"):
-			self.__treeItemsData = self.readJsonFile(_GG("g_DataPath")+"tools_tree.json");
+		if os.path.exists(_GG("g_DataPath")+"config/tools_tree.json"):
+			self.__treeItemsData = self.readJsonFile(_GG("g_DataPath")+"config/tools_tree.json");
 
 	def saveTreeItemsData(self):
-		self.writeJsonFile(_GG("g_DataPath")+"tools_tree.json", self.__treeItemsData);
+		self.writeJsonFile(_GG("g_DataPath")+"config/tools_tree.json", self.__treeItemsData);
 
 	def updateUserNameView(self, data):
 		def onClick(event):

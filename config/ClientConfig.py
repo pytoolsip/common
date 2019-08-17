@@ -3,6 +3,7 @@
 # @Date:   2019-02-24 05:57:41
 # @Last Modified by:   JimDreamHeart
 # @Last Modified time: 2019-03-09 16:40:47
+import os;
 
 try:
 	import ConfigParser;
@@ -19,10 +20,18 @@ def GetConfigKeyMap():
 
 class Config(object):
 	"""docstring for Config"""
-	def __init__(self, path):
+	def __init__(self, pathCfg):
 		super(Config, self).__init__();
-		self.__path = path;
+		self.__initPath__(pathCfg);
 		self.__initConfig__();
+	
+	def __initPath__(self, pathCfg):
+		if isinstance(pathCfg, list):
+			for path in pathCfg:
+				if os.path.exists(path):
+					self.__path = path;
+					return;
+		self.__path = pathCfg;
 
 	def __initConfig__(self):
 		self.__config = ConfigParser.RawConfigParser();

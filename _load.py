@@ -85,10 +85,7 @@ class Loader(object):
 
 	# 加载全局python路径变量
 	def loadPyPath(self):
-		if os.path.exists(os.path.join(_G._GG("g_ProjectPath"), "include/python/python.exe")):
-			_G.setGlobalVarTo_Global("g_PythonPath", os.path.join(_G._GG("g_ProjectPath"), "include/python"));
-		else:
-			_G.setGlobalVarTo_Global("g_PythonPath", "");
+		_G.setGlobalVarTo_Global("g_PythonPath", os.path.join(_G._GG("g_ProjectPath"), "include/python"));
 
 	# 加载全局对象变量
 	def loadObjects(self):
@@ -138,9 +135,12 @@ class Loader(object):
 	# 校验默认数据
 	def verifyDefaultData(self):
 		_GG = _G._GG;
+		# 校验配置文件夹
+		if not os.path.exists(_GG("g_DataPath")+"config"):
+			os.mkdir(_GG("g_DataPath")+"config");
 		# 校验工具树配置
-		if not os.path.exists(_GG("g_DataPath")+"tools_tree.json"):
-			shutil.copyfile(_GG("g_CommonPath") + "config/json/toolsTree.json", _GG("g_DataPath")+"tools_tree.json");
+		if not os.path.exists(_GG("g_DataPath")+"config/tools_tree.json"):
+			shutil.copyfile(_GG("g_CommonPath") + "config/json/toolsTree.json", _GG("g_DataPath")+"config/tools_tree.json");
 		# 校验临时文件夹
 		if os.path.exists(_GG("g_DataPath")+"temp"):
 			shutil.rmtree(_GG("g_DataPath")+"temp");
