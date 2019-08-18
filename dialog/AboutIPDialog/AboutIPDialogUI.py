@@ -28,7 +28,8 @@ class AboutIPDialogUI(wx.Dialog):
 			"title" : "关于",
 			"size" : (-1,-1),
 			"style" : wx.DEFAULT_DIALOG_STYLE,
-			"focusUrlColor" : wx.Colour(0,128,255),
+			"blurUrlColor" : wx.Colour(60,60,160),
+			"focusUrlColor" : wx.Colour(60,60,240),
 		};
 		for k,v in params.items():
 			self.__params[k] = v;
@@ -52,10 +53,10 @@ class AboutIPDialogUI(wx.Dialog):
 		# 创建flexGridSizer，并设置相应控件和参数
 		flexGridSizer = wx.FlexGridSizer(2, 2, 2, 2);
 		flexGridSizer.AddMany([
-			(self.versionTitle, -1, wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM|wx.LEFT, 10),
-			(self.versionValue, -1, wx.TOP|wx.BOTTOM|wx.RIGHT, 10),
-			(self.websiteTitle, -1, wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM|wx.LEFT, 10),
-			(self.websiteUrl, -1, wx.TOP|wx.BOTTOM|wx.RIGHT, 10)
+			(self.versionTitle, -1, wx.ALIGN_CENTER|wx.TOP|wx.LEFT, 20),
+			(self.versionValue, -1, wx.TOP|wx.RIGHT, 20),
+			(self.websiteTitle, -1, wx.ALIGN_CENTER|wx.TOP|wx.BOTTOM|wx.LEFT, 20),
+			(self.websiteUrl, -1, wx.TOP|wx.BOTTOM|wx.RIGHT, 20)
 		]);
 		flexGridSizer.AddGrowableCol(0, 1);
 		self.SetSizerAndFit(flexGridSizer);
@@ -70,7 +71,7 @@ class AboutIPDialogUI(wx.Dialog):
 
 	def createVersionTitle(self):
 		self.versionTitle = wx.StaticText(self, label = "版本号：");
-		self.versionTitle.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD));
+		self.versionTitle.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL));
 
 	def createVersionValue(self):
 		self.versionValue = wx.StaticText(self, label = _GG("AppConfig")["version"]);
@@ -79,11 +80,11 @@ class AboutIPDialogUI(wx.Dialog):
 
 	def createWebsiteTitle(self):
 		self.websiteTitle = wx.StaticText(self, label = "官网：");
-		self.websiteTitle.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD));
+		self.websiteTitle.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL));
 
 	def createWebsiteUrl(self):
 		self.websiteUrl = wx.StaticText(self, label = _GG("AppConfig")["PyToolsIPUrl"]);
-		self.websiteUrl.SetForegroundColour("blue");
+		self.websiteUrl.SetForegroundColour(self.__params["blurUrlColor"]);
 		self.websiteUrl.Bind(wx.EVT_ENTER_WINDOW, self.onEnterUrl);
 		self.websiteUrl.Bind(wx.EVT_LEAVE_WINDOW, self.onLeaveUrl);
 		self.websiteUrl.Bind(wx.EVT_LEFT_DOWN, self.onClickUrl);
@@ -93,7 +94,7 @@ class AboutIPDialogUI(wx.Dialog):
 		event.GetEventObject().Refresh();
 
 	def onLeaveUrl(self, event):
-		event.GetEventObject().SetForegroundColour("blue");
+		event.GetEventObject().SetForegroundColour(self.__params["blurUrlColor"]);
 		event.GetEventObject().Refresh();
 
 	def onClickUrl(self, event):
