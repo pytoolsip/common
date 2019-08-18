@@ -205,6 +205,11 @@ class MenuBarViewCtr(object):
 			topMenu.Enable(itemId, True);
 		pass;
 
+	def onPackTool(self, menuItem, event):
+		if not self.getCtrByKey("PackDialogCtr"):
+			self.createCtrByKey("PackDialogCtr", _GG("g_CommonPath") + "dialog/PackDialog");
+		self.getUIByKey("PackDialogCtr").ShowModal();
+
 	def getMenuItemsData(self):
 		return [
 			{"name" : "文件", "items" : [
@@ -218,8 +223,10 @@ class MenuBarViewCtr(object):
 				{"name" : "搜索工具", "items" : [], "callback" : self.onSearchTool},
 				{"name" : "下载工具", "items" : [], "callback" : self.onDownloadTool},
 				{},
+				{"name" : "打包工具", "items" : [], "callback" : self.onPackTool},
+				{},
 				{"name" : "从本地添加工具", "items" : [], "callback" : self.onAddLocalTool},
-				{"name" : "进行工具开发", "items" : [], "callback" : self.onClickToolDevelopment},
+				{"name" : "开发工具", "items" : [], "callback" : self.onClickToolDevelopment},
 			]},
 			{"name" : "升级", "items" : [
 				{"name" : "工具升级", "items" : [], "enable" : False},

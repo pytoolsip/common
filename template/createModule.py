@@ -26,12 +26,12 @@ if __name__ == "__main__":
 	# 	"targetModPath" : assetsPath + "../../installer/behavior/",
 	# };
 
-	# 创建视图的参数配置 view
-	theModule = {
-		"modName" : "view",
-		"targetModName" : "InstallerGaugeView",
-		"targetModPath" : assetsPath + "../../installer/view/",
-	};
+	# # 创建视图的参数配置 view
+	# theModule = {
+	# 	"modName" : "view",
+	# 	"targetModName" : "InstallerGaugeView",
+	# 	"targetModPath" : assetsPath + "../../installer/view/",
+	# };
 
 	# # 创建窗口的参数配置 window
 	# theModule = {
@@ -40,12 +40,12 @@ if __name__ == "__main__":
 	# 	"targetModPath" : assetsPath + "../../installer/window/",
 	# };
 
-	# # 创建弹窗的参数配置 dialog
-	# theModule = {
-	# 	"modName" : "dialog",
-	# 	"targetModName" : "AddLocalToolDialog",
-	# 	"targetModPath" : commonPath + "dialog/",
-	# };
+	# 创建弹窗的参数配置 dialog
+	theModule = {
+		"modName" : "dialog",
+		"targetModName" : "PackDialog",
+		"targetModPath" : commonPath + "dialog/",
+	};
 
 
 	# # 创建module的对象
