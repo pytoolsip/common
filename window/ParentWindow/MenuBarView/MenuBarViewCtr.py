@@ -147,14 +147,8 @@ class MenuBarViewCtr(object):
 	def onClickLogin(self, menuItem, event):
 		self._loginIP_();
 
-	def onClickRegister(self, menuItem, event):
-		self._registerIP_();
-
 	def onDownloadTool(self, menuItem, event):
 		self._downloadTool_();
-
-	def onUploadTool(self, menuItem, event):
-		self._uploadTool_();
 
 	def onAddLocalTool(self, menuItem, event):
 		def onOk(localToolInfo):
@@ -195,7 +189,7 @@ class MenuBarViewCtr(object):
 
 	def loginSuccessEvent(self, data):
 		topMenu = self.getUI().getTopMenu();
-		itemIdList = [topMenu.FindMenuItem("用户", "登录"), topMenu.FindMenuItem("用户", "注册")];
+		itemIdList = [topMenu.FindMenuItem("用户", "登录")];
 		for itemId in itemIdList:
 			topMenu.Enable(itemId, False);
 		itemId = topMenu.FindMenuItem("用户", "登出");
@@ -206,7 +200,7 @@ class MenuBarViewCtr(object):
 		topMenu = self.getUI().getTopMenu();
 		itemId = topMenu.FindMenuItem("用户", "登出");
 		topMenu.Enable(itemId, False);
-		itemIdList = [topMenu.FindMenuItem("用户", "登录"), topMenu.FindMenuItem("用户", "注册")];
+		itemIdList = [topMenu.FindMenuItem("用户", "登录")];
 		for itemId in itemIdList:
 			topMenu.Enable(itemId, True);
 		pass;
@@ -223,7 +217,6 @@ class MenuBarViewCtr(object):
 			{"name" : "工具", "items" : [
 				{"name" : "搜索工具", "items" : [], "callback" : self.onSearchTool},
 				{"name" : "下载工具", "items" : [], "callback" : self.onDownloadTool},
-				{"name" : "上传工具", "items" : [], "callback" : self.onUploadTool},
 				{},
 				{"name" : "从本地添加工具", "items" : [], "callback" : self.onAddLocalTool},
 				{"name" : "进行工具开发", "items" : [], "callback" : self.onClickToolDevelopment},
@@ -237,7 +230,6 @@ class MenuBarViewCtr(object):
 				# {"name" : "需求开发", "items" : []},
 				{"name" : "登出", "items" : [], "callback" : self.onClickLogout, "enable" : False},
 				{"name" : "登录", "items" : [], "callback" : self.onClickLogin},
-				{"name" : "注册", "items" : [], "callback" : self.onClickRegister},
 			]},
 			{"name" : "帮助", "items" : [
 				{"name" : "开发工具事项", "items" : [], "enable" : False},

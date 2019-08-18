@@ -108,7 +108,7 @@ class WindowLeftViewCtr(object):
 		def onClick(event):
 			# 显示玩家信息的弹窗
 			pass;
-		self.getCtrByKey("UserNameTextViewCtr").updateView({"name" : data.name, "onClick" : onClick});
+		self.getCtrByKey("UserNameTextViewCtr").updateView({"name" : data["userInfo"].name, "onClick" : onClick});
 
 	def resetUserNameView(self, data):
 		self.getCtrByKey("UserNameTextViewCtr").updateView({"name" : "点击登录", "onClick" : self.onClickLogin});

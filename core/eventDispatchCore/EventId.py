@@ -31,6 +31,8 @@ class EVENT_ID(Enum):
 	SHOW_SEARCH_PANEL_EVENT = getNewEventId(); # 显示搜索面板事件
 
 	ESC_DOWN_EVENT = getNewEventId(); # ESC按键事件
+	
+	STOP_APP_EVENT = getNewEventId(); # 停止APP事件
 
 	RESTART_APP_EVENT = getNewEventId(); # 重启APP事件
 

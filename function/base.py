@@ -104,3 +104,7 @@ def CheckVersion(v1, v2, isCheckFirst = True, isIncludeEqu = False):
 	if vList1[2] != vList2[2]:
 		return vList1[2] > vList2[2];
 	return isIncludeEqu;
+
+def GetBaseVersion(version):
+	vList = version.replace(" ", "").split(".");
+	return ".".join(vList[:1]);

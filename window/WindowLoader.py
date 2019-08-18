@@ -81,16 +81,21 @@ class WindowLoader(object):
 		self._mainApp.Unbind(wx.EVT_CHAR_HOOK);
 
 	def registerEvent(self):
+		_GG("EventDispatcher").register(_GG("EVENT_ID").STOP_APP_EVENT, self, "stopApp");
 		_GG("EventDispatcher").register(_GG("EVENT_ID").RESTART_APP_EVENT, self, "restartApp");
 		_GG("EventDispatcher").register(_GG("EVENT_ID").UPDATE_APP_EVENT, self, "updateApp");
 
 	def unregisterEvent(self):
+		_GG("EventDispatcher").unregister(_GG("EVENT_ID").STOP_APP_EVENT, self, "stopApp");
 		_GG("EventDispatcher").unregister(_GG("EVENT_ID").RESTART_APP_EVENT, self, "restartApp");
 		_GG("EventDispatcher").unregister(_GG("EVENT_ID").UPDATE_APP_EVENT, self, "updateApp");
 
-	def restartApp(self, data):
+	def stopApp(self, data):
 		self._mainApp.ExitMainLoop(); # 退出App的主循环
 		self.__dest__(); # 销毁回调
+
+	def restartApp(self, data):
+		self.stopApp(data); # 停止App
 		if sys.platform == "win32":
 			if ProjectConfig["isOpenLogWin"] :
 				os.system("start ../run/run.bat"); # 启动app【有日志窗口】
@@ -101,12 +106,10 @@ class WindowLoader(object):
 		if not os.path.exists(data.get("updateFile", "")) or not os.path.exists(data.get("updatePath", "")) or sys.platform != "win32":
 			self.createMessageDialog("更新平台失败！", "更新平台", style = wx.OK|wx.ICON_ERROR);
 			return;
-		# 退出App的主循环
-		self._mainApp.ExitMainLoop();
-		# 销毁回调
-		self.__dest__();
-		# 启动更新程序
-		os.system(" ".join(["start", exePath, data["updateFile"], data["updatePath"]]));
+		# 停止App
+		self.stopApp(data);
+		# 调用更新脚本
+		os.system(" ".join([_GG("g_PythonPath"), data["updateFile"], data["updatePath"]]));
 
 	def runWindows(self):
 		self._parentWindowUI.Tile();
