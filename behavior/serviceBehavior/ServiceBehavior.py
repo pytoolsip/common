@@ -106,7 +106,7 @@ class ServiceBehavior(_GG("BaseBehavior")):
 		if not os.path.exists(updatePath):
 			return "";
 		# 替换更新文件
-		targetPath = os.path.join(_GG("g_ProjectPath"), "update");
+		targetPath = os.path.join(_GG("g_AssetsPath"), "update");
 		if os.path.exists(targetPath):
 			os.rmtree(targetPath);
 		shutil.copytree(updatePath, targetPath);

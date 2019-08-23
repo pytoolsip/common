@@ -36,10 +36,11 @@ class GlobalWindowObject(object):
 		pass;
 
 class Loader(object):
-	def __init__(self, mainPath):
+	def __init__(self, mainPath, projectPath):
 		super(Loader, self).__init__();
 		self._className_ = Loader.__name__;
 		self.__mainPath = mainPath.replace("\\", "/");
+		self.__projectPath = projectPath.replace("\\", "/");
 		_G.initGlobal_GTo_Global(); # 初始化全局变量
 		pass;
 
@@ -74,18 +75,17 @@ class Loader(object):
 
 	# 加载全局路径名变量
 	def loadPaths(self):
-		_G.setGlobalVarTo_Global("g_ProjectPath", os.path.abspath(os.path.join(self.__mainPath, "..")).replace("\\", "/") + "/");
-		_G.setGlobalVarTo_Global("g_DataPath", _G._GG("g_ProjectPath") + "data/");
+		_G.setGlobalVarTo_Global("g_ProjectPath", self.__projectPath + "/");
+		_G.setGlobalVarTo_Global("g_DataPath", self.__projectPath + "/data/");
 		if not os.path.exists(_G._GG("g_DataPath")):
 			os.mkdir(_G._GG("g_DataPath")); # 若工程数据文件不存在，则需创建该目录
 		_G.setGlobalVarTo_Global("g_AssetsPath", self.__mainPath + "/");
 		_G.setGlobalVarTo_Global("g_CommonPath", self.__mainPath + "/common/");
-		_G.setGlobalVarTo_Global("g_CommonCorePath", self.__mainPath + "/common/core/");
 		pass;
 
 	# 加载全局python路径变量
 	def loadPyPath(self):
-		_G.setGlobalVarTo_Global("g_PythonPath", os.path.join(_G._GG("g_ProjectPath"), "include/python"));
+		_G.setGlobalVarTo_Global("g_PythonPath", os.path.join(self.__projectPath, "include/python"));
 
 	# 加载全局对象变量
 	def loadObjects(self):
@@ -122,7 +122,7 @@ class Loader(object):
 		path = cliConf.Get("log", "path", "").replace("\\", "/");
 		name = cliConf.Get("log", "name", "pytoolsip-client");
 		curTimeStr = time.strftime("%Y_%m_%d", time.localtime());
-		logger = Logger("Common", isLogFile = True, logFileName = os.path.join(_G._GG("g_ProjectPath"), path, name+("_%s.log"%curTimeStr)),
+		logger = Logger("Common", isLogFile = True, logFileName = os.path.join(self.__projectPath, path, name+("_%s.log"%curTimeStr)),
 			maxBytes = int(cliConf.Get("log", "maxBytes")), backupCount = int(cliConf.Get("log", "backupCount")));
 		_G.setGlobalVarTo_Global("Log", logger); # 设置日志类的全局变量
 		return logger;

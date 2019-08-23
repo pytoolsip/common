@@ -118,7 +118,7 @@ class MenuBarViewCtr(object):
 		if self.getUIByKey("ToolDevelopInfoDialogCtr").ShowModal() == wx.ID_OK :
 			message = "创建工具开发项目模板失败！";
 			if hasattr(self, "copyPath"):
-				srcPath = _GG("g_ProjectPath") + "template";
+				srcPath = _GG("g_AssetsPath") + "template";
 				dstPath = self.getUIByKey("ToolDevelopInfoDialogCtr").getDirInputValue() + "/" + self.getUIByKey("ToolDevelopInfoDialogCtr").getTextCtrlValue();
 				dstPath = str(dstPath);
 				if self.copyPath(srcPath, dstPath):
