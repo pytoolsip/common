@@ -63,6 +63,7 @@ class ServiceBehavior(_GG("BaseBehavior")):
 							"targetPath" : targetPath,
 							"targetMd5Path" : self.getTargetMd5Path(targetPath),
 							"updateFile" : self.getUpdateFile(dirPath),
+							"dependMapFile" : _GG("g_DataPath")+"depend_map.json",
 						});
 				obj.unzipFile(filePath, os.path.dirname(filePath), finishCallback = afterUnzip);
 				pass;

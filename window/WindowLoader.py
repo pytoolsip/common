@@ -115,7 +115,7 @@ class WindowLoader(object):
 	def updateApp(self, data):
 		if sys.platform != "win32":
 			self.createMessageDialog("更新平台失败！", "更新平台", style = wx.OK|wx.ICON_ERROR);
-		pathKeyList = ["tempPath", "targetPath", "targetMd5Path", "updateFile"];
+		pathKeyList = ["tempPath", "targetPath", "targetMd5Path", "updateFile", "dependMapFile"];
 		for pathKey in pathKeyList:
 			if not os.path.exists(data.get(pathKey, "")):
 				self.createMessageDialog("更新平台失败！", "更新平台", style = wx.OK|wx.ICON_ERROR);
@@ -123,7 +123,7 @@ class WindowLoader(object):
 		# 停止App
 		self.stopApp(data);
 		# 调用更新脚本
-		if os.system(" ".join([_GG("g_PythonPath"), data["updateFile"], data["tempPath"], data["targetPath"], data["targetMd5Path"]])) == 0:
+		if os.system(" ".join([_GG("g_PythonPath"), data["updateFile"], data["tempPath"], data["targetPath"], data["targetMd5Path"], data["dependMapFile"]])) == 0:
 			def callbackFunc(status):
 				if status == wx.ID_OK:
 					self.startApp(data); # 开始App
