@@ -61,7 +61,7 @@ class ServiceBehavior(_GG("BaseBehavior")):
 						_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_APP_EVENT, {
 							"tempPath" : dirPath,
 							"targetPath" : targetPath,
-							"targetMd5Path" self.getTargetMd5Path(targetPath),
+							"targetMd5Path" : self.getTargetMd5Path(targetPath),
 							"updateFile" : self.getUpdateFile(dirPath),
 						});
 				obj.unzipFile(filePath, os.path.dirname(filePath), finishCallback = afterUnzip);
