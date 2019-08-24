@@ -99,7 +99,7 @@ class WindowLoader(object):
 			# 运行执行程序
 			exeName = "pytoolsip.exe";
 			if os.path.exists(os.path.join(_GG("g_ProjectPath"), exeName)):
-				os.system(" ".join(["start", "/d ", _GG("g_ProjectPath"), exeName]); # 启动app
+				os.system(" ".join(["start", "/d ", _GG("g_ProjectPath"), exeName])); # 启动app
 				return;
 			# 直接运行脚本
 			runPath = os.path.join(_GG("g_ProjectPath"), "run");

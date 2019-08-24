@@ -102,15 +102,26 @@ class MenuBarViewCtr(object):
 		return wx.MessageDialog(self.getUI(), message, caption = caption, style = style).ShowModal();
 
 	def linkToolCommon(self, toolPath = ""):
-		if os.path.exists(toolPath + "/assets"):
-			toolCommonPath = VerifyPath(toolPath + "/assets/common");
-			if sys.platform == "win32":
-				if os.system(" ".join(["mklink /J", toolCommonPath, VerifyPath(_GG("g_CommonPath"))])) != 0:
-					raise Exception("<" + " ".join(["mklink /J", toolCommonPath, VerifyPath(_GG("g_CommonPath"))]) + "> fail !");
-			else:
-				os.system("ln -sf " + toolCommonPath + _GG("g_CommonPath"));
-			return True;
-		return False;
+		toolAssetsPath = VerifyPath(toolPath + "/assets");
+		if not os.path.exists(toolAssetsPath):
+			os.mkdir(toolAssetsPath);
+		toolCommonPath, commonPath = VerifyPath(toolAssetsPath + "/common"), VerifyPath(_GG("g_CommonPath"));
+		if sys.platform == "win32":
+			if os.system(" ".join(["mklink /J", toolCommonPath, commonPath])) != 0:
+				raise Exception("<" + " ".join(["mklink /J", toolCommonPath, commonPath]) + "> fail !");
+		else:
+			os.system("ln -sf " + toolCommonPath + commonPath);
+
+	def linkToolPython(self, toolPath = ""):
+		toolIncludePath = VerifyPath(toolPath + "/include");
+		if not os.path.exists(toolIncludePath):
+			os.mkdir(toolIncludePath);
+		toolPyPath, pyPath = VerifyPath(toolIncludePath + "/python"), VerifyPath(_GG("g_PythonPath"));
+		if sys.platform == "win32":
+			if os.system(" ".join(["mklink /J", toolPyPath, pyPath])) != 0:
+				raise Exception("<" + " ".join(["mklink /J", toolPyPath, pyPath]) + "> fail !");
+		else:
+			os.system(" ".join(["ln -sf", toolPyPath, pyPath]));
 
 	def onClickToolDevelopment(self, menuItem, event):
 		if not self.getCtrByKey("ToolDevelopInfoDialogCtr"):
@@ -122,8 +133,9 @@ class MenuBarViewCtr(object):
 				dstPath = self.getUIByKey("ToolDevelopInfoDialogCtr").getDirInputValue() + "/" + self.getUIByKey("ToolDevelopInfoDialogCtr").getTextCtrlValue();
 				dstPath = str(dstPath);
 				if self.copyPath(srcPath, dstPath):
-					if self.linkToolCommon(toolPath = dstPath):
-						message = "创建工具开发项目模板成功！\n创建路径为：" + VerifyPath(dstPath);
+					self.linkToolCommon(toolPath = dstPath);
+					self.linkToolPython(toolPath = dstPath);
+					message = "创建工具开发项目模板成功！\n创建路径为：" + VerifyPath(dstPath);
 			# 显示弹窗
 			self.showMessageDialog(message, "创建工具开发项目", style = wx.OK|wx.ICON_INFORMATION);
 

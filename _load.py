@@ -24,6 +24,7 @@ from eventDispatchCore.EventId import EVENT_ID;
 from hotKeyCore.HotKeyManager import HotKeyManager;
 from timerCore.TimerManager import TimerManager;
 from logCore.Logger import Logger;
+from cacheCore.CacheManager import CacheManager;
 
 from net import CommonClient;
 from config import AppConfig;
@@ -96,6 +97,7 @@ class Loader(object):
 		_G.setGlobalVarTo_Global("EVENT_ID", EVENT_ID); # 设置事件枚举Id的全局变量
 		_G.setGlobalVarTo_Global("HotKeyManager", HotKeyManager()); # 设置热键管理器的全局变量
 		_G.setGlobalVarTo_Global("TimerManager", TimerManager()); # 设置定时器管理器的全局变量
+		_G.setGlobalVarTo_Global("CacheManager", CacheManager()); # 设置缓存管理器的全局变量
 		pass;
 
 	# 加载全局配置变量
@@ -151,3 +153,6 @@ class Loader(object):
 		# 校验更新文件夹
 		if not os.path.exists(_GG("g_DataPath")+"update"):
 			os.mkdir(_GG("g_DataPath")+"update");
+		# 校验缓存文件夹
+		if not os.path.exists(_GG("g_DataPath")+"cache"):
+			os.mkdir(_GG("g_DataPath")+"cache");
