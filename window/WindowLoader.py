@@ -94,22 +94,40 @@ class WindowLoader(object):
 		self._mainApp.ExitMainLoop(); # 退出App的主循环
 		self.__dest__(); # 销毁回调
 
+	def startApp(self, data):
+		if sys.platform == "win32":
+			# 运行执行程序
+			exeName = "pytoolsip.exe";
+			if os.path.exists(os.path.join(_GG("g_ProjectPath"), exeName)):
+				os.system(" ".join(["start", "/d ", _GG("g_ProjectPath"), exeName]); # 启动app
+				return;
+			# 直接运行脚本
+			runPath = os.path.join(_GG("g_ProjectPath"), "run");
+			if ProjectConfig["isOpenLogWin"] :
+				os.system(f"start /d {runPath} run.bat"); # 启动app【有日志窗口】
+			else :
+				os.system(f"start /d {runPath} run.vbs"); # 启动app【无日志窗口】
+
 	def restartApp(self, data):
 		self.stopApp(data); # 停止App
-		if sys.platform == "win32":
-			if ProjectConfig["isOpenLogWin"] :
-				os.system("start ../run/run.bat"); # 启动app【有日志窗口】
-			else :
-				os.system("cd ../run/&&run.vbs"); # 启动app【无日志窗口】
+		self.startApp(data); # 开始App
 
 	def updateApp(self, data):
-		if not os.path.exists(data.get("updateFile", "")) or not os.path.exists(data.get("updatePath", "")) or sys.platform != "win32":
+		if sys.platform != "win32":
 			self.createMessageDialog("更新平台失败！", "更新平台", style = wx.OK|wx.ICON_ERROR);
-			return;
+		pathKeyList = ["tempPath", "targetPath", "targetMd5Path", "updateFile"];
+		for pathKey in pathKeyList:
+			if not os.path.exists(data.get(pathKey, "")):
+				self.createMessageDialog("更新平台失败！", "更新平台", style = wx.OK|wx.ICON_ERROR);
+				return;
 		# 停止App
 		self.stopApp(data);
 		# 调用更新脚本
-		os.system(" ".join([_GG("g_PythonPath"), data["updateFile"], data["updatePath"]]));
+		if os.system(" ".join([_GG("g_PythonPath"), data["updateFile"], data["tempPath"], data["targetPath"], data["targetMd5Path"]])) == 0:
+			def callbackFunc(status):
+				if status == wx.ID_OK:
+					self.startApp(data); # 开始App
+			self.createMessageDialog("平台更新成功！\n是否立即重启？", "更新平台", style = wx.OK|wx.ICON_QUESTION, callback = callbackFunc);
 
 	def runWindows(self):
 		self._parentWindowUI.Tile();

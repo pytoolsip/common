@@ -43,7 +43,7 @@ class ServiceBehavior(_GG("BaseBehavior")):
 		resp = _GG("CommonClient").callService("UpdateIP", "UpdateIPReq", {"version" : _GG("AppConfig")["version"]});
 		if resp and resp.code == 0:
 			# 重置文件夹【会移除原有文件夹】
-			dirPath = _GG("g_DataPath")+"update/pytoolsip/";
+			dirPath, targetPath = _GG("g_DataPath")+"update/pytoolsip_temp", _GG("g_DataPath")+"update/pytoolsip";
 			if os.path.exists(dirPath):
 				shutil.rmtree(dirPath);
 			os.mkdir(dirPath);
@@ -59,8 +59,10 @@ class ServiceBehavior(_GG("BaseBehavior")):
 					# 更新程序
 					if isLast:
 						_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_APP_EVENT, {
-							"updatePath" : dirPath,
-							"updateFile" : self.checkAndUpdateFolder(dirPath),
+							"tempPath" : dirPath,
+							"targetPath" : targetPath,
+							"targetMd5Path" self.getTargetMd5Path(targetPath),
+							"updateFile" : self.getUpdateFile(dirPath),
 						});
 				obj.unzipFile(filePath, os.path.dirname(filePath), finishCallback = afterUnzip);
 				pass;
@@ -101,19 +103,22 @@ class ServiceBehavior(_GG("BaseBehavior")):
 			}, asynCallback = onLogin);
 
 	# 更新update文件夹
-	def checkAndUpdateFolder(self, dirPath):
+	def getUpdateFile(self, dirPath):
 		updatePath = os.path.join(dirPath, "update");
 		if not os.path.exists(updatePath):
 			return "";
-		# 替换更新文件
-		targetPath = os.path.join(_GG("g_AssetsPath"), "update");
-		if os.path.exists(targetPath):
-			os.rmtree(targetPath);
-		shutil.copytree(updatePath, targetPath);
 		# 获取更新脚本文件
-		for fileName in os.listdir(targetPath):
-			filePath = os.path.join(targetPath, fileName);
+		for fileName in os.listdir(updatePath):
+			filePath = os.path.join(updatePath, fileName);
 			if os.path.isfile(filePath) and re.search(r"^update\.py.*$", fileName):
 				return filePath;
+		return "";
+
+	# 更新update文件夹
+	def getTargetMd5Path(self, dirPath):
+		fileName = "_file_md5_map_.json";
+		for path in [dirPath, _GG("g_AssetsPath")]:
+			if os.path.exists(os.path.join(path, fileName)):
+				return path;
 		return "";
 
