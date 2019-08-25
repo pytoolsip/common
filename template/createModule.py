@@ -19,12 +19,12 @@ if __name__ == "__main__":
 	commonPath = "../";
 
 
-	# # 创建组件的参数配置 behavior
-	# theModule = {
-	# 	"modName" : "behavior",
-	# 	"targetModName" : "VerifyEnvBehavior",
-	# 	"targetModPath" : assetsPath + "../../installer/behavior/",
-	# };
+	# 创建组件的参数配置 behavior
+	theModule = {
+		"modName" : "behavior",
+		"targetModName" : "VerifyDependsBehavior",
+		"targetModPath" : commonPath + "/behavior/verifyBehavior/",
+	};
 
 	# # 创建视图的参数配置 view
 	# theModule = {
@@ -40,12 +40,12 @@ if __name__ == "__main__":
 	# 	"targetModPath" : assetsPath + "../../installer/window/",
 	# };
 
-	# 创建弹窗的参数配置 dialog
-	theModule = {
-		"modName" : "dialog",
-		"targetModName" : "PackDialog",
-		"targetModPath" : commonPath + "dialog/",
-	};
+	# # 创建弹窗的参数配置 dialog
+	# theModule = {
+	# 	"modName" : "dialog",
+	# 	"targetModName" : "PackDialog",
+	# 	"targetModPath" : commonPath + "dialog/",
+	# };
 
 
 	# # 创建module的对象

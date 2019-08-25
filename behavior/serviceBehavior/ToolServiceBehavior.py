@@ -19,12 +19,17 @@ def __getExposeMethod__(DoType):
 	return {
 		"_showToolInfo_" : DoType.AddToRear,
 		"_downloadTool_" : DoType.AddToRear,
+		"_dealDepends_" : DoType.AddToRear,
 	};
 
 def __getDepends__():
 	return [
 		{
 			"path" : "serviceBehavior/UpDownloadBehavior", 
+			"basePath" : _GG("g_CommonPath") + "behavior/",
+		},
+		{
+			"path" : "verifyBehavior/VerifyDependsBehavior",
 			"basePath" : _GG("g_CommonPath") + "behavior/",
 		},
 	];
@@ -55,7 +60,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 					fileName = os.path.basename(respData.url);
 					def onComplete(filePath):
 						# 重置文件夹【会移除原有文件夹】
-						dirpath = toolsPath + tkey;
+						dirpath = toolsPath + tkey + "_temp";
 						if os.path.exists(dirpath):
 							shutil.rmtree(dirpath);
 						os.mkdir(dirpath);
@@ -63,19 +68,26 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 						def afterUnzip():
 							# 删除压缩文件
 							os.remove(filePath);
-							# 更新左侧工具树
-							_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_LEFT_VIEW, {
-								"action" : "add",
-								"key" : tkey,
-								"trunk" : "data/tools",
-								"branch" : tkey,
-								"path" : "MainView",
-								"name" : respData.toolInfo.name,
-								"category" : respData.toolInfo.category,
-								"description" : respData.toolInfo.description,
-								"version" : respData.toolInfo.version,
-								"author" : respData.toolInfo.author,
-							});
+							# 处理依赖模块
+							tgtDirPath = toolsPath + tkey;
+							def afterDealDepends():
+								if os.path.exists(tgtDirPath):
+									shutil.rmtree(tgtDirPath);
+								shutil.move(dirpath, tgtDirPath);
+								# 更新左侧工具树
+								_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_LEFT_VIEW, {
+									"action" : "add",
+									"key" : tkey,
+									"trunk" : "data/tools",
+									"branch" : tkey,
+									"path" : "MainView",
+									"name" : respData.toolInfo.name,
+									"category" : respData.toolInfo.category,
+									"description" : respData.toolInfo.description,
+									"version" : respData.toolInfo.version,
+									"author" : respData.toolInfo.author,
+								});
+							obj._dealDepends_(tgtDirPath, dirpath, finishCallback = afterDealDepends);
 						obj.unzipFile(filePath, dirpath, finishCallback = afterUnzip);
 						# 记录下载数据
 						_GG("CommonClient").callService("DownloadRecord", "DownloadRecordReq", {
@@ -146,3 +158,29 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 				"key" : tkey,
 				"IPBaseVer" : GetBaseVersion(_GG("AppConfig")["version"]),
 			}, asynCallback = onRequestToolInfo);
+
+	# 处理依赖模块
+	def _dealDepends_(self, obj, srcPath, targetPath, finishCallback = None, _retTuple = None):
+		dependMapFile = _GG("g_DataPath") + "depend_map.json";
+		proDialog = wx.ProgressDialog("处理依赖模块", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME);
+		def onInstall(modvalue, value, isEnd = False):
+			if not isEnd:
+				wx.CallAfter(proDialog.Update, value, f"正在安装模块【{mode}】...");
+			else:
+				wx.CallAfter(proDialog.Update, value, f"成功安装模块【{mode}】。");
+			pass;
+		def onUninstall(modvalue, value, isEnd = False):
+			if not isEnd:
+				wx.CallAfter(proDialog.Update, value, f"正在卸载模块【{mode}】...");
+			else:
+				wx.CallAfter(proDialog.Update, value, f"成功卸载模块【{mode}】。");
+			pass;
+		def onFinish(isChange, dependMap):
+			wx.CallAfter(proDialog.Update, value, f"完成依赖模块的处理。");
+			if isChange:
+				wx.CallAfter(obj._updateDependMap_, dependMap, dependMapFile);
+			if callable(finishCallback):
+				wx.CallAfter(finishCallback);
+		threading.Thread(target = obj._checkDependMap_, args = (srcPath, targetPath, dependMapFile, _GG("g_PythonPath"), onInstall, onUninstall, onFinish)).start();
+		proDialog.Update(0, "开始处理依赖模块...");
+		proDialog.ShowModal();
