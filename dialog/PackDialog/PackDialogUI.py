@@ -83,8 +83,8 @@ class PackDialogUI(wx.Dialog):
 	def createZipButton(self):
 		self.__zipButton = wx.Button(self, label = "点击打包(zip)", size = (-1, 30));
 		def onOkButton(event):
-			if self.getCtr().onPackPath(self.__dirInput.getInputValue()):
-				self.EndModal(wx.ID_OK);
+			self.getCtr().onPackPath(self.__dirInput.getInputValue());
+			self.EndModal(wx.ID_OK);
 		self.__zipButton.Bind(wx.EVT_BUTTON, onOkButton);
 
 	def createTipsText(self):

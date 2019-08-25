@@ -113,6 +113,7 @@ class PackDialogCtr(object):
 		zipFilePath = _GG("g_DataPath") + "temp/zip/" + "%s_%d.zip"%(fileName, int(time.time()));
 		def finishCallback():
 			os.remove(md5MapPath); # 移除原有文件夹的MD5文件表路径
+			os.system("explorer " + os.path.abspath(_GG("g_DataPath") + "temp/zip"));
 		self.zipFile(dirPath, zipFilePath, finishCallback = finishCallback); # 压缩dirPath为zip包
 
 	def showTips(self, tips):
@@ -122,11 +123,11 @@ class PackDialogCtr(object):
 	def generateMd5FileMap(self, dirPath):
 		md5Map, md5MapPath = {}, os.path.join(dirPath, "_file_md5_map_.json");
 		if os.path.exists(dirPath) and os.path.isdir(dirPath):
-			for root, _, files in os.walk(dirpath):
+			for root, _, files in os.walk(dirPath):
 				for fp in files:
 					filePath = os.path.join(root, fp);
-					with open(filePath, "r") as f:
-						md5Map[filePath.replace(dirpath, "")] = hashlib.md5(f.read().encode("utf-8")).hexdigest();
+					with open(filePath, "rb") as f:
+						md5Map[filePath.replace(dirPath, "")] = hashlib.md5(f.read()).hexdigest();
 		with open(md5MapPath, "w") as f:
 			f.write(json.dumps(md5Map));
 		return md5MapPath;
