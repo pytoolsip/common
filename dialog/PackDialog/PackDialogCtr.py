@@ -5,6 +5,7 @@
 # @Last Modified time: 2019-08-18 22:21:46
 import os;
 import wx;
+import hashlib, json;
 
 from _Global import _GG;
 
@@ -103,6 +104,8 @@ class PackDialogCtr(object):
 		if not os.path.isdir(dirPath):
 			self.showTips("所选择的目录必须是文件夹！");
 			return;
+		# 生成MD5文件列表
+		self.generateMd5FileMap(dirPath);
 		# 开始打包文件夹
 		fileName = os.path.basename(dirPath);
 		if not os.path.exists(_GG("g_DataPath")+"temp/zip"):
@@ -114,3 +117,17 @@ class PackDialogCtr(object):
 
 	def showTips(self, tips):
 		self.__ui.showTips(tips);
+
+	# 生成md5文件
+	def generateMd5FileMap(self, dirPath):
+		md5Map, md5MapPath = {}, os.path.join(dirPath, "_file_md5_map_.json");
+		if os.path.exists(dirPath) and os.path.isdir(dirPath):
+			for root, _, files in os.walk(dirpath):
+				for fp in files:
+					filePath = os.path.join(root, fp);
+					with open(filePath, "r") as f:
+						md5Map[filePath.replace(dirpath, "")] = hashlib.md5(f.read().encode("utf-8")).hexdigest();
+		with open(md5MapPath, "w") as f:
+			f.write(json.dumps(md5Map));
+
+
