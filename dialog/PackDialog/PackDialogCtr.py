@@ -105,14 +105,14 @@ class PackDialogCtr(object):
 			self.showTips("所选择的目录必须是文件夹！");
 			return;
 		# 生成MD5文件列表
-		self.generateMd5FileMap(dirPath);
+		md5MapPath = self.generateMd5FileMap(dirPath);
 		# 开始打包文件夹
 		fileName = os.path.basename(dirPath);
 		if not os.path.exists(_GG("g_DataPath")+"temp/zip"):
 			os.mkdir(_GG("g_DataPath")+"temp/zip");
 		zipFilePath = _GG("g_DataPath") + "temp/zip/" + "%s_%d.zip"%(fileName, int(time.time()));
 		def finishCallback():
-			callback(zipFilePath);
+			os.remove(md5MapPath); # 移除原有文件夹的MD5文件表路径
 		self.zipFile(dirPath, zipFilePath, finishCallback = finishCallback); # 压缩dirPath为zip包
 
 	def showTips(self, tips):
@@ -129,5 +129,6 @@ class PackDialogCtr(object):
 						md5Map[filePath.replace(dirpath, "")] = hashlib.md5(f.read().encode("utf-8")).hexdigest();
 		with open(md5MapPath, "w") as f:
 			f.write(json.dumps(md5Map));
+		return md5MapPath;
 
 
