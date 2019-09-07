@@ -5,7 +5,7 @@
 # @Last Modified time: 2019-08-18 22:21:46
 import os;
 import wx;
-import hashlib, json;
+import hashlib, json, shutil;
 
 from _Global import _GG;
 
@@ -85,10 +85,12 @@ class PackDialogCtr(object):
 
 	def bindBehaviors(self):
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/UpDownloadBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "compileBehavior/CompilePyBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 		
 	def unbindBehaviors(self):
 		_GG("BehaviorManager").unbindBehavior(self, {"path" : "serviceBehavior/UpDownloadBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
+		_GG("BehaviorManager").unbindBehavior(self, {"path" : "compileBehavior/CompilePyBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 			
 	def updateDialog(self, data):
@@ -104,17 +106,22 @@ class PackDialogCtr(object):
 		if not os.path.isdir(dirPath):
 			self.showTips("所选择的目录必须是文件夹！");
 			return;
-		# 生成MD5文件列表
-		md5MapPath = self.generateMd5FileMap(dirPath);
 		# 开始打包文件夹
 		fileName = os.path.basename(dirPath);
 		if not os.path.exists(_GG("g_DataPath")+"temp/zip"):
 			os.mkdir(_GG("g_DataPath")+"temp/zip");
-		zipFilePath = _GG("g_DataPath") + "temp/zip/" + "%s_%d.zip"%(fileName, int(time.time()));
-		def finishCallback():
-			os.remove(md5MapPath); # 移除原有文件夹的MD5文件表路径
-			os.system("explorer " + os.path.abspath(_GG("g_DataPath") + "temp/zip"));
-		self.zipFile(dirPath, zipFilePath, finishCallback = finishCallback); # 压缩dirPath为zip包
+		filePath = _GG("g_DataPath") + "temp/zip/" + "%s_%d"%(fileName, int(time.time()));
+		# 压缩文件夹
+		def zipFile(tgtPath):
+			# 生成MD5文件列表
+			self.generateMd5FileMap(tgtPath);
+			# 压缩后的回调
+			def finishCallback():
+				shutil.rmtree(tgtPath); # 移除临时文件夹
+				os.system("explorer " + os.path.abspath(_GG("g_DataPath") + "temp/zip"));
+			self.zipFile(tgtPath, filePath+".zip", finishCallback = finishCallback, excludeFileType = []); # 压缩tgtPath为zip包
+		# 编码文件夹
+		self._compileProject_(dirPath, filePath, finishCallback = zipFile);
 
 	def showTips(self, tips):
 		self.__ui.showTips(tips);

@@ -77,7 +77,7 @@ class UpDownloadBehavior(_GG("BaseBehavior")):
 		threading.Thread(target = uploadFile, args = (filePath, data, callback)).start();
 
 	# 压缩文件
-	def zipFile(self, obj, dirpath, filePath, finishCallback = None, _retTuple = None):
+	def zipFile(self, obj, dirpath, filePath, finishCallback = None, excludeFileType = [".pyc"], _retTuple = None):
 		totalSize = self.getDirPathSize(dirpath);
 		def zipMethod(dirpath, filePath, totalSize, callback, lastCallback):
 			zf = zipfile.ZipFile(filePath,'w', zipfile.ZIP_DEFLATED);
@@ -86,7 +86,7 @@ class UpDownloadBehavior(_GG("BaseBehavior")):
 				callback(completeSize/totalSize, root); # 回调函数
 				# 去掉目标根路径，只对目标文件夹下边的文件进行压缩
 				for file in files:
-					if os.path.splitext(file)[-1] not in [".pyc"]: # 过滤文件
+					if os.path.splitext(file)[-1] not in excludeFileType: # 过滤文件
 						zf.write(os.path.join(root, file), os.path.join(root.replace(dirpath, ''), file));
 						completeSize += os.path.getsize(os.path.join(root, file));
 			zf.close();

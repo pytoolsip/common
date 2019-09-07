@@ -144,9 +144,8 @@ class Loader(object):
 		if not os.path.exists(_GG("g_DataPath")+"config/tools_tree.json"):
 			shutil.copyfile(_GG("g_CommonPath") + "config/json/toolsTree.json", _GG("g_DataPath")+"config/tools_tree.json");
 		# 校验临时文件夹
-		if os.path.exists(_GG("g_DataPath")+"temp"):
-			shutil.rmtree(_GG("g_DataPath")+"temp");
-		os.mkdir(_GG("g_DataPath")+"temp");
+		if not os.path.exists(_GG("g_DataPath")+"temp"):
+			os.mkdir(_GG("g_DataPath")+"temp");
 		# 校验工具文件夹
 		if not os.path.exists(_GG("g_DataPath")+"tools"):
 			os.mkdir(_GG("g_DataPath")+"tools");

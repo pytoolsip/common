@@ -22,8 +22,8 @@ if __name__ == "__main__":
 	# 创建组件的参数配置 behavior
 	theModule = {
 		"modName" : "behavior",
-		"targetModName" : "VerifyDependsBehavior",
-		"targetModPath" : commonPath + "/behavior/verifyBehavior/",
+		"targetModName" : "CompilePyBehavior",
+		"targetModPath" : commonPath + "/behavior/compileBehavior/",
 	};
 
 	# # 创建视图的参数配置 view
