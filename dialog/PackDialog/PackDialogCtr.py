@@ -117,11 +117,11 @@ class PackDialogCtr(object):
 			self.generateMd5FileMap(tgtPath);
 			# 压缩后的回调
 			def finishCallback():
-				shutil.rmtree(tgtPath); # 移除临时文件夹
+				shutil.rmtree(filePath); # 移除临时文件夹
 				os.system("explorer " + os.path.abspath(_GG("g_DataPath") + "temp/zip"));
-			self.zipFile(tgtPath, filePath+".zip", finishCallback = finishCallback, excludeFileType = []); # 压缩tgtPath为zip包
+			self.zipFile(filePath, filePath+".zip", finishCallback = finishCallback, excludeFileType = []); # 压缩tgtPath为zip包
 		# 编码文件夹
-		self._compileProject_(dirPath, filePath, finishCallback = zipFile);
+		self._compileProject_(dirPath, "/".join([filePath, fileName]), finishCallback = zipFile);
 
 	def showTips(self, tips):
 		self.__ui.showTips(tips);

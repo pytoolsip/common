@@ -79,7 +79,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 									"action" : "add",
 									"key" : tkey,
 									"trunk" : "data/tools",
-									"branch" : tkey,
+									"branch" : "/".join([tkey, "tool"]),
 									"path" : "MainView",
 									"name" : respData.toolInfo.name,
 									"category" : respData.toolInfo.category,
