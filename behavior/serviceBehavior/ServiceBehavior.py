@@ -46,7 +46,7 @@ class ServiceBehavior(_GG("BaseBehavior")):
 			dirPath, targetPath = _GG("g_DataPath")+"update/pytoolsip_temp", _GG("g_DataPath")+"update/pytoolsip";
 			if os.path.exists(dirPath):
 				shutil.rmtree(dirPath);
-			os.mkdir(dirPath);
+			os.makedirs(dirPath);
 			# 下载解压文件
 			isLast = False;
 			def onComplete(filePath):

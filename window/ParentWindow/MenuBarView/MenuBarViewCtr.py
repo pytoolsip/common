@@ -104,7 +104,7 @@ class MenuBarViewCtr(object):
 	def linkToolCommon(self, toolPath = ""):
 		toolAssetsPath = VerifyPath(toolPath + "/assets");
 		if not os.path.exists(toolAssetsPath):
-			os.mkdir(toolAssetsPath);
+			os.makedirs(toolAssetsPath);
 		toolCommonPath, commonPath = VerifyPath(toolAssetsPath + "/common"), VerifyPath(_GG("g_CommonPath"));
 		if sys.platform == "win32":
 			if os.system(" ".join(["mklink /J", toolCommonPath, commonPath])) != 0:
@@ -115,7 +115,7 @@ class MenuBarViewCtr(object):
 	def linkToolPython(self, toolPath = ""):
 		toolIncludePath = VerifyPath(toolPath + "/include");
 		if not os.path.exists(toolIncludePath):
-			os.mkdir(toolIncludePath);
+			os.makedirs(toolIncludePath);
 		toolPyPath, pyPath = VerifyPath(toolIncludePath + "/python"), VerifyPath(_GG("g_PythonPath"));
 		if sys.platform == "win32":
 			if os.system(" ".join(["mklink /J", toolPyPath, pyPath])) != 0:

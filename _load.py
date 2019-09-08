@@ -79,7 +79,7 @@ class Loader(object):
 		_G.setGlobalVarTo_Global("g_ProjectPath", self.__projectPath + "/");
 		_G.setGlobalVarTo_Global("g_DataPath", self.__projectPath + "/data/");
 		if not os.path.exists(_G._GG("g_DataPath")):
-			os.mkdir(_G._GG("g_DataPath")); # 若工程数据文件不存在，则需创建该目录
+			os.makedirs(_G._GG("g_DataPath")); # 若工程数据文件不存在，则需创建该目录
 		_G.setGlobalVarTo_Global("g_AssetsPath", self.__mainPath + "/");
 		_G.setGlobalVarTo_Global("g_CommonPath", self.__mainPath + "/common/");
 		pass;
@@ -139,19 +139,19 @@ class Loader(object):
 		_GG = _G._GG;
 		# 校验配置文件夹
 		if not os.path.exists(_GG("g_DataPath")+"config"):
-			os.mkdir(_GG("g_DataPath")+"config");
+			os.makedirs(_GG("g_DataPath")+"config");
 		# 校验工具树配置
 		if not os.path.exists(_GG("g_DataPath")+"config/tools_tree.json"):
 			shutil.copyfile(_GG("g_CommonPath") + "config/json/toolsTree.json", _GG("g_DataPath")+"config/tools_tree.json");
 		# 校验临时文件夹
 		if not os.path.exists(_GG("g_DataPath")+"temp"):
-			os.mkdir(_GG("g_DataPath")+"temp");
+			os.makedirs(_GG("g_DataPath")+"temp");
 		# 校验工具文件夹
 		if not os.path.exists(_GG("g_DataPath")+"tools"):
-			os.mkdir(_GG("g_DataPath")+"tools");
+			os.makedirs(_GG("g_DataPath")+"tools");
 		# 校验更新文件夹
 		if not os.path.exists(_GG("g_DataPath")+"update"):
-			os.mkdir(_GG("g_DataPath")+"update");
+			os.makedirs(_GG("g_DataPath")+"update");
 		# 校验缓存文件夹
 		if not os.path.exists(_GG("g_DataPath")+"cache"):
-			os.mkdir(_GG("g_DataPath")+"cache");
+			os.makedirs(_GG("g_DataPath")+"cache");

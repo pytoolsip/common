@@ -109,7 +109,7 @@ class PackDialogCtr(object):
 		# 开始打包文件夹
 		fileName = os.path.basename(dirPath);
 		if not os.path.exists(_GG("g_DataPath")+"temp/zip"):
-			os.mkdir(_GG("g_DataPath")+"temp/zip");
+			os.makedirs(_GG("g_DataPath")+"temp/zip");
 		filePath = _GG("g_DataPath") + "temp/zip/" + "%s_%d"%(fileName, int(time.time()));
 		# 压缩文件夹
 		def zipFile(tgtPath):

@@ -84,7 +84,7 @@ class Logger(logging.Logger):
 		if not hasattr(self, "_fileHandler"):
 			dirName = os.path.abspath(os.path.dirname(fileName));
 			if not os.path.exists(dirName):
-				os.mkdir(dirName);
+				os.makedirs(dirName);
 			self._fileHandler = RotatingFileHandler(fileName, maxBytes = maxBytes, backupCount = backupCount, encoding = "utf-8");
 			self.__addHandler__(self._fileHandler, level = level);
 

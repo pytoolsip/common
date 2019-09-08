@@ -63,7 +63,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 						dirpath = toolsPath + tkey + "_temp";
 						if os.path.exists(dirpath):
 							shutil.rmtree(dirpath);
-						os.mkdir(dirpath);
+						os.makedirs(dirpath);
 						# 解压文件
 						def afterUnzip():
 							# 删除压缩文件

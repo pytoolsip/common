@@ -99,7 +99,7 @@ class CompilePyBehavior(_GG("BaseBehavior")):
 		if not os.path.exists(sPath):
 			return;
 		if not os.path.exists(tPath):
-			os.mkdir(tPath);
+			os.makedirs(tPath);
 		proDialog = wx.ProgressDialog("编码工程", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME|wx.PD_AUTO_HIDE);
 		def updateProDialog(value, info):
 			value = proDialog.GetRange() * value;
