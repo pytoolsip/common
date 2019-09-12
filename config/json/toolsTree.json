@@ -2,7 +2,8 @@
 	{
 		"name":"首页",
 		"key":"db1c89e0f6e62f9642018cbb531bbd4f",
-		"trunk":"assets/common",
+		"trunk":"g_AssetsPath",
+		"branch":"common",
 		"path":"view/HomePageView"
 	}
 ]

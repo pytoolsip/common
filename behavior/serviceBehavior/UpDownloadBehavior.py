@@ -5,7 +5,7 @@
 # @Last Modified time: 2019-04-20 00:54:08
 import wx;
 from urllib import request;
-import paramiko;
+# import paramiko;
 import zipfile;
 import threading;
 
@@ -20,7 +20,7 @@ def __getExposeData__():
 def __getExposeMethod__(DoType):
 	return {
 		"download" : DoType.AddToRear,
-		"upload" : DoType.AddToRear,
+		# "upload" : DoType.AddToRear,
 		"zipFile" : DoType.AddToRear,
 		"unzipFile" : DoType.AddToRear,
 	};
@@ -63,18 +63,18 @@ class UpDownloadBehavior(_GG("BaseBehavior")):
 		proDialog.Update(0, "开始下载\n" + str(url));
 		proDialog.ShowModal();
 
-	# 上传文件
-	def upload(self, obj, filePath, data, callback = None, _retTuple = None):
-		def uploadFile(filePath, data, callback = None):
-			transport = paramiko.Transport((data["host"], int(data["port"])));
-			transport.banner_timeout = 300
-			transport.connect(username = data["user"], password = data["password"]);
-			sftp = paramiko.SFTPClient.from_transport(transport);
-			sftp.put(filePath, data["url"]);
-			transport.close();
-			if callable(callback):
-				wx.CallAfter(callback);
-		threading.Thread(target = uploadFile, args = (filePath, data, callback)).start();
+	# # 上传文件
+	# def upload(self, obj, filePath, data, callback = None, _retTuple = None):
+	# 	def uploadFile(filePath, data, callback = None):
+	# 		transport = paramiko.Transport((data["host"], int(data["port"])));
+	# 		transport.banner_timeout = 300
+	# 		transport.connect(username = data["user"], password = data["password"]);
+	# 		sftp = paramiko.SFTPClient.from_transport(transport);
+	# 		sftp.put(filePath, data["url"]);
+	# 		transport.close();
+	# 		if callable(callback):
+	# 			wx.CallAfter(callback);
+	# 	threading.Thread(target = uploadFile, args = (filePath, data, callback)).start();
 
 	# 压缩文件
 	def zipFile(self, obj, dirpath, filePath, finishCallback = None, excludeFileType = [".pyc"], _retTuple = None):

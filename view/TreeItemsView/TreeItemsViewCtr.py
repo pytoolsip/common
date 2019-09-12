@@ -124,7 +124,7 @@ class TreeItemsViewCtr(object):
 
 	def bindEventToItem(self, item, itemInfo, pathList):
 		if "key" in itemInfo:
-			basePath = _GG("g_ProjectPath") + itemInfo["trunk"] + "/";
+			basePath = _GG(itemInfo["trunk"]);
 			if "branch" in itemInfo:
 				basePath += itemInfo["branch"] + "/";
 			self.__itemPageDataDict[item] = {

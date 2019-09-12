@@ -168,8 +168,8 @@ class MenuBarViewCtr(object):
 			_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_LEFT_VIEW, {
 				"action" : "add",
 				"key" : localToolInfo["tkey"],
-				"trunk" : "data/tools/local",
-				"branch" : localToolInfo["tkey"],
+				"trunk" : "g_DataPath",
+				"branch" : "/".join(["tools", "local", localToolInfo["tkey"], "tool"]),
 				"path" : "MainView",
 				"name" : localToolInfo["name"],
 				"category" : localToolInfo["category"],

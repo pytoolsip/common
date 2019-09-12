@@ -15,7 +15,7 @@ AppConfig = {
 	"AppBGColor" : wx.Colour(230,230,230),
 	"CopyrightInfo" : u"Copyright(C) 2018-2019 JimDreamHeart. All Rights Reserved",
 	"PyToolsIPUrl" : "http://jimdreamheart.club/pytoolsip",
-	"SearchToolUrl" : "http://jimdreamheart.club/pytoolsip/search",
+	"SearchToolUrl" : "http://jimdreamheart.club/pytoolsip/toollist",
 
 	"SearchPanelSize" : (380,320),
 	"SearchPanelBGColor" : wx.Colour(220,220,220),

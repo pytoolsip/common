@@ -4,7 +4,6 @@
 # @Last Modified by:   JinZhang
 # @Last Modified time: 2019-03-27 18:38:07
 import os,re;
-import shutil;
 
 from _Global import _GG;
 from function.base import *;
@@ -38,45 +37,24 @@ class ServiceBehavior(_GG("BaseBehavior")):
 		self._className_ = ServiceBehavior.__name__;
 		pass;
 
-	# 检测更新平台
-	def checkUpdateIP(self, obj, _retTuple = None):
+	# 请求更新平台信息
+	def reqUpdateIP(self, obj, _retTuple = None):
 		resp = _GG("CommonClient").callService("UpdateIP", "UpdateIPReq", {"version" : _GG("AppConfig")["version"]});
 		if resp and resp.code == 0:
-			# 重置文件夹【会移除原有文件夹】
-			dirPath, targetPath = _GG("g_DataPath")+"update/pytoolsip_temp", _GG("g_DataPath")+"update/pytoolsip";
-			if os.path.exists(dirPath):
-				shutil.rmtree(dirPath);
-			os.makedirs(dirPath);
-			# 下载解压文件
-			isLast = False;
-			def onComplete(filePath):
-				if os.path.splitext(filePath) != ".zip":
-					return;
-				# 解压文件
-				def afterUnzip():
-					# 删除压缩文件
-					os.remove(filePath);
-					# 更新程序
-					if isLast:
-						_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_APP_EVENT, {
-							"tempPath" : dirPath,
-							"targetPath" : targetPath,
-							"targetMd5Path" : self.getTargetMd5Path(targetPath),
-							"updateFile" : self.getUpdateFile(dirPath),
-							"dependMapFile" : _GG("g_DataPath")+"depend_map.json",
-						});
-				obj.unzipFile(filePath, os.path.dirname(filePath), finishCallback = afterUnzip);
-				pass;
-			def callbackFunc(status):
-				if status == wx.ID_OK:
-					for urlInfo in resp.urlList:
-						filePath = os.path.join(urlInfo.path, os.path.basename(urlInfo.url));
-						if not os.path.exists(filePath):
-							obj.download(urlInfo.url, os.path.join(dirPath, filePath), urlInfo.totalSize, onComplete = onComplete); # 下载平台包
-					isLast = True;
-				else:
-					_GG("EventDispatcher").dispatch(_GG("EVENT_ID").STOP_APP_EVENT, {}); # 停止App
-			_GG("WindowObject").CreateMessageDialog("检测有更新版本，是否确认更新？", "检测平台版本", style = wx.OK|wx.ICON_QUESTION, callback = callbackFunc);
+			return True, resp.reqUrl;
+		return False, "";
+
+	def checkUpdateIP(self, obj, _retTuple = None):
+		ret, reqUrl = self.reqUpdateIP(obj);
+		if ret:
+			if _GG("WindowObject").CreateMessageDialog("检测有更新版本，是否确认更新？", "检测平台版本", style = wx.OK|wx.ICON_QUESTION) == wx.ID_OK:
+				updateFile = self.getUpdateFile();
+				if not updateFile:
+					return False;
+				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_APP_EVENT, {"reqUrl" : reqUrl, "updateFile" : updateFile});
+			else:
+				return False;
+		return True;
 
 	# 自动登录平台
 	def autoLoginIP(self, obj, _retTuple = None):
@@ -103,9 +81,9 @@ class ServiceBehavior(_GG("BaseBehavior")):
 				"isAuto" : True,
 			}, asynCallback = onLogin);
 
-	# 更新update文件夹
-	def getUpdateFile(self, dirPath):
-		updatePath = os.path.join(dirPath, "update");
+	# 获取更新文件
+	def getUpdateFile(self):
+		updatePath = os.path.join(updateFile, "update");
 		if not os.path.exists(updatePath):
 			return "";
 		# 获取更新脚本文件
@@ -114,12 +92,3 @@ class ServiceBehavior(_GG("BaseBehavior")):
 			if os.path.isfile(filePath) and re.search(r"^update\.py.*$", fileName):
 				return filePath;
 		return "";
-
-	# 更新update文件夹
-	def getTargetMd5Path(self, dirPath):
-		fileName = "_file_md5_map_.json";
-		for path in [dirPath, _GG("g_AssetsPath")]:
-			if os.path.exists(os.path.join(path, fileName)):
-				return path;
-		return "";
-

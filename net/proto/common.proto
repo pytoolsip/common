@@ -87,13 +87,8 @@ message UpdateIPReq{
 
 // 更新平台应答
 message UpdateIPResp{
-	message urlInfo{
-		string url = 1; // 下载地址
-		int64 totalSize = 2; // 下载文件总大小
-		string path = 3; // 解压路径
-	}
 	int32 code = 1; // 应答码
-	repeated urlInfo urlList = 2; // 下载地址
+	string reqUrl = 2; // 请求链接
 }
 
 // 请求工具信息

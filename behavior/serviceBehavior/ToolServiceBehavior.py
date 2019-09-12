@@ -78,8 +78,8 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 								_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_LEFT_VIEW, {
 									"action" : "add",
 									"key" : tkey,
-									"trunk" : "data/tools",
-									"branch" : "/".join([tkey, "tool"]),
+									"trunk" : "g_DataPath",
+									"branch" : "/".join(["tools", tkey, "tool"]),
 									"path" : "MainView",
 									"name" : respData.toolInfo.name,
 									"category" : respData.toolInfo.category,

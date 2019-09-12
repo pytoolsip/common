@@ -113,21 +113,13 @@ class WindowLoader(object):
 		self.startApp(data); # 开始App
 
 	def updateApp(self, data):
-		if sys.platform != "win32":
+		if sys.platform != "win32" or "reqUrl" not in data or "updateFile" not in data:
 			self.createMessageDialog("更新平台失败！", "更新平台", style = wx.OK|wx.ICON_ERROR);
-		pathKeyList = ["tempPath", "targetPath", "targetMd5Path", "updateFile", "dependMapFile"];
-		for pathKey in pathKeyList:
-			if not os.path.exists(data.get(pathKey, "")):
-				self.createMessageDialog("更新平台失败！", "更新平台", style = wx.OK|wx.ICON_ERROR);
-				return;
 		# 停止App
 		self.stopApp(data);
 		# 调用更新脚本
-		if os.system(" ".join([_GG("g_PythonPath"), data["updateFile"], data["tempPath"], data["targetPath"], data["targetMd5Path"], data["dependMapFile"]])) == 0:
-			def callbackFunc(status):
-				if status == wx.ID_OK:
-					self.startApp(data); # 开始App
-			self.createMessageDialog("平台更新成功！\n是否立即重启？", "更新平台", style = wx.OK|wx.ICON_QUESTION, callback = callbackFunc);
+		projectPath, updatePath = _GG("g_ProjectPath"), _GG("g_DataPath")+"update";
+		os.system(" ".join([_GG("g_PythonPath"), data["updateFile"], projectPath, updatePath, data["reqUrl"]]));
 
 	def runWindows(self):
 		self._parentWindowUI.Tile();
