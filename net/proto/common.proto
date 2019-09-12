@@ -88,7 +88,7 @@ message UpdateIPReq{
 // 更新平台应答
 message UpdateIPResp{
 	int32 code = 1; // 应答码
-	string reqUrl = 2; // 请求链接
+	string version = 2; // 更新版本
 }
 
 // 请求工具信息

@@ -42,11 +42,11 @@ class ServiceBehavior(_GG("BaseBehavior")):
 	def reqUpdateIP(self, obj, _retTuple = None):
 		resp = _GG("CommonClient").callService("UpdateIP", "UpdateIPReq", {"version" : _GG("AppConfig")["version"]});
 		if resp and resp.code == 0:
-			return True, resp.reqUrl;
+			return True, resp.version;
 		return False, "";
 
 	def checkUpdateIP(self, obj, _retTuple = None):
-		ret, reqUrl = self.reqUpdateIP(obj);
+		ret, version = self.reqUpdateIP(obj);
 		if ret:
 			if _GG("WindowObject").CreateMessageDialog("检测有更新版本，是否确认更新？", "检测平台版本", style = wx.OK|wx.ICON_QUESTION) == wx.ID_OK:
 				# 获取更新文件
@@ -64,7 +64,7 @@ class ServiceBehavior(_GG("BaseBehavior")):
 					os.remove(filePath);
 				shutil.copyfile(updateFile, filePath);
 				# 分发更新平台事件
-				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_APP_EVENT, {"reqUrl" : reqUrl, "updateFile" : filePath});
+				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_APP_EVENT, {"version" : version, "updateFile" : filePath});
 			else:
 				return False;
 		return True;

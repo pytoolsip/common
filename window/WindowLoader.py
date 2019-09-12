@@ -113,13 +113,13 @@ class WindowLoader(object):
 		self.startApp(data); # 开始App
 
 	def updateApp(self, data):
-		if sys.platform != "win32" or "reqUrl" not in data or "updateFile" not in data:
+		if sys.platform != "win32" or "version" not in data or "updateFile" not in data:
 			self.createMessageDialog("更新平台失败！", "更新平台", style = wx.OK|wx.ICON_ERROR);
 		# 停止App
 		self.stopApp(data);
 		# 调用更新脚本
 		projectPath, updatePath = _GG("g_ProjectPath"), _GG("g_DataPath")+"update";
-		os.system(" ".join([_GG("g_PythonPath"), data["updateFile"], projectPath, updatePath, data["reqUrl"]]));
+		os.system(" ".join([_GG("g_PythonPath"), data["updateFile"], data["version"], projectPath, updatePath]));
 
 	def runWindows(self):
 		self._parentWindowUI.Tile();
