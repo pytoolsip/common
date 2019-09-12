@@ -4,6 +4,7 @@
 # @Last Modified by:   JinZhang
 # @Last Modified time: 2019-03-27 18:38:07
 import os,re;
+import shutil;
 
 from _Global import _GG;
 from function.base import *;
@@ -48,10 +49,22 @@ class ServiceBehavior(_GG("BaseBehavior")):
 		ret, reqUrl = self.reqUpdateIP(obj);
 		if ret:
 			if _GG("WindowObject").CreateMessageDialog("检测有更新版本，是否确认更新？", "检测平台版本", style = wx.OK|wx.ICON_QUESTION) == wx.ID_OK:
+				# 获取更新文件
 				updateFile = self.getUpdateFile();
-				if not updateFile:
+				if not os.path.exists(updateFile):
 					return False;
-				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_APP_EVENT, {"reqUrl" : reqUrl, "updateFile" : updateFile});
+				_, ext = os.path.splitext(updateFile);
+				# 创建更新文件夹
+				updateDir = _GG("g_DataPath")+"update";
+				if not os.path.exists(updateDir):
+					os.makedirs(updateDir);
+				# 拷贝更新文件
+				filePath = os.path.join(updateDir, "update_pytoolsip"+ext);
+				if os.path.exists(filePath):
+					os.remove(filePath);
+				shutil.copyfile(updateFile, filePath);
+				# 分发更新平台事件
+				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_APP_EVENT, {"reqUrl" : reqUrl, "updateFile" : filePath});
 			else:
 				return False;
 		return True;
@@ -83,7 +96,7 @@ class ServiceBehavior(_GG("BaseBehavior")):
 
 	# 获取更新文件
 	def getUpdateFile(self):
-		updatePath = os.path.join(updateFile, "update");
+		updatePath = os.path.join(_GG("g_AssetsPath"), "update");
 		if not os.path.exists(updatePath):
 			return "";
 		# 获取更新脚本文件
