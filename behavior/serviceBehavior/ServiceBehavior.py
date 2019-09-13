@@ -16,7 +16,8 @@ def __getExposeData__():
 
 def __getExposeMethod__(DoType):
 	return {
-		"checkUpdateIP" : DoType.AddToRear,
+		"requestUpdateIP" : DoType.AddToRear,
+		"updateIP" : DoType.AddToRear,
 		"autoLoginIP" : DoType.AddToRear,
 	};
 
@@ -39,35 +40,29 @@ class ServiceBehavior(_GG("BaseBehavior")):
 		pass;
 
 	# 请求更新平台信息
-	def reqUpdateIP(self, obj, _retTuple = None):
+	def requestUpdateIP(self, obj, _retTuple = None):
 		resp = _GG("CommonClient").callService("UpdateIP", "UpdateIPReq", {"version" : _GG("ClientConfig").UrlConfig().GetIPVersion()});
 		if resp and resp.code == 0:
 			return True, resp.version;
 		return False, "";
 
-	def checkUpdateIP(self, obj, _retTuple = None):
-		ret, version = self.reqUpdateIP(obj);
-		if ret:
-			if _GG("WindowObject").CreateMessageDialog("检测有更新版本，是否确认更新？", "检测平台版本", style = wx.OK|wx.ICON_QUESTION) == wx.ID_OK:
-				# 获取更新文件
-				updateFile = self.getUpdateFile();
-				if not os.path.exists(updateFile):
-					return False;
-				_, ext = os.path.splitext(updateFile);
-				# 创建更新文件夹
-				updateDir = _GG("g_DataPath")+"update";
-				if not os.path.exists(updateDir):
-					os.makedirs(updateDir);
-				# 拷贝更新文件
-				filePath = os.path.join(updateDir, "update_pytoolsip"+ext);
-				if os.path.exists(filePath):
-					os.remove(filePath);
-				shutil.copyfile(updateFile, filePath);
-				# 分发更新平台事件
-				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_APP_EVENT, {"version" : version, "updateFile" : filePath});
-			else:
-				return False;
-		return True;
+	def updateIP(self, obj, version, _retTuple = None):
+		# 获取更新文件
+		updateFile = self.getUpdateFile();
+		if not os.path.exists(updateFile):
+			return False;
+		_, ext = os.path.splitext(updateFile);
+		# 创建更新文件夹
+		updateDir = _GG("g_DataPath")+"update";
+		if not os.path.exists(updateDir):
+			os.makedirs(updateDir);
+		# 拷贝更新文件
+		filePath = os.path.join(updateDir, "update_pytoolsip"+ext);
+		if os.path.exists(filePath):
+			os.remove(filePath);
+		shutil.copyfile(updateFile, filePath);
+		# 分发更新平台事件
+		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_APP_EVENT, {"version" : version, "updateFile" : filePath});
 
 	# 自动登录平台
 	def autoLoginIP(self, obj, _retTuple = None):

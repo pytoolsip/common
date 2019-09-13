@@ -119,7 +119,7 @@ class WindowLoader(object):
 		self.stopApp(data);
 		# 调用更新脚本
 		projectPath, updatePath = _GG("g_ProjectPath"), _GG("g_DataPath")+"update";
-		os.system(" ".join([_GG("g_PythonPath"), data["updateFile"], data["version"], projectPath, updatePath]));
+		os.system(" ".join([os.path.join(_GG("g_PythonPath"), "python.exe"), data["updateFile"], data["version"], projectPath, updatePath]));
 
 	def runWindows(self):
 		self._parentWindowUI.Tile();
