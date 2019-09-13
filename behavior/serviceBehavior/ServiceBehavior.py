@@ -40,7 +40,7 @@ class ServiceBehavior(_GG("BaseBehavior")):
 
 	# 请求更新平台信息
 	def reqUpdateIP(self, obj, _retTuple = None):
-		resp = _GG("CommonClient").callService("UpdateIP", "UpdateIPReq", {"version" : _GG("AppConfig")["version"]});
+		resp = _GG("CommonClient").callService("UpdateIP", "UpdateIPReq", {"version" : _GG("ClientConfig").UrlConfig().GetIPVersion()});
 		if resp and resp.code == 0:
 			return True, resp.version;
 		return False, "";

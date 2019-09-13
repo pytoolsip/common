@@ -8,8 +8,6 @@ import wx;
 from ProjectConfig import ProjectConfig;
 
 AppConfig = {
-	"key" : "9efab2399c7c560b34de477b9aa0a465",
-	"version" : "1.0.0",
 	"AppTitle" : u"PyToolsIP【python工具集成环境】",
 	"AppSize" : (960,640),
 	"AppBGColor" : wx.Colour(230,230,230),
@@ -23,7 +21,7 @@ AppConfig = {
 	"searchItemBlurColor" : wx.Colour(210,210,210),
 };
 
-_ExcludeKey = ["key", "version", "AppTitle", "CopyrightInfo"];
+_ExcludeKey = ["AppTitle", "CopyrightInfo"];
 
 # 合并配置
 for k,v in ProjectConfig.items():

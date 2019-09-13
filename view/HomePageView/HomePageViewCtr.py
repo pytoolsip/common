@@ -176,5 +176,5 @@ class HomePageViewCtr(object):
 	def callService(self):
 		# 请求工具信息列表
 		_GG("CommonClient").callService("ReqToolInfo", "ToolReq", {
-			"IPBaseVer" : GetBaseVersion(_GG("AppConfig")["version"]),
+			"IPBaseVer" : GetBaseVersion(_GG("ClientConfig").UrlConfig().GetIPVersion()),
 		}, asynCallback = self.onRequestToolInfos);

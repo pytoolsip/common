@@ -107,4 +107,6 @@ def CheckVersion(v1, v2, isCheckFirst = True, isIncludeEqu = False):
 
 def GetBaseVersion(version):
 	vList = version.replace(" ", "").split(".");
-	return ".".join(vList[:1]);
+	if len(vList) >= 2:
+		return ".".join(vList[:2]);
+	return version;

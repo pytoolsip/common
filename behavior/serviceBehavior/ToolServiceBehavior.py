@@ -100,7 +100,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 				pass;
 			_GG("CommonClient").callService("Download", "DownloadReq", {
 				"key" : tkey,
-				"IPBaseVer" : GetBaseVersion(_GG("AppConfig")["version"]),
+				"IPBaseVer" : GetBaseVersion(_GG("ClientConfig").UrlConfig().GetIPVersion()),
 			}, asynCallback = onResp);
 			pass;
 		def checkDownload(callback = None):
@@ -116,7 +116,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 				pass;
 			_GG("CommonClient").callService("ReqToolInfo", "ToolReq", {
 				"key" : tkey,
-				"IPBaseVer" : GetBaseVersion(_GG("AppConfig")["version"]),
+				"IPBaseVer" : GetBaseVersion(_GG("ClientConfig").UrlConfig().GetIPVersion()),
 			}, asynCallback = onRequestToolInfo);
 			pass;
 		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/ToolInfoDialog", params = {
@@ -156,7 +156,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 			# 请求服务
 			_GG("CommonClient").callService("ReqToolInfo", "ToolReq", {
 				"key" : tkey,
-				"IPBaseVer" : GetBaseVersion(_GG("AppConfig")["version"]),
+				"IPBaseVer" : GetBaseVersion(_GG("ClientConfig").UrlConfig().GetIPVersion()),
 			}, asynCallback = onRequestToolInfo);
 
 	# 处理依赖模块

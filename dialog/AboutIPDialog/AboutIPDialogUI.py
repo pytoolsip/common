@@ -74,7 +74,7 @@ class AboutIPDialogUI(wx.Dialog):
 		self.versionTitle.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL));
 
 	def createVersionValue(self):
-		self.versionValue = wx.StaticText(self, label = _GG("AppConfig")["version"]);
+		self.versionValue = wx.StaticText(self, label = _GG("ClientConfig").UrlConfig().GetIPVersion());
 		self.versionValue.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD));
 		self.versionValue.SetForegroundColour(wx.Colour(0,100,0));
 
