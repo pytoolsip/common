@@ -71,21 +71,14 @@ class UrlConfig(object):
 			with open(self.__path, "r") as f:
 				self.__config = json.loads(f.read());
 
-	def Get(self, key, val, target):
+	def Get(self, t, name, key):
 		for urlInfo in self.__config.get("urlList", []):
-			if urlInfo.get(key, "") == val:
-				return urlInfo.get(target, "");
-		return "";
-
-	def Find(self, key, val, target):
-		for urlInfo in self.__config.get("urlList", []):
-			if urlInfo.get(key, "").find(val) != -1:
-				return urlInfo.get(target, "");
+			if urlInfo.get("type", "") == t and urlInfo.get("name", "") == name:
+				return urlInfo.get(key, "");
 		return "";
 
 	def GetIPVersion(self):
-		key, val, target = "url", "release/ptip/script", "version";
-		return self.Find(key, val, target);
+		return self.Get("ptip", "assets", "version");
 
 
 class ClientConfig(object):
