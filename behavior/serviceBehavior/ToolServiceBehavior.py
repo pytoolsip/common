@@ -49,7 +49,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 		if "key" not in data:
 			return;
 		tkey = data.get("key", "");
-		def onDownload():
+		def onDownload(isUpdate = False):
 			def onResp(respData):
 				if not respData:
 					_GG("WindowObject").CreateMessageDialog("网络请求失败！", "下载工具", style = wx.OK|wx.ICON_ERROR);
