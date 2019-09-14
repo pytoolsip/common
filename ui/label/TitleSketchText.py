@@ -15,6 +15,7 @@ class TitleSketchText(wx.Panel):
 		self.bindEvents();
 		self.createTimers();
 		self.enterItem = None;
+		self.tipWindow = None;
 
 	def __del__(self):
 		self.__dest__();
@@ -109,7 +110,7 @@ class TitleSketchText(wx.Panel):
 	def showTips(self, tipsText, enterItem = None):
 		if isinstance(tipsText, str):
 			self.tips = tipsText;
-			if self.tips != "" and not hasattr(self, "tipWindow"):
+			if self.tips != "" and not self.tipWindow:
 				# 隐藏提示
 				self.hideTips();
 				# 设置单次定时
@@ -129,7 +130,7 @@ class TitleSketchText(wx.Panel):
 			self.timeToHideTips(); # 定时隐藏提示
 
 	def timeToHideTips(self):
-		if hasattr(self, "tipWindow"):
+		if self.tipWindow:
 			# 设置单次定时
 			self.hideTipsTimer.Start(100);
 
@@ -139,10 +140,12 @@ class TitleSketchText(wx.Panel):
 			self.enterItem = None;
 			if self.hideTipsTimer.IsRunning():
 				self.hideTipsTimer.Stop(); # 停止定时器
-			if hasattr(self, "tipWindow"):
-				if self.tipWindow:
+			if self.tipWindow:
+				try:
 					self.tipWindow.Destroy();
-				del self.tipWindow;
+				except Exception as e:
+					pass;
+				self.tipWindow = None;
 
 	# 更新背景颜色
 	def updateBackgroundColor(self, wxColor):

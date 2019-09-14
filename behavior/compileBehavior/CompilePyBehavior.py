@@ -52,7 +52,7 @@ class CompilePyBehavior(_GG("BaseBehavior")):
 			# 拼接地址
 			srcPath = os.path.join(sPath, name);
 			targetPath = os.path.join(tPath, name);
-			if os.path.basename(name) in ["assets", "common"]:
+			if os.path.basename(name) in ["assets", "common", "update"]:
 				self._copyProject_(obj, srcPath, targetPath, callback, callbackParams);
 				continue;
 			if callable(callback):

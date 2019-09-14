@@ -48,7 +48,7 @@ class VerifyDependsBehavior(_GG("BaseBehavior")):
 		return {};
 
 	# 获取依赖模块列表
-	def _getDependMods_(self, obj, assetsPath):
+	def _getDependMods_(self, obj, assetsPath, _retTuple = None):
 		modList, modFile = [], os.path.join(assetsPath, "depends.mod");
 		if not os.path.exists(modFile):
 			return modList;
@@ -60,9 +60,9 @@ class VerifyDependsBehavior(_GG("BaseBehavior")):
 		return modList;
 
 	# 获取不同的依赖模块列表
-	def _diffDependMods_(self, obj, srcPath, targetPath):
+	def _diffDependMods_(self, obj, srcPath, targetPath, _retTuple = None):
 		addModList, rmModList = [], [];
-		srcModList, tgtModList = self._getDependMods_(srcPath), self._getDependMods_(targetPath);
+		srcModList, tgtModList = self._getDependMods_(obj, srcPath), self._getDependMods_(obj, targetPath);
 		for mod in srcModList:
 			if mod not in tgtModList:
 				rmModList.append(mod);
@@ -72,9 +72,9 @@ class VerifyDependsBehavior(_GG("BaseBehavior")):
 		return addModList, rmModList;
 
 	# 检测依赖模块表
-	def _checkDependMap_(self, obj, srcPath, targetPath, dependMapFile, pythonPath, onInstall = None, onUninstall = None, onFinish = None):
+	def _checkDependMap_(self, obj, srcPath, targetPath, dependMapFile, pythonPath, onInstall = None, onUninstall = None, onFinish = None, _retTuple = None):
 		dependMap = self.__getJsonData__(dependMapFile);
-		addModList, rmModList = self._diffDependMods_(srcPath, targetPath);
+		addModList, rmModList = self._diffDependMods_(obj, srcPath, targetPath);
 		curIdx, totalCnt = 0, len(addModList) + len(rmModList);
 		for mod in addModList:
 			isInstallMod = False;
@@ -105,6 +105,6 @@ class VerifyDependsBehavior(_GG("BaseBehavior")):
 			onFinish(totalCnt > 0, dependMap);
 		return totalCnt > 0, dependMap;
 
-	def _updateDependMap_(self, obj, dependMap, dependMapFile):
+	def _updateDependMap_(self, obj, dependMap, dependMapFile, _retTuple = None):
 		with open(dependMapFile, "w") as f:
 			f.write(json.dumps(dependMap));

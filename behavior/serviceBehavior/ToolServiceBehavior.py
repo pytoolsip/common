@@ -6,6 +6,7 @@
 import wx;
 import hashlib;
 import os, shutil;
+import threading;
 
 from _Global import _GG;
 from function.base import *;
@@ -54,6 +55,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 				if not respData:
 					_GG("WindowObject").CreateMessageDialog("网络请求失败！", "下载工具", style = wx.OK|wx.ICON_ERROR);
 				elif respData.code != 0:
+					_GG("Log").d("Download resp ->", respData);
 					_GG("WindowObject").CreateMessageDialog("所要下载的工具不存在！", "下载工具", style = wx.OK|wx.ICON_ERROR);
 				else:
 					toolsPath = _GG("g_DataPath")+"tools/";
@@ -162,7 +164,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 	# 处理依赖模块
 	def _dealDepends_(self, obj, srcPath, targetPath, finishCallback = None, _retTuple = None):
 		dependMapFile = _GG("g_DataPath") + "depend_map.json";
-		proDialog = wx.ProgressDialog("处理依赖模块", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME);
+		proDialog = wx.ProgressDialog("处理依赖模块", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME|wx.PD_AUTO_HIDE);
 		def onInstall(modvalue, value, isEnd = False):
 			if not isEnd:
 				wx.CallAfter(proDialog.Update, value, f"正在安装模块【{mode}】...");
@@ -176,7 +178,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 				wx.CallAfter(proDialog.Update, value, f"成功卸载模块【{mode}】。");
 			pass;
 		def onFinish(isChange, dependMap):
-			wx.CallAfter(proDialog.Update, value, f"完成依赖模块的处理。");
+			wx.CallAfter(proDialog.Update, 1, f"完成依赖模块的处理。");
 			if isChange:
 				wx.CallAfter(obj._updateDependMap_, dependMap, dependMapFile);
 			if callable(finishCallback):

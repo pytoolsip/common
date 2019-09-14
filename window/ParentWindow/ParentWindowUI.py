@@ -37,4 +37,4 @@ class ParentWindowUI(wx.MDIParentFrame):
 		pass;
 
 	def initIcon(self):
-		self.SetIcon(wx.Icon(_GG("g_CommonPath")+"/res/img/dzjh.ico", wx.BITMAP_TYPE_ICO));
+		self.SetIcon(wx.Icon(_GG("g_CommonPath")+"res/img/dzjh.ico", wx.BITMAP_TYPE_ICO));

@@ -48,7 +48,7 @@ class UpDownloadBehavior(_GG("BaseBehavior")):
 		# 		wx.CallAfter(onComplete, filePath);
 		# request.urlretrieve(url, filePath, schedule);
 		# dialogCtr.getUI().start(totalSize = totalSize);
-		proDialog = wx.ProgressDialog("下载工具包", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME);
+		proDialog = wx.ProgressDialog("下载工具包", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME|wx.PD_AUTO_HIDE);
 		def schedule(block, size, totalSize):
 			rate = block*size / totalSize;
 			value = proDialog.GetRange() * rate;
@@ -93,7 +93,7 @@ class UpDownloadBehavior(_GG("BaseBehavior")):
 			if callable(lastCallback):
 				wx.CallAfter(lastCallback); # 完成后的回调
 			pass;
-		proDialog = wx.ProgressDialog("压缩工具包", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME);
+		proDialog = wx.ProgressDialog("压缩工具包", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME|wx.PD_AUTO_HIDE);
 		def updateProDialog(value, path):
 			value = proDialog.GetRange() * value;
 			if value >= proDialog.GetRange():
@@ -118,7 +118,7 @@ class UpDownloadBehavior(_GG("BaseBehavior")):
 			if callable(lastCallback):
 				wx.CallAfter(lastCallback); # 完成后的回调
 			pass;
-		proDialog = wx.ProgressDialog("解压工具包", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME);
+		proDialog = wx.ProgressDialog("解压工具包", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME|wx.PD_AUTO_HIDE);
 		def updateProDialog(value, path):
 			value = proDialog.GetRange() * value;
 			if value >= proDialog.GetRange():
