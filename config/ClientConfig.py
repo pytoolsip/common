@@ -17,7 +17,7 @@ from function.base import *;
 def GetConfigKeyMap():
 	return {
 		"Config" : _GG("g_CommonPath") + "config/ini/config.ini",
-		"UrlConfig" : _GG("g_DataPath") + "url_list.json",
+		"UrlConfig" : [_GG("g_DataPath") + "update/pytoolsip/data/url_list.json", _GG("g_DataPath") + "url_list.json"],
 	};
 
 class Config(object):

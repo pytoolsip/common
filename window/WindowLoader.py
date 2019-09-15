@@ -118,8 +118,8 @@ class WindowLoader(object):
 		# 停止App
 		self.stopApp(data);
 		# 调用更新脚本
-		projectPath, updatePath = _GG("g_ProjectPath"), _GG("g_DataPath")+"update";
-		os.system(" ".join([os.path.join(_GG("g_PythonPath"), "python.exe"), data["updateFile"], data["version"], projectPath, updatePath]));
+		projectPath, updatePath, runPath = os.path.abspath(_GG("g_ProjectPath")), os.path.abspath(_GG("g_DataPath")+"update"), os.path.abspath(_GG("g_ProjectPath")+"run");
+		os.system(" ".join([os.path.join(runPath, "update.bat"), os.path.join(_GG("g_PythonPath"), "python.exe"), os.path.abspath(data["updateFile"]), data["version"], projectPath, updatePath, runPath]));
 
 	def runWindows(self):
 		self._parentWindowUI.Tile();
