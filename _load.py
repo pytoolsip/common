@@ -134,6 +134,10 @@ class Loader(object):
 		_G.setGlobalVarTo_Global("CommonClient", CommonClient()); # 设置客户端->服务端连接的全局变量
 		pass;
 
+	# 初始化全局对象
+	def initGlobalClass(self):
+		_G._GG("CommonClient").initClient();
+
 	# 校验默认数据
 	def verifyDefaultData(self):
 		_GG = _G._GG;
