@@ -101,27 +101,33 @@ class MenuBarViewCtr(object):
 	def showMessageDialog(self, message, caption = "提示", style = wx.OK):
 		return wx.MessageDialog(self.getUI(), message, caption = caption, style = style).ShowModal();
 
-	def linkToolCommon(self, toolPath = ""):
-		toolAssetsPath = VerifyPath(toolPath + "/assets");
-		if not os.path.exists(toolAssetsPath):
-			os.makedirs(toolAssetsPath);
-		toolCommonPath, commonPath = VerifyPath(toolAssetsPath + "/common"), VerifyPath(_GG("g_CommonPath"));
-		if sys.platform == "win32":
-			if os.system(" ".join(["mklink /J", toolCommonPath, commonPath])) != 0:
-				raise Exception("<" + " ".join(["mklink /J", toolCommonPath, commonPath]) + "> fail !");
-		else:
-			os.system("ln -sf " + toolCommonPath + commonPath);
-
-	def linkToolPython(self, toolPath = ""):
-		toolIncludePath = VerifyPath(toolPath + "/include");
-		if not os.path.exists(toolIncludePath):
-			os.makedirs(toolIncludePath);
-		toolPyPath, pyPath = VerifyPath(toolIncludePath + "/python"), VerifyPath(_GG("g_PythonPath"));
-		if sys.platform == "win32":
-			if os.system(" ".join(["mklink /J", toolPyPath, pyPath])) != 0:
-				raise Exception("<" + " ".join(["mklink /J", toolPyPath, pyPath]) + "> fail !");
-		else:
-			os.system(" ".join(["ln -sf", toolPyPath, pyPath]));
+	def initToolDevelopment(self, toolPath = ""):
+		assetsPath = VerifyPath(toolPath + "/assets");
+		if not os.path.exists(assetsPath):
+			return False;
+		# 拷贝common文件夹
+		self.copyPath(VerifyPath(_GG("g_CommonPath")), VerifyPath(assetsPath + "/common"));
+		# 获取main文件名称
+		mainFile = "main.py";
+		for fname in os.listdir(assetsPath):
+			fPath = os.path.join(assetsPath, fname);
+			if os.path.isfile(fPath) and re.search(f"main\.?.*\.*", fname):
+				mainFile = fname;
+				break;
+		# 更新start.bat文件
+		startFilePath = VerifyPath(os.path.join(toolPath, "start.bat"));
+		if os.path.exists(startFilePath):
+			content = "";
+			with open(startFilePath, "r", encoding = "utf-8") as f:
+				for line in f.readlines():
+					if re.search("set pyexe.*=.*", line):
+						line = "set pyexe=" + VerifyPath(_GG("g_PythonPath")+"/python.exe") + "\n";
+					elif re.search("set mainfile.*=.*", line):
+						line = "set mainfile=" + VerifyPath(mainFile) + "\n";
+					content += line;
+			with open(startFilePath, "w", encoding = "utf-8") as f:
+				f.write(content);
+		return True;
 
 	def onClickToolDevelopment(self, menuItem, event):
 		if not self.getCtrByKey("ToolDevelopInfoDialogCtr"):
@@ -132,9 +138,7 @@ class MenuBarViewCtr(object):
 				srcPath = _GG("g_AssetsPath") + "template";
 				dstPath = self.getUIByKey("ToolDevelopInfoDialogCtr").getDirInputValue() + "/" + self.getUIByKey("ToolDevelopInfoDialogCtr").getTextCtrlValue();
 				dstPath = str(dstPath);
-				if self.copyPath(srcPath, dstPath):
-					self.linkToolCommon(toolPath = dstPath);
-					self.linkToolPython(toolPath = dstPath);
+				if self.copyPath(srcPath, dstPath) and self.initToolDevelopment(toolPath = dstPath):
 					message = "创建工具开发项目模板成功！\n创建路径为：" + VerifyPath(dstPath);
 			# 显示弹窗
 			self.showMessageDialog(message, "创建工具开发项目", style = wx.OK|wx.ICON_INFORMATION);
