@@ -28,12 +28,14 @@ class Config(object):
 		self.__initConfig__();
 	
 	def __initPath__(self, pathCfg):
+		self.__path = "";
 		if isinstance(pathCfg, list):
 			for path in pathCfg:
 				if os.path.exists(path):
 					self.__path = path;
 					return;
-		self.__path = pathCfg;
+		else:
+			self.__path = pathCfg;
 
 	def __initConfig__(self):
 		self.__config = ConfigParser.RawConfigParser();
@@ -58,12 +60,14 @@ class UrlConfig(object):
 		self.__initConfig__();
 	
 	def __initPath__(self, pathCfg):
+		self.__path = "";
 		if isinstance(pathCfg, list):
 			for path in pathCfg:
 				if os.path.exists(path):
 					self.__path = path;
 					return;
-		self.__path = pathCfg;
+		else:
+			self.__path = pathCfg;
 
 	def __initConfig__(self):
 		self.__config = {};
