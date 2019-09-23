@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-24 22:31:21
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-16 14:55:15
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-09-23 21:55:07
 
 from behaviorCore.BaseBehavior import DoType;
+
+from _Global import _GG;
+from function.base import *;
 
 class BehaviorBinder(object):
 	def __init__(self):
@@ -114,7 +117,6 @@ class BehaviorBinder(object):
 				frontBehaviorInfoList, overrideBehaviorInfoList, rearBehaviorInfoList = self.splitBehaviorInfosByMethodType(methodInfo["behaviorInfos"]);
 				# 判断是否有覆写函数
 				if len(overrideBehaviorInfoList) > 0:
-					_GG("Log").w("The behavior(id : \"{0}\") would override the method key of \"{1}\"!".format(overrideBehaviorInfoList[0]["behaviorId"], obj._className_));
 					return overrideBehaviorInfoList[0]["function"](obj, *argList, **argDict);
 				# 返回值
 				_retTuple = None;
