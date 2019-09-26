@@ -54,9 +54,9 @@ class EventDispatcher(object):
 			registerIdsDict[targetObjId] = [callbackName];
 		pass;
 
-	def removeRegisterId(self, eventId, targetObjId, callbackId):
+	def removeRegisterId(self, eventId, targetObjId, callbackName):
 		registerIdsDict = self.__registerIds[eventId];
-		registerIdsDict[targetObjId].pop(callbackId);
+		registerIdsDict[targetObjId].remove(callbackName);
 
 	def register(self, event, targetObj, callbackName):
 		try:
@@ -78,7 +78,7 @@ class EventDispatcher(object):
 			if targetObjId == id(listener["target"]) and callbackName == listener["callbackName"]:
 				listener["state"] = EventState.UnRegisterState;
 				if self.__dispatchDepth == 0:
-					self.removeRegisterId(eventId, targetObjId, callbackId);
+					self.removeRegisterId(eventId, targetObjId, callbackName);
 					listeners.pop(i);
 
 	def unregisterByTaget(self, event, targetObj):
