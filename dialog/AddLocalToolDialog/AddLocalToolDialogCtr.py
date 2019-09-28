@@ -132,9 +132,9 @@ class AddLocalToolDialogCtr(object):
 				wx.MessageDialog(self.getUI(), "已存在同名工具[%s]文件，无法创建该文件。"%fullName, caption = "添加本地工具", style = wx.OK|wx.ICON_ERROR).ShowModal();
 				return;
 			if os.path.splitext(filePath)[-1] == ".zip":
-				self.unzipFile(filePath, targetPath, finishCallback = afterUnzip);
+				self.unzipFile(filePath, targetPath);
 			else:
-				self.copyPath(filePath, targetPath);
+				self.copyPath(filePath, targetPath+"/tool");
 			if callable(callback):
 				wx.CallAfter(callback, localToolInfo);
 		threading.Thread(target = toAddTool, args = (toolInfo, callback)).start();

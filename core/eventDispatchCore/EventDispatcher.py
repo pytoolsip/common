@@ -109,9 +109,13 @@ class EventDispatcher(object):
 						if eventKey not in targetObj._EventKeyListByDispatched_:
 							targetObj._EventKeyListByDispatched_.append(eventKey);
 							# 执行所注册事件的方法
-							getattr(targetObj, listener["callbackName"])(data);
-							# 移除targetObj的EventKeyListByDispatched_属性
-							targetObj._EventKeyListByDispatched_.remove(eventKey);
+							try:
+								getattr(targetObj, listener["callbackName"])(data);
+							except Exception as e:
+								raise e;
+							finally:
+								# 移除targetObj的EventKeyListByDispatched_属性
+								targetObj._EventKeyListByDispatched_.remove(eventKey);
 						else:
 							raise Exception("It calls the function(\"{0}\") of object(id:\"{1}\") in recursion !".format(listener["callbackName"], id(targetObj)));
 			else:
