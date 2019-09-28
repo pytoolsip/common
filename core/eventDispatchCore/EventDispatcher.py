@@ -14,7 +14,7 @@ from enum import Enum, unique;
 @unique
 class EventState(Enum):
 	NormalState = 0;
-	UnRegisterState = 1;
+	UnregisterState = 1;
 
 class EventDispatcher(object):
 	"""docstring for EventDispatcher"""
@@ -73,10 +73,10 @@ class EventDispatcher(object):
 		eventId = event.value;
 		targetObjId = id(targetObj);
 		listeners = self.__listeners[eventId];
-		for i in range(len(listeners)-1, 0 ,-1):
+		for i in range(len(listeners)-1, -1, -1):
 			listener = listeners[i];
 			if targetObjId == id(listener["target"]) and callbackName == listener["callbackName"]:
-				listener["state"] = EventState.UnRegisterState;
+				listener["state"] = EventState.UnregisterState;
 				if self.__dispatchDepth == 0:
 					self.removeRegisterId(eventId, targetObjId, callbackName);
 					listeners.pop(i);
@@ -85,10 +85,10 @@ class EventDispatcher(object):
 		eventId = event.value;
 		targetObjId = id(targetObj);
 		listeners = self.__listeners[eventId];
-		for i in range(len(listeners)-1, 0 ,-1):
+		for i in range(len(listeners)-1, -1, -1):
 			listener = listeners[i];
 			if targetObjId == id(listener["target"]):
-				listener["state"] = EventState.UnRegisterState;
+				listener["state"] = EventState.UnregisterState;
 				if self.__dispatchDepth == 0:
 					listeners.pop(i);
 
