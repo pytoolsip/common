@@ -145,7 +145,7 @@ class NoteBookViewCtr(object):
 		page._PAGE_KEY = key;
 
 	def createPageViewCtr(self, path):
-		return CreateCtr(path, self.__ui, modulePathBase = os.path.dirname(path));
+		return CreateCtr(path, self.__ui);
 
 	def addPageToNoteBook(self, pageKey = -1, pageInfo = None):
 		if not pageInfo:

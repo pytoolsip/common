@@ -11,7 +11,8 @@ import time;
 
 # 动态加载模块
 def require(filePath, moduleName, subModuleName = None, isReload = False, isReserve = False, modulePathBase = ""):
-	modulePath = "/".join([filePath, moduleName]).replace("\\", "/");
+	filePath = os.path.abspath(filePath);
+	modulePath = os.path.join(filePath, moduleName);
 	# 判断是否重新加载模块
 	if isReload and modulePath in sys.modules:
 		oldModule = sys.modules.pop(modulePath);
@@ -66,12 +67,12 @@ def GetPathByRelativePath(path, basePath = ""):
 	return "/".join(basePathList).strip();
 
 # 创建控制类（视图或窗口）
-def CreateCtr(path, parent, params = {}, isReload = False, isReserve = False, modulePathBase = ""):
+def CreateCtr(path, parent, params = {}, isReload = False, isReserve = False):
 	path = re.sub(r"\\", r"/", path);
 	if path[-1] == "/":
 		path = path[:-1];
 	ctrName = path.split("/")[-1] + "Ctr";
-	Ctr = require(path, ctrName, ctrName, isReload, isReserve, modulePathBase = modulePathBase);
+	Ctr = require(path, ctrName, ctrName, isReload, isReserve, modulePathBase = os.path.dirname(os.path.abspath(path)));
 	return Ctr(parent, params = params);
 
 # 销毁控制类【需先销毁UI】（视图或窗口）
