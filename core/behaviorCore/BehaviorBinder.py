@@ -149,7 +149,7 @@ class BehaviorBinder(object):
 				if dataKey in obj.behavior_exposeDataDict__: # obj.behavior_exposeDataDict__.has_key(dataKey)
 					# 移除相应的组件数据信息
 					behaviorInfoList = obj.behavior_exposeDataDict__[dataKey]["behaviorInfos"];
-					for idx in behaviorInfoList:
+					for idx in range(len(behaviorInfoList)-1, -1, -1):
 						if behaviorInfoList[idx]["behaviorId"] == behavior.getBehaviorId():
 							behaviorInfoList.pop(idx);
 					# 根据dataKey更新导出数据
@@ -163,11 +163,11 @@ class BehaviorBinder(object):
 				if methodKey in obj.behavior_exposeMethodDict__: # obj.behavior_exposeMethodDict__.has_key(methodKey)
 					# 移除相应的组件函数信息
 					behaviorInfoList = obj.behavior_exposeMethodDict__[methodKey]["behaviorInfos"];
-					for idx in behaviorInfoList:
+					for idx in range(len(behaviorInfoList)-1, -1, -1):
 						if behaviorInfoList[idx]["behaviorId"] == behavior.getBehaviorId():
 							behaviorInfoList.pop(idx);
 					# 根据dataKey更新导出函数
-					self.updateExposeMethodByMethodKey(obj, dataKey);
+					self.updateExposeMethodByMethodKey(obj, methodKey);
 
 	# 根据dataKey更新导出数据
 	def updateExposeDataByDataKey(self, obj, dataKey):
