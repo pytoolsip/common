@@ -108,12 +108,12 @@ class MenuBarViewCtr(object):
 		# 拷贝common文件夹
 		self.copyPath(VerifyPath(_GG("g_CommonPath")), VerifyPath(assetsPath + "/common"));
 		# 获取main文件名称
-		mainFile = "main.py";
-		for fname in os.listdir(assetsPath):
-			fPath = os.path.join(assetsPath, fname);
-			if os.path.isfile(fPath) and re.search(f"main\.?.*\.*", fname):
-				mainFile = fname;
-				break;
+		def getFileName(name):
+			for fname in os.listdir(assetsPath):
+				fPath = os.path.join(assetsPath, fname);
+				if os.path.isfile(fPath) and re.search(f"{name}\.?.*\.*", fname):
+					return fname;
+			return f"{name}.py";
 		# 更新start.bat文件
 		startFilePath = VerifyPath(os.path.join(toolPath, "start.bat"));
 		if os.path.exists(startFilePath):
@@ -123,7 +123,9 @@ class MenuBarViewCtr(object):
 					if re.search("set pyexe.*=.*", line):
 						line = "set pyexe=" + VerifyPath(_GG("g_PythonPath")+"/python.exe") + "\n";
 					elif re.search("set mainfile.*=.*", line):
-						line = "set mainfile=" + VerifyPath(mainFile) + "\n";
+						line = "set mainfile=" + VerifyPath(getFileName("main")) + "\n";
+					elif re.search("set buildfile.*=.*", line):
+						line = "set buildfile=" + VerifyPath(getFileName("build")) + "\n";
 					content += line;
 			with open(startFilePath, "w", encoding = "utf-8") as f:
 				f.write(content);
