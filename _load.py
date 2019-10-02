@@ -50,7 +50,7 @@ class Loader(object):
 			self.WindowLoader = WindowLoader();
 		return self.WindowLoader;
 
-	def lockGlobal_G(self):
+	def lockGlobal(self):
 		_G.lockGlobal_GTo_Global(); # 锁定全局变量
 
 	def loadGlobalInfo(self):
@@ -61,7 +61,6 @@ class Loader(object):
 		self.loadConfigs(); # 加载全局配置变量
 		self.loadResources(); # 加载全局资源变量
 		self.loadGClass(); # 加载全局类变量
-		self.lockGlobal_G(); # 锁定全局变量
 		pass;
 
 	# 加载唯一Id的全局函数
