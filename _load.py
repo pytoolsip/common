@@ -84,8 +84,10 @@ class Loader(object):
 		pass;
 
 	# 加载全局python路径变量
-	def loadPyPath(self):
-		_G.setGlobalVarTo_Global("g_PythonPath", os.path.join(self.__projectPath, "include/python"));
+	def loadPyPath(self, path = ""):
+		if not path:
+			path = os.path.join(self.__projectPath, "include/python");
+		_G.setGlobalVarTo_Global("g_PythonPath", path);
 
 	# 加载全局对象变量
 	def loadObjects(self):
