@@ -103,9 +103,9 @@ class InstallPythonPackageBehavior(_GG("BaseBehavior")):
 		# 获取镜像
 		pii = self.getPipInstallImage();
 		if pii:
-			cmd += f"-i {pii}";
+			cmd += f" -i {pii}";
 			mtObj = re.match("^https?://(.*)/.*$", pii);
 			if mtObj:
 				host = mtObj.group(1);
-				cmd += f"--trusted-host {host}";
+				cmd += f" --trusted-host {host}";
 		return cmd;
