@@ -158,7 +158,7 @@ class MenuBarViewCtr(object):
 			_GG("Log").w(e);
 		# 尝试打开文件浏览器
 		if curTabPage and hasattr(curTabPage, "curPath"):
-			os.system("explorer " + curTabPage._curPath);
+			os.system("explorer " + os.path.abspath(curTabPage._curPath));
 		else:
 			self.showMessageDialog("打开当前标签页目录失败！", "提示", style = wx.OK|wx.ICON_INFORMATION);
 
@@ -228,12 +228,27 @@ class MenuBarViewCtr(object):
 			self.createCtrByKey("PackDialogCtr", _GG("g_CommonPath") + "dialog/PackDialog");
 		self.getUIByKey("PackDialogCtr").ShowModal();
 
+	def onOpenProjectPath(self, menuItem, event):
+		try:
+			os.system("explorer " + os.path.abspath(_GG("g_ProjectPath")));
+		except Exception as e:
+			_GG("Log").w(e);
+			self.showMessageDialog("打开安装目录失败！", "提示", style = wx.OK|wx.ICON_INFORMATION);
+
+	def onOpenSettingDialog(self, menuItem, event):
+		if not self.getCtrByKey("SettingDialogCtr"):
+			self.createCtrByKey("SettingDialogCtr", _GG("g_CommonPath") + "dialog/SettingDialog");
+		self.getCtrByKey("SettingDialogCtr").resetDialog();
+		self.getUIByKey("SettingDialogCtr").ShowModal();
+
 	def getMenuItemsData(self):
 		return [
 			{"name" : "文件", "items" : [
 				{"name" : "打开", "id" : wx.ID_OPEN, "items" : [
+					{"name" : "平台安装目录", "params" : {"helpString" : "打开平台安装路径..."}, "callback" : self.onOpenProjectPath},
 					{"name" : "当前标签页目录", "params" : {"helpString" : "打开当前标签页目录的文件路径..."}, "callback" : self.onOpenCurTabPagePath},
 				]},
+				{"name" : "设置", "params" : {"helpString" : "打开平台设置..."}, "callback" : self.onOpenSettingDialog},
 				{},
 				{"name" : "退出", "id" : wx.ID_EXIT, "enable" : False},
 			]},

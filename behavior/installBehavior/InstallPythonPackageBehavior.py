@@ -4,6 +4,7 @@
 # @Last Modified by:   JimZhang
 # @Last Modified time: 2019-03-16 15:09:24
 
+import re;
 import os;
 import imp;
 
@@ -54,12 +55,9 @@ class InstallPythonPackageBehavior(_GG("BaseBehavior")):
 		return installedPackageDict;
 
 	def installPackageByPip(self, obj, packageName, pythonPath = None, _retTuple = None):
-		if pythonPath:
-			if os.system(os.path.abspath(os.path.join(pythonPath, "python.exe")) + " -m pip install " + packageName) == 0:
-				return True;
-		else:
-			if os.system("pip install " + packageName) == 0:
-				return True;
+		cmd = self.getPipInstallCmd(packageName, pythonPath = pythonPath);
+		if os.system(cmd) == 0:
+			return True;
 		return False;
 
 	def updatePipVersion(self, obj, pythonPath = None, _retTuple = None):
@@ -90,3 +88,24 @@ class InstallPythonPackageBehavior(_GG("BaseBehavior")):
 			if os.system("pip uninstall " + packageName) == 0:
 				return True;
 		return False;
+	
+	def getPipInstallImage(self):
+		if os.path.exists(_GG("g_DataPath")+"config/setting_cfg.json"):
+			cfg = self.readJsonFile(_GG("g_DataPath")+"config/setting_cfg.json");
+			if cfg:
+				return cfg.get("pip_install_image", "");
+		return "";
+	
+	def getPipInstallCmd(self, packageName, pythonPath = None):
+		cmd = "pip install " + packageName;
+		if pythonPath:
+			cmd = os.path.abspath(os.path.join(pythonPath, "python.exe")) + " -m pip install " + packageName;
+		# 获取镜像
+		pii = self.getPipInstallImage();
+		if pii:
+			cmd += f"-i {pii}";
+			mtObj = re.match("^https?://(.*)/.*$", pii);
+			if mtObj:
+				host = mtObj.group(1);
+				cmd += f"--trusted-host {host}";
+		return cmd;
