@@ -112,27 +112,29 @@ class CreateTemplateDialogUI(wx.Dialog):
 	def onOkButton(self, event):
 		modName, targetModName, targetModPath = self.__modCbb.GetValue(), self.__targetName.GetValue(), self.__dirInput.getInputValue();
 		if not modName:
-			wx.MessageDialog(self, "所选模板不存在！", caption = "新建模板", style = wx.OK|wx.ICON_ERROR).ShowModal();
+			self.showMsgDialog("所选模板不存在！", style = wx.OK|wx.ICON_ERROR);
 			return;
 		if not targetModName:
-			wx.MessageDialog(self, "生成名称不能为空！", caption = "新建模板", style = wx.OK|wx.ICON_ERROR).ShowModal();
+			self.showMsgDialog("生成名称不能为空！", style = wx.OK|wx.ICON_ERROR);
 			return;
 		if not targetModPath:
-			wx.MessageDialog(self, "生成目录不能为空！", caption = "新建模板", style = wx.OK|wx.ICON_ERROR).ShowModal();
-			return;
-		if os.path.exists(os.path.join(targetModPath, targetModName)):
-			wx.MessageDialog(self, "该目录下已存在相同名称的模板，生成失败！", caption = "新建模板", style = wx.OK|wx.ICON_ERROR).ShowModal();
+			self.showMsgDialog("生成目录不能为空！", style = wx.OK|wx.ICON_ERROR);
 			return;
 		# 创建模板
 		targetPath = targetModPath;
 		try:
 			ret, targetPath = self.getCtr().createMod(modName, targetModName, targetModPath);
 			if not ret:
-				wx.MessageDialog(self, f"生成模板失败[{targetPath}]，请重试！", caption = "新建模板", style = wx.OK|wx.ICON_ERROR).ShowModal();
+				if targetPath == "invalid":
+					self.showMsgDialog(f"无效模板【{modName}】，生成失败！", style = wx.OK|wx.ICON_ERROR);
+				elif targetPath == "existed":
+					self.showMsgDialog("该目录下已存在相同名称的模板，生成失败！", style = wx.OK|wx.ICON_ERROR);
+				else:
+					self.showMsgDialog("生成模板失败，请重试！", style = wx.OK|wx.ICON_ERROR);
 				return;
 		except Exception as e:
 			_GG("Log").w("Create Template Error!", e);
-			wx.MessageDialog(self, "生成模板失败，请重试！", caption = "新建模板", style = wx.OK|wx.ICON_ERROR).ShowModal();
+			self.showMsgDialog("生成模板失败，请重试！", style = wx.OK|wx.ICON_ERROR);
 			return;
 		# 创建成功回调
 		callback = self.__params.get("onOk", None);
@@ -140,3 +142,6 @@ class CreateTemplateDialogUI(wx.Dialog):
 			callback(targetPath);
 		# 关闭弹窗
 		self.EndModal(wx.ID_OK);
+
+	def showMsgDialog(self, *argList, caption = "新建模板", **argDict):
+		return wx.MessageDialog(self, *argList, caption = caption, **argDict).ShowModal();

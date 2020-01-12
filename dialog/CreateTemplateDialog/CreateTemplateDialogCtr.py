@@ -28,7 +28,7 @@ class CreateTemplateDialogCtr(object):
 		self.init();
 
 	def init(self):
-		self.__modCreator = require(os.path.join(_GG("g_AssetsPath"), "template", "module"), "ModuleCreator", "CreateModuleObj")();
+		self.__modCreator = require(os.path.join(_GG("g_ProjectPath"), "template", "module"), "ModuleCreator", "CreateModuleObj")();
 		pass;
 
 	def __del__(self):
