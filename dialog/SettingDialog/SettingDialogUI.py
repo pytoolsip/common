@@ -48,12 +48,13 @@ class SettingDialogUI(wx.Dialog):
 		pass;
 		
 	def initDialogLayout(self):
-		flexGridSizer = wx.FlexGridSizer(2, 2, 2, 2);
+		flexGridSizer = wx.FlexGridSizer(3, 2, 2, 2);
 		flexGridSizer.AddMany([
 			(self.piiTitle, -1, wx.ALIGN_CENTER|wx.TOP|wx.LEFT, 20),
 			(self.piiValue, -1, wx.TOP|wx.RIGHT, 20),
-			(wx.Panel(), -1, wx.TOP|wx.BOTTOM|wx.RIGHT, 20),
-			(self.saveBtn, -1, wx.TOP|wx.BOTTOM|wx.LEFT, 20),
+			(wx.Panel(self), -1, wx.TOP, 40),
+			(self.saveBtn, -1, wx.TOP, 40),
+			(wx.Panel(self), -1, wx.TOP, 10),
 		]);
 		flexGridSizer.AddGrowableCol(0, 1);
 		self.SetSizerAndFit(flexGridSizer);
@@ -73,15 +74,15 @@ class SettingDialogUI(wx.Dialog):
 		pass;
 
 	def createPiiTitle(self):
-		self.piiTitle = wx.StaticText(self, label = "Pip安装镜像：");
-		self.piiTitle.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL));
+		self.piiTitle = wx.StaticText(self, label = "PIP安装镜像：");
+		self.piiTitle.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL));
 
 	def createPiiValue(self):
 		self.piiValue = wx.ComboBox(self, value = self.getDefaultPii(), choices = self.getPiiKeyList(), style = wx.CB_READONLY);
 		self.piiValue.Bind(wx.EVT_COMBOBOX, self.onPiiCombobox);
 		
 	def createSaveBtn(self):
-		self.saveBtn = wx.Button(self, label = "保存配置");
+		self.saveBtn = wx.Button(self, label = "保存配置", size = (80, 28));
 		def onSaveButton(event):
 			self.getCtr().saveSettingCfg();
 			self.saveBtn.Enable(False);

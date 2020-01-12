@@ -1,30 +1,35 @@
 # -*- coding: utf-8 -*-
-# @Author: JimDreamHeart
-# @Date:   2018-03-29 22:19:40
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:45:54
+# @Author: Administrator
+# @Date:   2020-01-12 13:31:23
+# @Last Modified by:   Administrator
+# @Last Modified time: 2020-01-12 13:31:23
 import os;
 import wx;
 
 from _Global import _GG;
 
-from TemplateViewUI import *;
+from CreateTemplateDialogUI import *;
 
 def getRegisterEventMap(G_EVENT):
 	return {
-		# G_EVENT.TO_UPDATE_VIEW : "updateView",
+		# G_EVENT.TO_UPDATE_VIEW : "updateDialog",
 	};
 
-class TemplateViewCtr(object):
-	"""docstring for TemplateViewCtr"""
+class CreateTemplateDialogCtr(object):
+	"""docstring for CreateTemplateDialogCtr"""
 	def __init__(self, parent, params = {}):
-		super(TemplateViewCtr, self).__init__();
-		self._className_ = TemplateViewCtr.__name__;
+		super(CreateTemplateDialogCtr, self).__init__();
+		self._className_ = CreateTemplateDialogCtr.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
 		self.bindBehaviors(); # 绑定组件
+		self.init();
+
+	def init(self):
+		self.__modCreator = require(os.path.join(_GG("g_AssetsPath"), "template", "module"), "ModuleCreator", "CreateModuleObj")();
+		pass;
 
 	def __del__(self):
 		self.__dest__();
@@ -46,8 +51,8 @@ class TemplateViewCtr(object):
 
 	def initUI(self, parent, params):
 		# 创建视图UI类
-		self.__ui = TemplateViewUI(parent, curPath = self._curPath, viewCtr = self, params = params);
-		self.__ui.initView();
+		self.__ui = CreateTemplateDialogUI(parent, curPath = self._curPath, viewCtr = self, params = params);
+		self.__ui.initDialog();
 
 	def getUI(self):
 		return self.__ui;
@@ -88,5 +93,20 @@ class TemplateViewCtr(object):
 	def unbindBehaviors(self):
 		pass;
 			
-	def updateView(self, data):
-		self.__ui.updateView(data);
+	def updateDialog(self, data):
+		self.__ui.updateDialog(data);
+		
+	def resetDialog(self):
+		self.__ui.resetDialog();
+
+	def getModuleList(self):
+		return [
+			"behavior",
+			"view",
+			"window",
+			"dialog",
+		];
+	
+	def createMod(self, modName, targetModName, targetModPath):
+		_GG("Log").d("CreateTemplateDialogCtr.createMod:", modName, targetModName, targetModPath);
+		return self.__modCreator.createMod(modName, targetModName, targetModPath);

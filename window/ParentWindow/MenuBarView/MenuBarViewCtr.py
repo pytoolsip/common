@@ -137,7 +137,7 @@ class MenuBarViewCtr(object):
 		if self.getUIByKey("ToolDevelopInfoDialogCtr").ShowModal() == wx.ID_OK :
 			message = "创建工具开发项目模板失败！";
 			if hasattr(self, "copyPath"):
-				srcPath = _GG("g_AssetsPath") + "template";
+				srcPath = os.path.join(_GG("g_AssetsPath"), "template", "tool");
 				dstPath = self.getUIByKey("ToolDevelopInfoDialogCtr").getDirInputValue() + "/" + self.getUIByKey("ToolDevelopInfoDialogCtr").getTextCtrlValue();
 				dstPath = str(dstPath);
 				if self.copyPath(srcPath, dstPath) and self.initToolDevelopment(toolPath = dstPath):
@@ -240,6 +240,21 @@ class MenuBarViewCtr(object):
 			self.createCtrByKey("SettingDialogCtr", _GG("g_CommonPath") + "dialog/SettingDialog");
 		self.getCtrByKey("SettingDialogCtr").resetDialog();
 		self.getUIByKey("SettingDialogCtr").ShowModal();
+	
+	def onCreateTemplate(self, menuItem, event):
+		def onOk(targetPath):
+			try:
+				os.system("explorer " + os.path.abspath(targetPath));
+			except Exception as e:
+				_GG("Log").w(e);
+				self.showMessageDialog("打开所创建模板的目录失败！", "提示", style = wx.OK|wx.ICON_INFORMATION);
+		if not self.getCtrByKey("CreateTemplateDialogCtr"):
+			self.createCtrByKey("CreateTemplateDialogCtr", _GG("g_CommonPath") + "dialog/CreateTemplateDialog", params={
+				"onOk" : onOk,
+			});
+		self.getCtrByKey("CreateTemplateDialogCtr").resetDialog();
+		self.getUIByKey("CreateTemplateDialogCtr").ShowModal();
+		pass;
 
 	def getMenuItemsData(self):
 		return [
@@ -251,6 +266,9 @@ class MenuBarViewCtr(object):
 				{"name" : "设置", "params" : {"helpString" : "打开平台设置..."}, "callback" : self.onOpenSettingDialog},
 				{},
 				{"name" : "退出", "id" : wx.ID_EXIT, "enable" : False},
+			]},
+			{"name" : "编辑", "items" : [
+				{"name" : "新建模板", "items" : [], "callback" : self.onCreateTemplate},
 			]},
 			{"name" : "工具", "items" : [
 				{"name" : "搜索工具", "items" : [], "callback" : self.onSearchTool},
