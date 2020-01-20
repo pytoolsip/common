@@ -11,9 +11,9 @@ AppConfig = {
 	"AppTitle" : u"PyToolsIP【python工具集成环境】",
 	"AppSize" : (960,640),
 	"AppBGColor" : wx.Colour(230,230,230),
-	"CopyrightInfo" : u"Copyright(C) 2018-2019 JimDreamHeart. All Rights Reserved",
-	"PyToolsIPUrl" : "http://jimdreamheart.club/pytoolsip",
-	"SearchToolUrl" : "http://jimdreamheart.club/pytoolsip/toollist",
+	"CopyrightInfo" : u"Copyright(C) 2018-2020 JDreamHeart. All Rights Reserved",
+	"PyToolsIPUrl" : "https://ptip.jdreamheart.com",
+	"SearchToolUrl" : "https://ptip.jdreamheart.com/toollist",
 
 	"SearchPanelSize" : (380,320),
 	"SearchPanelBGColor" : wx.Colour(220,220,220),
