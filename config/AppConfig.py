@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-09-15 10:23:21
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-05-10 20:21:12
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2020-01-31 19:58:49
 
 import wx;
 from ProjectConfig import ProjectConfig;
 
 AppConfig = {
-	"AppTitle" : u"PyToolsIP【python工具集成环境】",
-	"AppSize" : (960,640),
+	"AppTitle" : u"PyToolsIP【Python工具集成平台】",
+	"AppSize" : (1080,720),
 	"AppBGColor" : wx.Colour(230,230,230),
 	"CopyrightInfo" : u"Copyright(C) 2018-2020 JDreamHeart. All Rights Reserved",
 	"PyToolsIPUrl" : "https://ptip.jdreamheart.com",
