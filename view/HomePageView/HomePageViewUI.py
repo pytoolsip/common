@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 19:05:42
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:46:00
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-02 14:55:45
 
 import wx;
 
@@ -76,6 +76,8 @@ class HomePageViewUI(wx.ScrolledWindow):
 		gridBagSizer.Add(self.getCtr().getUIByKey("NewestGridsViewCtr"), pos = (2,1), span = (1,2), flag = wx.EXPAND|wx.TOP, border = 10);
 		gridBagSizer.AddGrowableCol(1)
 		self.SetSizerAndFit(gridBagSizer);
+		# 延迟更新大小
+		wx.CallLater(500, self.onToolWinSize);
 		pass;
 
 	def updateView(self, data):
@@ -84,8 +86,8 @@ class HomePageViewUI(wx.ScrolledWindow):
 	def getRankingSizeX(self):
 		return self.__params["rankingSizeX"];
 
-	def onToolWinSize(self, sizeInfo, event = None):
-		self.SetSize(self.GetSize() + sizeInfo["preDiff"]);
+	def onToolWinSize(self, sizeInfo = {}, event = None):
+		self.SetSize(self.GetSize() + sizeInfo.get("preDiff", wx.Size(0, 0)));
 		# 获取变化的大小
 		diffSize = self.GetSize() - self.GetBestSize();
 		diffSize = wx.Size(max(0, diffSize.x), max(0, diffSize.y));
