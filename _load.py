@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-04-19 14:22:56
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-28 18:34:16
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2020-02-02 21:19:55
 import wx;
 import os,sys,time;
 import shutil;
@@ -56,6 +56,7 @@ class Loader(object):
 	def loadGlobalInfo(self):
 		self.loadUniqueIdFunc(); # 加载唯一Id的全局函数
 		self.loadPaths(); # 加载全局路径名变量
+		self.loadDependPath(); # 加载全局依赖路径名变量
 		self.loadPyPath(); # 加载全局python路径变量
 		self.loadObjects(); # 加载全局对象变量
 		self.loadConfigs(); # 加载全局配置变量
@@ -83,9 +84,17 @@ class Loader(object):
 		_G.setGlobalVarTo_Global("g_CommonPath", self.__mainPath + "/common/");
 		pass;
 
+	def loadDependPath(self):
+		def getDependPath(path):
+			dependPath = os.path.abspath(os.path.join(self.__mainPath, "..", path));
+			if os.path.exists(dependPath):
+				return dependPath;
+			return os.path.abspath(os.path.join(self.__projectPath, path));
+		_G.setGlobalVarTo_Global("GetDependPath", getDependPath);
+
 	# 加载全局python路径变量
 	def loadPyPath(self):
-		_G.setGlobalVarTo_Global("g_PythonPath", os.path.join(self.__projectPath, "include/python"));
+		_G.setGlobalVarTo_Global("g_PythonPath", _G._GG("GetDependPath")("include/python"));
 
 	# 更新全局python路径变量
 	def updatePyPath(self, path):

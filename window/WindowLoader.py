@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2018-04-19 14:19:46
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2020-02-02 20:49:54
+# @Last Modified time: 2020-02-02 21:23:58
 
 import wx;
 from ProjectConfig import ProjectConfig;
@@ -102,7 +102,7 @@ class WindowLoader(object):
 				os.system(" ".join(["start", "/d ", os.path.abspath(_GG("g_ProjectPath")), exeName])); # 启动app
 				return;
 			# 直接运行脚本
-			runPath = os.path.abspath(os.path.join(_GG("g_ProjectPath"), "run"));
+			runPath = os.path.abspath(_GG("GetDependPath")("run"));
 			if ProjectConfig["isOpenLogWin"] :
 				os.system(f"start /d {runPath} run.bat"); # 启动app【有日志窗口】
 			else :
@@ -118,7 +118,7 @@ class WindowLoader(object):
 		# 停止App
 		self.stopApp(data);
 		# 调用更新脚本
-		projectPath, updatePath, runPath = os.path.abspath(_GG("g_ProjectPath")), os.path.abspath(_GG("g_DataPath")+"update"), os.path.abspath(_GG("g_ProjectPath")+"run");
+		projectPath, updatePath, runPath = os.path.abspath(_GG("g_ProjectPath")), os.path.abspath(_GG("g_DataPath")+"update"), os.path.abspath(_GG("GetDependPath")("run"));
 		RunCmd(" ".join([os.path.join(runPath, "update.bat"), os.path.join(_GG("g_PythonPath"), "python.exe"), os.path.abspath(data["updateFile"]), data["version"], projectPath, updatePath, runPath]));
 
 	def runWindows(self):

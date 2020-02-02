@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2020-02-02 20:22:18
+# @Last Modified time: 2020-02-02 21:21:52
 import os;
 import wx;
 import time;
@@ -137,7 +137,7 @@ class MenuBarViewCtr(object):
 		if self.getUIByKey("ToolDevelopInfoDialogCtr").ShowModal() == wx.ID_OK :
 			message = "创建工具开发项目模板失败！";
 			if hasattr(self, "copyPath"):
-				srcPath = os.path.join(_GG("g_ProjectPath"), "template", "tool");
+				srcPath = os.path.join(_GG("GetDependPath")("template"), "tool");
 				dstPath = self.getUIByKey("ToolDevelopInfoDialogCtr").getDirInputValue() + "/" + self.getUIByKey("ToolDevelopInfoDialogCtr").getTextCtrlValue();
 				dstPath = str(dstPath);
 				if self.copyPath(srcPath, dstPath) and self.initToolDevelopment(toolPath = dstPath):

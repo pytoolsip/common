@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: Administrator
 # @Date:   2020-01-12 13:31:23
-# @Last Modified by:   Administrator
-# @Last Modified time: 2020-01-12 13:31:23
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2020-02-02 21:21:10
 import os;
 import wx;
 
@@ -28,7 +28,7 @@ class CreateTemplateDialogCtr(object):
 		self.init();
 
 	def init(self):
-		self.__modCreator = require(os.path.join(_GG("g_ProjectPath"), "template", "module"), "ModuleCreator", "CreateModuleObj")();
+		self.__modCreator = require(os.path.join(_GG("GetDependPath")("template"), "module"), "ModuleCreator", "CreateModuleObj")();
 		pass;
 
 	def __del__(self):
