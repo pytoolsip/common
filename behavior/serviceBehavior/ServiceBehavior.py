@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-06 23:14:13
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-27 18:38:07
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2020-02-02 17:16:05
 import os,re;
 import shutil;
 
@@ -93,7 +93,7 @@ class ServiceBehavior(_GG("BaseBehavior")):
 	def getUpdateFile(self):
 		updatePath = os.path.join(_GG("g_AssetsPath"), "update");
 		if not os.path.exists(updatePath):
-			return "";
+			updatePath = os.path.join(_GG("g_ProjectPath"), "assets", "update");
 		# 获取更新脚本文件
 		for fileName in os.listdir(updatePath):
 			filePath = os.path.join(updatePath, fileName);
