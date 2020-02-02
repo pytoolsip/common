@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-03-21 22:31:37
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:05:07
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2020-02-02 19:50:48
 
 import sys;
 import os;
 import re;
 import time;
+import subprocess;
 
 # 动态加载模块
 def require(filePath, moduleName, subModuleName = None, isReload = False, isReserve = False, modulePathBase = ""):
@@ -111,3 +112,10 @@ def GetBaseVersion(version):
 	if len(vList) >= 2:
 		return ".".join(vList[:2]);
 	return version;
+
+# 无日志打印运行命令
+def RunCmd(cmd, cwd=os.getcwd(), funcName="call", argDict = {}):
+	startupinfo = subprocess.STARTUPINFO();
+	startupinfo.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW;
+	startupinfo.wShowWindow = subprocess.SW_HIDE;
+	return getattr(subprocess, funcName)(cmd, cwd = cwd, startupinfo = startupinfo, **argDict);
