@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2018-04-19 14:19:46
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2020-02-02 19:51:42
+# @Last Modified time: 2020-02-02 20:07:26
 
 import wx;
 from ProjectConfig import ProjectConfig;
@@ -119,7 +119,7 @@ class WindowLoader(object):
 		self.stopApp(data);
 		# 调用更新脚本
 		projectPath, updatePath, runPath = os.path.abspath(_GG("g_ProjectPath")), os.path.abspath(_GG("g_DataPath")+"update"), os.path.abspath(_GG("g_ProjectPath")+"run");
-		RunCmd(" ".join([os.path.join(runPath, "update.bat"), os.path.join(_GG("g_PythonPath"), "python.exe"), os.path.abspath(data["updateFile"]), data["version"], projectPath, updatePath, runPath]));
+		RunCmd(" ".join([os.path.join(runPath, "update.bat"), os.path.join(_GG("g_PythonPath"), "python.exe"), os.path.abspath(data["updateFile"]), data["version"], projectPath, updatePath]));
 
 	def runWindows(self):
 		self._parentWindowUI.Tile();
