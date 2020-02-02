@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: Administrator
 # @Date:   2019-09-07 20:34:55
-# @Last Modified by:   Administrator
-# @Last Modified time: 2019-09-07 20:34:55
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2020-02-02 16:56:21
 import os,shutil,re,wx;
 import compileall;
 import threading;
@@ -63,36 +63,37 @@ class CompilePyBehavior(_GG("BaseBehavior")):
 				shutil.copytree(srcPath, targetPath);
 		pass;
 
+	# 编码py文件
+	def __compilePyDir__(self, pyDir, pythonPath = None, _retTuple = None):
+		pyDir = os.path.abspath(pyDir);
+		try:
+			if pythonPath:
+				if os.system(os.path.abspath(os.path.join(pythonPath, "python.exe")) + f" -m compileall -b {pyDir}") == 0:
+					return True;
+			else:
+				if os.system(f"python -m compileall -b {pyDir}") == 0:
+					return True;
+		except Exception as e:
+			_GG("Log").w(f"Failed to compile dir[{pyDir}]!");
+		return False;
+
 	# 编码路径下的py文件
 	def _compileDir_(self, obj, dirPath, isRemoveOri = True, callback = None, _retTuple = None):
-		compileall.compile_dir(dirPath);
+		if not self.__compilePyDir__(dirPath, pythonPath = _GG("g_PythonPath")):
+			return False;
 		if callable(callback):
 			callback(dirPath);
 		if isRemoveOri:
 			# 移动dirPath下__pycache__里的文件，并移除py文件
 			for root, dirs, files in os.walk(dirPath):
 				for path in dirs:
-					if os.path.basename(path) != "__pycache__":
-						continue;
-					pycachePath = os.path.join(root,path);
-					for name in os.listdir(pycachePath):
-						fPath = os.path.join(pycachePath,name);
-						if os.path.isfile(fPath):
-							# 重命名文件
-							mtObj = re.match("^(.*)\..*(\..*)$", name);
-							if mtObj:
-								newName = "".join(mtObj.groups());
-								newFPath = os.path.join(pycachePath,newName);
-								os.rename(fPath, newFPath);
-								fPath = newFPath;
-							# 移动文件
-							shutil.move(fPath, os.path.join(pycachePath, ".."));
-					# 删除__pycache__文件夹
-					shutil.rmtree(pycachePath);
+					if os.path.basename(path) == "__pycache__":
+						# 删除__pycache__文件夹
+						shutil.rmtree(os.path.join(root,path));
 				for name in files:
 					if name.endswith(".py"):
 						os.remove(os.path.join(root,name));
-		pass;
+		return True;
 
 	# 编码工程
 	def _compileProject_(self, obj, sPath, tPath, isRemoveOri = True, finishCallback = None, _retTuple = None):
@@ -124,7 +125,9 @@ class CompilePyBehavior(_GG("BaseBehavior")):
 				callback(0.75, "完成对应路径的编码\n" + str(dirPath));
 				if isRemoveOri:
 					callback(0.75, "移除相应路径的py文件\n" + str(dirPath));
-			self._compileDir_(obj, tgtPath, isRemoveOri = isRemoveOri, callback = compileCallback);
+			if not self._compileDir_(obj, tgtPath, isRemoveOri = isRemoveOri, callback = compileCallback):
+				callback(0.75, "编码失败，请重试！");
+				return;
 			callback(1, "");
 			# 回调结束方法
 			if callable(finishCallback):
