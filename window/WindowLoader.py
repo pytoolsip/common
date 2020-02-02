@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2018-04-19 14:19:46
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2020-02-02 21:23:58
+# @Last Modified time: 2020-02-02 23:44:44
 
 import wx;
 from ProjectConfig import ProjectConfig;
@@ -99,14 +99,18 @@ class WindowLoader(object):
 			# 运行执行程序
 			exeName = "pytoolsip.exe";
 			if os.path.exists(os.path.join(_GG("g_ProjectPath"), exeName)):
-				os.system(" ".join(["start", "/d ", os.path.abspath(_GG("g_ProjectPath")), exeName])); # 启动app
+				os.system(" ".join(["start", "/d", os.path.abspath(_GG("g_ProjectPath")), exeName])); # 启动app
 				return;
 			# 直接运行脚本
-			runPath = os.path.abspath(_GG("GetDependPath")("run"));
-			if ProjectConfig["isOpenLogWin"] :
-				os.system(f"start /d {runPath} run.bat"); # 启动app【有日志窗口】
-			else :
-				os.system(f"start /d {runPath} run.vbs"); # 启动app【无日志窗口】
+			pyName = "pytoolsip.py";
+			if os.path.exists(os.path.join(_GG("g_ProjectPath"), pyName)):
+				pythonPath = "python";
+				if os.path.exists(_GG("g_PythonPath")):
+					pythonPath = os.path.abspath(os.path.join(_GG("g_PythonPath"), "python.exe"));
+				os.system(" ".join(["start", "/d", os.path.abspath(_GG("g_ProjectPath")), pythonPath, pyName])); # 启动app
+				return;
+			# 运行失败
+			_GG("Log").e("Failed to start App!");
 
 	def restartApp(self, data):
 		self.stopApp(data); # 停止App
