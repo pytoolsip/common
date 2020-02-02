@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-20 13:34:20
+# @Last Modified time: 2020-02-02 20:22:18
 import os;
 import wx;
 import time;
@@ -157,7 +157,7 @@ class MenuBarViewCtr(object):
 		except Exception as e:
 			_GG("Log").w(e);
 		# 尝试打开文件浏览器
-		if curTabPage and hasattr(curTabPage, "curPath"):
+		if curTabPage and hasattr(curTabPage, "_curPath"):
 			os.system("explorer " + os.path.abspath(curTabPage._curPath));
 		else:
 			self.showMessageDialog("打开当前标签页目录失败！", "提示", style = wx.OK|wx.ICON_INFORMATION);
