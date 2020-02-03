@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-11-03 17:07:37
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 14:22:26
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-03 10:40:57
 
 import wx;
 import math;
@@ -128,21 +128,30 @@ class SketchGridViewUI(wx.Panel):
 		item.onEnter = self.onEnterItem; # 设置Item的鼠标进入回调函数
 
 	def onEnterItem(self, item, event):
-		if self.currentItem != item:
-			if self.currentItem:
-				self.currentItem.updateBackgroundColor(self.__params["itemBlurColor"]);
-			self.currentItem = item; # 重置当前Item
-			self.currentItem.updateBackgroundColor(self.__params["itemFocusColor"]);
-			self.updateItemBgColorTimer.Start(200); # 启动更新背景颜色定时器
+		try:
+			if self.currentItem != item:
+				if self.currentItem:
+					self.currentItem.updateBackgroundColor(self.__params["itemBlurColor"]);
+				self.currentItem = item; # 重置当前Item
+				self.currentItem.updateBackgroundColor(self.__params["itemFocusColor"]);
+				self.updateItemBgColorTimer.Start(200); # 启动更新背景颜色定时器
+		except Exception as e:
+			_GG("Log").w(f"Failed to call SketchGridViewUI.onEnterItem! Err{e}");
+			pass;
 
 	def onUpdateItemBgColorTimer(self, event):
-		if not self.currentItem.isPointInItemRect(wx.GetMousePosition()): # 判断鼠标位置是否在节点内
-			self.currentItem.updateBackgroundColor(self.__params["itemBlurColor"]);
+		try:
+			if not self.currentItem.isPointInItemRect(wx.GetMousePosition()): # 判断鼠标位置是否在节点内
+				self.currentItem.updateBackgroundColor(self.__params["itemBlurColor"]);
+				self.currentItem = None;
+				self.updateItemBgColorTimer.Stop();
+		except Exception as e:
+			_GG("Log").w(f"Failed to call SketchGridViewUI.onUpdateItemBgColorTimer! Err[{e}].");
 			self.currentItem = None;
 			self.updateItemBgColorTimer.Stop();
+			pass;
 
 	def onClickItem(self, item, event):
-		_GG("Log").d("SketchGridView -> onClickItem");
 		if "onClick" in item.m_itemData:
 			item.m_itemData["onClick"](item, item.m_itemData);
 
