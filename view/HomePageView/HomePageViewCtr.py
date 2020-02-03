@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 19:05:42
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-20 00:00:41
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-03 10:49:14
 
 import wx;
 
@@ -172,6 +172,8 @@ class HomePageViewCtr(object):
 		self.getCtrByKey("NewestGridsViewCtr").updateView({"gridsData" : gridsData});
 		self.getCtrByKey("RecommendToolsCtr").updateView({"gridsData" : gridsData});
 		self.updateRankingPage(infos, onClickItem);
+		# 更新大小
+		self.getUI().onToolWinSize();
 
 	def callService(self):
 		# 请求工具信息列表

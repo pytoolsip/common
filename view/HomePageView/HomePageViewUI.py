@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 19:05:42
 # @Last Modified by:   JimZhang
-# @Last Modified time: 2020-02-02 14:55:45
+# @Last Modified time: 2020-02-03 10:46:35
 
 import wx;
 
@@ -76,8 +76,6 @@ class HomePageViewUI(wx.ScrolledWindow):
 		gridBagSizer.Add(self.getCtr().getUIByKey("NewestGridsViewCtr"), pos = (2,1), span = (1,2), flag = wx.EXPAND|wx.TOP, border = 10);
 		gridBagSizer.AddGrowableCol(1)
 		self.SetSizerAndFit(gridBagSizer);
-		# 延迟更新大小
-		wx.CallLater(500, self.onToolWinSize);
 		pass;
 
 	def updateView(self, data):
