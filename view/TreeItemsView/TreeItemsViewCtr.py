@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-06 11:38:57
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-03 21:54:23
 
 import wx;
 from enum import Enum, unique;
@@ -121,6 +121,10 @@ class TreeItemsViewCtr(object):
 		# 初始化弹出菜单的节点
 		self.__popupMenuItem = None;
 		pass;
+
+	@property
+	def itemPageDataDict(self):
+		return self.__itemPageDataDict;
 
 	def bindEventToItem(self, item, itemInfo, pathList):
 		if "key" in itemInfo:

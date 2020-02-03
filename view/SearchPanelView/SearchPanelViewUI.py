@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-26 14:05:42
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:46:08
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-03 22:24:41
 
 import wx;
 
@@ -124,9 +124,10 @@ class SearchPanelViewUI(ScrollWindow):
 
 	def onClickItem(self, item, event):
 		data = {
-			"creatPage" : True,
-			"id" : item.itemData["id"],
+			"createPage" : True,
+			"key" : item.itemData["key"],
 			"pagePath" : item.itemData["pagePath"],
+			"category" : item.itemData["category"],
 			"title" : item.itemData["name"],
 		};
 		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_RIGHT_VIEW, data);

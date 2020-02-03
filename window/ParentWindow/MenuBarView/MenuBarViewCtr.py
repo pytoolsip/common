@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
 # @Last Modified by:   JimZhang
-# @Last Modified time: 2020-02-03 11:20:37
+# @Last Modified time: 2020-02-03 23:28:30
 import os;
 import wx;
 import time;
@@ -193,15 +193,13 @@ class MenuBarViewCtr(object):
 		});
 
 	def onSearchTool(self, menuItem, event):
-		if self.showMessageDialog("搜索工具需要打开浏览器，是否确认打开？", "打开浏览器提示", style = wx.OK|wx.CANCEL|wx.ICON_QUESTION) == wx.ID_OK:
+		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").SHOW_SEARCH_PANEL_EVENT, {});
+		pass;
+
+	def onOpenToolList(self, menuItem, event):
+		if self.showMessageDialog("查看工具列表需要打开浏览器，是否确认打开？", "打开浏览器提示", style = wx.OK|wx.CANCEL|wx.ICON_QUESTION) == wx.ID_OK:
 			wx.LaunchDefaultBrowser(_GG("AppConfig")["SearchToolUrl"]);
-		# _GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_RIGHT_VIEW, {
-		# 	"createPage" : True,
-		# 	"key" : "e3a0dfe5561d51fdfb75c3b7d2909b47",
-		# 	"pagePath" : _GG("g_CommonPath") + "view/SearchToolView",
-		# 	"category" : "菜单/",
-		# 	"title" : "工具-搜索工具"
-		# });
+		pass;
 
 	def onClickLogout(self, menuItem, event):
 		self._logoutIP_();
@@ -283,6 +281,7 @@ class MenuBarViewCtr(object):
 			]},
 			{"name" : "工具", "items" : [
 				{"name" : "搜索工具", "items" : [], "callback" : self.onSearchTool},
+				{"name" : "工具列表", "items" : [], "callback" : self.onOpenToolList},
 				{"name" : "下载工具", "items" : [], "callback" : self.onDownloadTool},
 				{},
 				{"name" : "打包工具", "items" : [], "callback" : self.onPackTool},
