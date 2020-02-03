@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
 # @Last Modified by:   JimZhang
-# @Last Modified time: 2020-02-03 23:28:30
+# @Last Modified time: 2020-02-03 23:49:49
 import os;
 import wx;
 import time;
@@ -280,13 +280,15 @@ class MenuBarViewCtr(object):
 				{"name" : "新建模板", "items" : [], "callback" : self.onCreateTemplate},
 			]},
 			{"name" : "工具", "items" : [
-				{"name" : "搜索工具", "items" : [], "callback" : self.onSearchTool},
+				{"name" : "搜索工具(Ctrl+P)", "items" : [], "callback" : self.onSearchTool},
+				{},
 				{"name" : "工具列表", "items" : [], "callback" : self.onOpenToolList},
 				{"name" : "下载工具", "items" : [], "callback" : self.onDownloadTool},
 				{},
 				{"name" : "打包工具", "items" : [], "callback" : self.onPackTool},
 				{},
 				{"name" : "从本地添加工具", "items" : [], "callback" : self.onAddLocalTool},
+				{},
 				{"name" : "开发工具", "items" : [], "callback" : self.onClickToolDevelopment},
 			]},
 			{"name" : "升级", "items" : [
