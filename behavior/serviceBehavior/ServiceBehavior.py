@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-06 23:14:13
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2020-02-02 17:16:05
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-03 11:17:59
 import os,re;
 import shutil;
 
@@ -40,8 +40,8 @@ class ServiceBehavior(_GG("BaseBehavior")):
 		pass;
 
 	# 请求更新平台信息
-	def requestUpdateIP(self, obj, _retTuple = None):
-		resp = _GG("CommonClient").callService("UpdateIP", "UpdateIPReq", {"version" : _GG("ClientConfig").UrlConfig().GetIPVersion()});
+	def requestUpdateIP(self, obj, callback = None, _retTuple = None):
+		resp = _GG("CommonClient").callService("UpdateIP", "UpdateIPReq", {"version" : _GG("ClientConfig").UrlConfig().GetIPVersion()}, asynCallback = callback);
 		if resp and resp.code == 0:
 			return True, resp.version;
 		return False, "";

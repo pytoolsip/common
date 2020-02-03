@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2020-02-02 21:21:52
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-03 11:20:37
 import os;
 import wx;
 import time;
@@ -90,6 +90,7 @@ class MenuBarViewCtr(object):
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "copyBehavior/ShutilCopyBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/UserServiceBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/ToolServiceBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/ServiceBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 		
 	def unbindBehaviors(self):
@@ -256,6 +257,16 @@ class MenuBarViewCtr(object):
 		self.getUIByKey("CreateTemplateDialogCtr").ShowModal();
 		pass;
 
+	def onCheckUpdateIP(self, menuItem, event):
+		def callback(resp):
+			if resp and resp.code == 0:
+				if self.showMessageDialog("检测有更新版本，是否确认更新？", "平台更新", style = wx.YES_NO|wx.ICON_QUESTION) == wx.ID_YES:
+					self.updateIP(resp.version);
+			else:
+				self.showMessageDialog("平台版本已是最新！", "提示", style = wx.OK|wx.ICON_INFORMATION);
+		self.requestUpdateIP(callback = callback);
+		pass;
+
 	def getMenuItemsData(self):
 		return [
 			{"name" : "文件", "items" : [
@@ -281,7 +292,7 @@ class MenuBarViewCtr(object):
 			]},
 			{"name" : "升级", "items" : [
 				{"name" : "工具升级", "items" : [], "enable" : False},
-				{"name" : "平台升级", "items" : [], "enable" : False},
+				{"name" : "平台升级", "items" : [], "callback" : self.onCheckUpdateIP},
 			]},
 			{"name" : "用户", "items" : [
 				# {"name" : "用户详情", "items" : []},
