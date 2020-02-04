@@ -131,7 +131,7 @@ class WindowLoader(object):
 		self.stopApp(data);
 		# 调用更新脚本
 		projectPath, updatePath, runPath = os.path.abspath(_GG("g_ProjectPath")), os.path.abspath(_GG("g_DataPath")+"update"), os.path.abspath(_GG("GetDependPath")("run"));
-		RunCmd(" ".join([os.path.join(runPath, "update.bat"), os.path.join(_GG("g_PythonPath"), "python.exe"), os.path.abspath(data["updateFile"]), data["version"], projectPath, updatePath, runPath]));
+		RunCmd(" ".join([os.path.join(runPath, "update.bat"), os.path.join(_GG("g_PythonPath"), "python.exe"), os.path.abspath(data["updateFile"]), data["version"], projectPath, updatePath, updatePath]));
 
 	def copyUpdateVbs(self):
 		updateName = "update.vbs";
