@@ -2,8 +2,10 @@
 # @Author: JinZhang
 # @Date:   2018-04-19 14:19:46
 # @Last Modified by:   JimZhang
-# @Last Modified time: 2020-02-03 23:45:45
+# @Last Modified time: 2020-02-04 12:53:36
 
+import os;
+import shutil;
 import wx;
 from ProjectConfig import ProjectConfig;
 from _Global import _GG;
@@ -113,19 +115,42 @@ class WindowLoader(object):
 			_GG("Log").e("Failed to start App!");
 
 	def restartApp(self, data):
-		if self.createMessageDialog("是否确认重启？", "重启平台", style = wx.YES_NO|wx.ICON_QUESTION, isShow = False).ShowModal() == wx.ID_YES:
-			self.stopApp(data); # 停止App
-			self.startApp(data); # 开始App
-		pass;
+		if self.createMessageDialog("是否确认重启？", "重启平台", style = wx.YES_NO|wx.ICON_QUESTION, isShow = False).ShowModal() != wx.ID_YES:
+			return; # 取消重启
+		self.stopApp(data); # 停止App
+		self.startApp(data); # 开始App
 
 	def updateApp(self, data):
 		if sys.platform != "win32" or "version" not in data or "updateFile" not in data:
 			self.createMessageDialog("更新平台失败！", "更新平台", style = wx.OK|wx.ICON_ERROR);
+			return; # 平台更新失败
+		if not self.copyUpdateVbs():
+			self.createMessageDialog("更新平台失败！", "更新平台", style = wx.OK|wx.ICON_ERROR);
+			return; # 平台更新失败
 		# 停止App
 		self.stopApp(data);
 		# 调用更新脚本
 		projectPath, updatePath, runPath = os.path.abspath(_GG("g_ProjectPath")), os.path.abspath(_GG("g_DataPath")+"update"), os.path.abspath(_GG("GetDependPath")("run"));
 		RunCmd(" ".join([os.path.join(runPath, "update.bat"), os.path.join(_GG("g_PythonPath"), "python.exe"), os.path.abspath(data["updateFile"]), data["version"], projectPath, updatePath, runPath]));
+
+	def copyUpdateVbs(self):
+		updateName = "update.vbs";
+		runPath = os.path.abspath(_GG("GetDependPath")("run"));
+		updatePath = os.path.abspath(_GG("g_DataPath")+"update");
+		# 拷贝更新文件
+		updateVbs = os.path.join(runPath, updateName);
+		if not os.path.exists(updateVbs):
+			_GG("Log").w("Failed to update IP! Not Exists updateVbs!");
+			return False;
+		try:
+			filePath = os.path.join(updatePath, updateName);
+			if os.path.exists(filePath):
+				os.remove(filePath);
+			shutil.copyfile(updateVbs, filePath);
+			return True;
+		except Exception as e:
+			_GG("Log").e(f"Failed to update IP! Err[{e}]!");
+		return False;
 
 	def runWindows(self):
 		self._parentWindowUI.Tile();
