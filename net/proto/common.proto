@@ -34,8 +34,9 @@ message LoginReq{
 // 用户信息
 message UserInfo{
 	int64 uid = 1; // 用户ID
-	string pwd = 2; // 密码[已转成md5]
-	string email = 3; // 用户邮箱
+	string name = 2; // 用户名
+	string pwd = 3; // 密码[已转成md5]
+	string email = 4; // 用户邮箱
 }
 
 // 登录回应
