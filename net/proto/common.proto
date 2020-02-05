@@ -33,7 +33,7 @@ message LoginReq{
 
 // 用户信息
 message UserInfo{
-	string uid = 1; // 用户ID
+	int64 uid = 1; // 用户ID
 	string pwd = 2; // 密码[已转成md5]
 	string email = 3; // 用户邮箱
 }
