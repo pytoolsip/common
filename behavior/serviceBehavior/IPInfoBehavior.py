@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2019-03-15 16:09:17
 # @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-16 15:09:24
+# @Last Modified time: 2020-02-05 15:26:27
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5 as Cipher_pkcs1_v1_5
 import base64
@@ -73,12 +73,12 @@ class IPInfoBehavior(_GG("BaseBehavior")):
 		obj.removeIniConfig(self.__filePath, section, option);
 
 	def setEncodePublicKey(self, obj, value, _retTuple = None):
-		obj.setIPInfoConfig("encode", "public_key", value.replace("\n", ""));
+		obj.setIPInfoConfig("encode", "public_key", value);
 
 	def encodeStrByPublicKey(self, obj, value, _retTuple = None):
 		publicKey = obj.getIPInfoConfig("encode", "public_key");
 		if publicKey:
 			rsakey = RSA.importKey(publicKey);
 			cipher = Cipher_pkcs1_v1_5.new(rsakey);
-			return base64.b64encode(cipher.encrypt(value));
+			return base64.b64encode(cipher.encrypt(str.encode(value)));
 		return "";
