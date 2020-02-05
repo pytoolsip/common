@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-16 11:25:09
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2020-02-05 19:53:05
+# @Last Modified time: 2020-02-05 20:15:19
 import wx;
 
 from _Global import _GG;
@@ -64,7 +64,7 @@ class UserServiceBehavior(_GG("BaseBehavior")):
 			if respData and respData.code == 0:
 				msgData = _GG("CommonClient").decodeBytes(respData.data);
 				obj.setEncodePublicKey(msgData["key"]); # 保存公钥数据
-			onLogin(loginInfo); # 登陆平台
+			return onLogin(loginInfo); # 登陆平台
 		# 显示弹窗
 		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/LoginDialog", params = {
 			"onOk" : onReqLogin,

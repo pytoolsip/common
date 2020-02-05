@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2019-01-28 14:23:53
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-23 17:12:04
+# @Last Modified time: 2020-02-05 20:35:16
 
 import wx;
 import math;
@@ -22,6 +22,7 @@ class LoginDialogUI(wx.Dialog):
 		self.Bind(wx.EVT_CLOSE, self.onClose); # 绑定关闭事件
 
 	def onClose(self, event):
+		self.resetDialog(); # 重置弹窗
 		self.EndModal(wx.ID_CANCEL);
 
 	def initParams(self, params):
@@ -78,6 +79,8 @@ class LoginDialogUI(wx.Dialog):
 		pass;
 
 	def createInputViewsList(self):
+		def onInputCallback(panel):
+			self.updateInputPanel(panel, "", panel.input.GetValue() != "");
 		# 创建用户名输入框
 		nameParams = self.__params.get("name", {});
 		def checkNameInput(panel):
@@ -93,6 +96,7 @@ class LoginDialogUI(wx.Dialog):
 			"size" : (-1, -1),
 			"name" : nameParams.get("label", "用户名"),
 			"blurCallback" : checkNameInput,
+			"inputCallback" : onInputCallback,
 		});
 		# 创建密码输入框
 		pwdParams = self.__params.get("password", {});
@@ -110,6 +114,7 @@ class LoginDialogUI(wx.Dialog):
 			"name" : pwdParams.get("label", "密码"),
 			"inputStyle" : wx.TE_PASSWORD,
 			"blurCallback" : checkPwdInput,
+			"inputCallback" : onInputCallback,
 		});
 
 	def createOKButton(self):
@@ -121,6 +126,8 @@ class LoginDialogUI(wx.Dialog):
 					self.EndModal(wx.ID_OK);
 			else:
 				self.EndModal(wx.ID_OK);
+			# 重置弹窗
+			self.resetDialog();
 		self.__okButton.Bind(wx.EVT_BUTTON, onOkButton);
 		self.__okButton.Enable(False);
 
@@ -170,6 +177,8 @@ class LoginDialogUI(wx.Dialog):
 		# 检测输入框，并设置相应按钮的可点击逻辑
 		if self.checkInputView():
 			self.__okButton.Enable();
+		else:
+			self.__okButton.Enable(False);
 
 	def checkInputView(self, key = "a"):
 		if key in ["a", "name"]:
