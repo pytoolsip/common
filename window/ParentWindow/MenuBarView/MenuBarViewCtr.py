@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2020-02-03 23:49:49
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2020-02-05 20:05:10
 import os;
 import wx;
 import time;
@@ -296,10 +296,8 @@ class MenuBarViewCtr(object):
 				{"name" : "平台升级", "items" : [], "callback" : self.onCheckUpdateIP},
 			]},
 			{"name" : "用户", "items" : [
-				# {"name" : "用户详情", "items" : []},
-				# {"name" : "需求开发", "items" : []},
-				{"name" : "登出", "items" : [], "callback" : self.onClickLogout, "enable" : False},
 				{"name" : "登录", "items" : [], "callback" : self.onClickLogin},
+				{"name" : "登出", "items" : [], "callback" : self.onClickLogout, "enable" : False},
 			]},
 			{"name" : "帮助", "items" : [
 				{"name" : "开发工具事项", "items" : [], "enable" : False},

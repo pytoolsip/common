@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-06 23:14:13
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2020-02-03 11:17:59
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2020-02-05 19:51:21
 import os,re;
 import shutil;
 
@@ -68,7 +68,7 @@ class ServiceBehavior(_GG("BaseBehavior")):
 	def autoLoginIP(self, obj, _retTuple = None):
 		# 根据时间戳，判断是否过期
 		timeStamp, expire = obj.getIPInfoConfig("user", "time_stamp"), obj.getIPInfoConfig("user", "expire");
-		if not timeStamp or float(time.time()) - float(timeStamp) > expire:
+		if not timeStamp or float(time.time()) - float(timeStamp) > float(expire):
 			obj.removeIPInfoConfig("user"); # 移除用户数据
 			return;
 		# 读取配置

@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-16 11:25:09
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-23 15:55:26
+# @Last Modified time: 2020-02-05 19:53:05
 import wx;
 
 from _Global import _GG;
@@ -47,14 +47,14 @@ class UserServiceBehavior(_GG("BaseBehavior")):
 			if respData and respData.code == 0:
 				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").LOGIN_SUCCESS_EVENT, {"userInfo" : respData.userInfo, "expire" : respData.expire});
 				# 保存用户信息
-				obj.setIPInfoConfig("user", "name", loginInfo["name"]);
+				obj.setIPInfoConfig("user", "name", respData.userInfo.name);
 				obj.setIPInfoConfig("user", "pwd", respData.userInfo.pwd);
 				obj.setIPInfoConfig("user", "email", respData.userInfo.email);
 				obj.setIPInfoConfig("user", "expire", respData.expire);
 				obj.setIPInfoConfig("user", "time_stamp", time.time());
 			else:
 				_GG("WindowObject").CreateMessageDialog("登录失败，请重新登录！", "登录平台", style = wx.OK|wx.ICON_INFORMATION);
-			return respData and respData.isSuccess or False;
+			return respData and respData.code == 0 or False;
 		def onReqLogin(loginInfo):
 			# 请求公钥数据
 			respData = _GG("CommonClient").callService("Request", "Req", {
