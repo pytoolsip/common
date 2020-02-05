@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2020-02-05 20:05:10
+# @Last Modified time: 2020-02-05 21:17:32
 import os;
 import wx;
 import time;
@@ -265,6 +265,10 @@ class MenuBarViewCtr(object):
 		self.requestUpdateIP(callback = callback);
 		pass;
 
+	def onExitIP(self, menuItem, event):
+		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").STOP_APP_EVENT, {});
+		pass;
+
 	def getMenuItemsData(self):
 		return [
 			{"name" : "文件", "items" : [
@@ -274,7 +278,7 @@ class MenuBarViewCtr(object):
 				]},
 				{"name" : "设置", "params" : {"helpString" : "打开平台设置..."}, "callback" : self.onOpenSettingDialog},
 				{},
-				{"name" : "退出", "id" : wx.ID_EXIT, "enable" : False},
+				{"name" : "退出", "id" : wx.ID_EXIT, "callback" : self.onExitIP},
 			]},
 			{"name" : "编辑", "items" : [
 				{"name" : "新建模板", "items" : [], "callback" : self.onCreateTemplate},
@@ -301,6 +305,6 @@ class MenuBarViewCtr(object):
 			]},
 			{"name" : "帮助", "items" : [
 				{"name" : "开发工具事项", "items" : [], "enable" : False},
-				{"name" : "关于", "id" : wx.ID_ABOUT, "items" : [], "callback" : self.onClickAboutIP},
+				{"name" : "关于平台", "id" : wx.ID_ABOUT, "items" : [], "callback" : self.onClickAboutIP},
 			]},
 		];

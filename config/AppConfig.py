@@ -2,7 +2,7 @@
 # @Author: JimDreamHeart
 # @Date:   2018-09-15 10:23:21
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2020-01-31 19:58:49
+# @Last Modified time: 2020-02-05 21:08:47
 
 import wx;
 from ProjectConfig import ProjectConfig;
@@ -11,7 +11,7 @@ AppConfig = {
 	"AppTitle" : u"PyToolsIP【Python工具集成平台】",
 	"AppSize" : (1080,720),
 	"AppBGColor" : wx.Colour(230,230,230),
-	"CopyrightInfo" : u"Copyright(C) 2018-2020 JDreamHeart. All Rights Reserved",
+	"CopyrightInfo" : u"Copyright(C) 2018-2020 JDreamHeart. All Rights Reserved.",
 	"PyToolsIPUrl" : "https://ptip.jdreamheart.com",
 	"SearchToolUrl" : "https://ptip.jdreamheart.com/toollist",
 
