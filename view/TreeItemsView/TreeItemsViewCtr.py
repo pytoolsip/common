@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
 # @Last Modified by:   JimZhang
-# @Last Modified time: 2020-02-03 21:54:23
+# @Last Modified time: 2020-02-07 00:51:58
 
 import wx;
 from enum import Enum, unique;
@@ -210,7 +210,7 @@ class TreeItemsViewCtr(object):
 			if self.showMessageDialog("是否确认删除工具【%s】？"%(itemData["category"]+"/"+itemText)) == wx.ID_YES:
 				self.removeItem(itemData["key"]);
 		else:
-			itemDataList = self.getItemDataListByItem(self.__popupMenuItem);
+			itemDataList = self.getItemDataListByItem(self.__popupMenuItem, itemDataList = []);
 			if len(itemDataList) == 0:
 				return;
 			idx = itemDataList[0]["category"].find(itemText);
@@ -221,7 +221,7 @@ class TreeItemsViewCtr(object):
 			toolNamePathList = [];
 			for itemData in itemDataList:
 				toolNamePathList.append("/".join([itemData["category"][itemData["category"].find(itemText):], itemData["title"]]));
-			if self.showMessageDialog("是否确认删除分类【%s】？\n该分类包含工具：\n%s"%(category, "/".join(toolNamePathList))) == wx.ID_YES:
+			if self.showMessageDialog("是否确认删除分类【%s】？\n该分类包含工具：\n%s"%(category, "\n".join(toolNamePathList))) == wx.ID_YES:
 				for itemData in itemDataList:
 					self.removeItem(itemData["key"]);
 
@@ -242,10 +242,11 @@ class TreeItemsViewCtr(object):
 		itemData = self.__itemPageDataDict.get(self.__popupMenuItem, None);
 		if itemData:
 			self._showToolInfo_({
+				"key" : itemData["key"],
 				"name" : itemText,
 				"path" : itemData["category"],
-				"author" : itemData["author"],
 				"version" : itemData["version"],
+				"author" : itemData["author"],
 				"description" : {
 					"value" : itemData["description"],
 				},
