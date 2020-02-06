@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # @Author: Administrator
 # @Date:   2020-01-11 17:27:27
-# @Last Modified by:   Administrator
-# @Last Modified time: 2020-01-11 17:27:27
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-07 00:14:24
 import os;
 import wx;
+from copy import deepcopy;
 
 from _Global import _GG;
 
@@ -114,3 +115,4 @@ class SettingDialogCtr(object):
 	# 保存设置
 	def saveSettingCfg(self):
 		self.writeJsonFile(_GG("g_DataPath")+"config/setting_cfg.json", self.__settingCfg);
+		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").SAVE_IP_CONFIG, deepcopy(self.__settingCfg));

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-09-15 10:23:21
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2020-02-05 21:08:47
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-06 23:45:51
 
 import wx;
 from ProjectConfig import ProjectConfig;
@@ -27,6 +27,7 @@ AppConfig = {
 		{"key" : "清华大学", "val" : "https://pypi.tuna.tsinghua.edu.cn/simple"},
 		{"key" : "清华大学2", "val" : "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"},
 	],
+	"fixedPageCntLimit" : 8,
 };
 
 _ExcludeKey = ["AppTitle", "CopyrightInfo"];

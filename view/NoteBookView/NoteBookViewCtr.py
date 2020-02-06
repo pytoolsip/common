@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 18:27:07
 # @Last Modified by:   JimZhang
-# @Last Modified time: 2020-02-06 22:04:34
+# @Last Modified time: 2020-02-07 00:36:53
 
 from enum import Enum, unique;
 
@@ -35,6 +35,7 @@ class NoteBookViewCtr(object):
 		self.registerEventMap(); # 注册事件
 		self.bindBehaviors(); # 绑定组件
 
+		self.__pageCountLimit = params.get("pageCountLimit", 999); # 页面数限制
 		self.__pageInfoDict = {}; # 页面信息字典
 		self.__relievedPageKey = -1; # 已释放页面Id
 		self.initPopupMenus(); # 创建弹出菜单
@@ -220,6 +221,9 @@ class NoteBookViewCtr(object):
 			return self.getCtrByKey("PopupMenuViewCtr").getMenu(pageType);
 
 	def onFixCurPage(self, event):
+		if len(self.__pageInfoDict) > self.__pageCountLimit:
+			_GG("WindowObject").CreateMessageDialog(f"固定标签页失败，当前页面数已超过限制[{self.__pageCountLimit}]！\n（页面数限制可在配置中修改）", "固定标签页", style = wx.OK|wx.ICON_ERROR);
+			return;
 		curPageKey = self.getPageKey(self.getCurrentPage());
 		if self.__relievedPageKey == curPageKey:
 			self.updatePageType(curPageKey, PageType.Fix);
@@ -343,3 +347,6 @@ class NoteBookViewCtr(object):
 				"pageKeyList" : pageKeyList,
 			});
 		pass;
+
+	def setPageCountLimit(self, count):
+		self.__pageCountLimit = count;
