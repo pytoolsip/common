@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 18:09:36
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-31 00:43:36
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-06 21:07:44
 
 import wx;
 
@@ -13,6 +13,7 @@ from WindowRightViewUI import *;
 def getRegisterEventMap(G_EVENT):
 	return {
 		G_EVENT.UPDATE_WINDOW_RIGHT_VIEW : "updateView",
+		G_EVENT.CREATE_FIXED_PAGE : "createFixedPage",
 	};
 
 class WindowRightViewCtr(object):
@@ -104,4 +105,11 @@ class WindowRightViewCtr(object):
 	def destroyPageByPageKey(self, data):
 		if "key" in data:
 			self.getCtrByKey("NoteBookViewCtr").destroyPageByPageKey(data["key"]);
+		pass;
+
+	def createFixedPage(self, data):
+		for pageData in data.get("pageDataList", []):
+			if "key" in pageData:
+				self.createPageToNoteBook(pageData);
+				self.getCtrByKey("NoteBookViewCtr").setFixPageByKey(pageData["key"]);
 		pass;

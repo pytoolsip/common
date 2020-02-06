@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2018-04-19 14:19:46
 # @Last Modified by:   JimZhang
-# @Last Modified time: 2020-02-04 12:53:36
+# @Last Modified time: 2020-02-06 22:17:08
 
 import os;
 import shutil;
@@ -161,7 +161,7 @@ class WindowLoader(object):
 		self._mainApp.MainLoop();
 
 	def createViews(self):
-		wx.CallLater(100, self.onCreateViews);
+		wx.CallLater(1000, self.onCreateViews);
 
 	def onCreateViews(self):
 		self.createHomePage();
