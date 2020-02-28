@@ -83,14 +83,19 @@ class WindowLoader(object):
 		self._mainApp.Unbind(wx.EVT_CHAR_HOOK);
 
 	def registerEvent(self):
-		_GG("EventDispatcher").register(_GG("EVENT_ID").STOP_APP_EVENT, self, "stopApp");
+		_GG("EventDispatcher").register(_GG("EVENT_ID").STOP_APP_EVENT, self, "toStopApp");
 		_GG("EventDispatcher").register(_GG("EVENT_ID").RESTART_APP_EVENT, self, "restartApp");
 		_GG("EventDispatcher").register(_GG("EVENT_ID").UPDATE_APP_EVENT, self, "updateApp");
 
 	def unregisterEvent(self):
-		_GG("EventDispatcher").unregister(_GG("EVENT_ID").STOP_APP_EVENT, self, "stopApp");
+		_GG("EventDispatcher").unregister(_GG("EVENT_ID").STOP_APP_EVENT, self, "toStopApp");
 		_GG("EventDispatcher").unregister(_GG("EVENT_ID").RESTART_APP_EVENT, self, "restartApp");
 		_GG("EventDispatcher").unregister(_GG("EVENT_ID").UPDATE_APP_EVENT, self, "updateApp");
+	
+	def toStopApp(self, data):
+		if self.createMessageDialog("是否确认退出？", "退出平台", style = wx.YES_NO|wx.ICON_QUESTION, isShow = False).ShowModal() != wx.ID_YES:
+			return; # 取消退出
+		self.stopApp(data); # 停止App
 
 	def stopApp(self, data):
 		self._mainApp.ExitMainLoop(); # 退出App的主循环

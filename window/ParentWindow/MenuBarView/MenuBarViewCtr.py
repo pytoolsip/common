@@ -290,8 +290,9 @@ class MenuBarViewCtr(object):
 				]},
 				{"name" : "设置", "params" : {"helpString" : "打开平台设置..."}, "callback" : self.onOpenSettingDialog},
 				{},
-				{"name" : "重启(F5)", "callback" : self.onRestartIP},
-				{"name" : "退出", "id" : wx.ID_EXIT, "callback" : self.onExitIP},
+				{"name" : "重启(Ctrl+F5)", "callback" : self.onRestartIP},
+				{},
+				{"name" : "退出(Shift+Esc)", "id" : wx.ID_EXIT, "callback" : self.onExitIP},
 			]},
 			{"name" : "功能", "items" : [
 				{"name" : "新建模板", "callback" : self.onCreateTemplate},
