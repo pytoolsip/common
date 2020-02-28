@@ -51,3 +51,7 @@ class EVENT_ID(Enum):
 	CREATE_FIXED_PAGE = getNewEventId(); # 创建已固定的标签页
 	
 	SAVE_FIXED_PAGE_DATA = getNewEventId(); # 保存已固定的标签页数据
+	
+	SCREENSHOT = getNewEventId(); # 截屏
+
+	SCREENSHOT_AFTER_HIDING_WIN = getNewEventId(); # 隐藏窗口后截屏

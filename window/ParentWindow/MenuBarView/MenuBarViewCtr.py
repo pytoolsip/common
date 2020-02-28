@@ -264,9 +264,21 @@ class MenuBarViewCtr(object):
 				self.showMessageDialog("平台版本已是最新！", "提示", style = wx.OK|wx.ICON_INFORMATION);
 		self.requestUpdateIP(callback = callback);
 		pass;
+	
+	def onRestartIP(self, menuItem, event):
+		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").RESTART_APP_EVENT, {});
+		pass;
 
 	def onExitIP(self, menuItem, event):
 		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").STOP_APP_EVENT, {});
+		pass;
+
+	def onScreenshot(self, menuItem, event):
+		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").SCREENSHOT, {});
+		pass;
+
+	def onScreenshotAfterHidingWin(self, menuItem, event):
+		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").SCREENSHOT_AFTER_HIDING_WIN, {});
 		pass;
 
 	def getMenuItemsData(self):
@@ -278,10 +290,15 @@ class MenuBarViewCtr(object):
 				]},
 				{"name" : "设置", "params" : {"helpString" : "打开平台设置..."}, "callback" : self.onOpenSettingDialog},
 				{},
+				{"name" : "重启(F5)", "callback" : self.onRestartIP},
 				{"name" : "退出", "id" : wx.ID_EXIT, "callback" : self.onExitIP},
 			]},
-			{"name" : "编辑", "items" : [
-				{"name" : "新建模板", "items" : [], "callback" : self.onCreateTemplate},
+			{"name" : "功能", "items" : [
+				{"name" : "新建模板", "callback" : self.onCreateTemplate},
+				{"name" : "截屏", "items" : [
+					{"name" : "直接截屏(Alt+P)", "callback" : self.onScreenshot},
+					{"name" : "隐藏窗口后截屏(Ctrl+Alt+P)", "callback" : self.onScreenshotAfterHidingWin},
+				]},
 			]},
 			{"name" : "工具", "items" : [
 				{"name" : "搜索工具(Ctrl+P)", "items" : [], "callback" : self.onSearchTool},
