@@ -18,8 +18,6 @@ def getRegisterEventMap(G_EVENT):
 fileFormatCfg = {
 	".png" : wx.BITMAP_TYPE_PNG,
 	".jpg" : wx.BITMAP_TYPE_JPEG,
-	".gif" : wx.BITMAP_TYPE_GIF,
-	".ico" : wx.BITMAP_TYPE_ICO,
 	".bmp" : wx.BITMAP_TYPE_BMP,
 	".tif" : wx.BITMAP_TYPE_TIF,
 }
@@ -102,7 +100,7 @@ class ScreenshotDialogCtr(object):
 		self.__ui.updateDialog(data);
 	
 	def onSave(self, event):
-		dlg = wx.FileDialog(self.getUI(), "保存截屏图片", defaultFile = "screenshot", wildcard = "PNG files (.png)|.png|JPEG files (.jpg)|.jpg|GIF files (.gif)|.gif|ICO files (.ico)|.ico|BMP files (.bmp)|.bmp|TIF files (.tif)|.tif", style=wx.FD_SAVE);
+		dlg = wx.FileDialog(self.getUI(), "保存截屏图片", defaultFile = "screenshot", wildcard = "PNG files (.png)|.png|JPEG files (.jpg)|.jpg|BMP files (.bmp)|.bmp|TIF files (.tif)|.tif", style=wx.FD_SAVE);
 		if dlg.ShowModal() == wx.ID_OK:
 			filePath = dlg.GetPath();
 			_, ext = os.path.splitext(filePath);
