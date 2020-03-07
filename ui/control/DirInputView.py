@@ -38,6 +38,10 @@ class DirInputView(wx.Panel):
 
 	def createInput(self):
 		self.__input = wx.TextCtrl(self, -1, "", size = self.params["inputSize"]);
+		def onKillFocus(event):
+			self.setInputValue(self.__input.GetValue());
+			event.Skip();
+		self.__input.Bind(wx.EVT_KILL_FOCUS, onKillFocus);
 
 	def createButton(self):
 		self.__button = wx.Button(self, -1, self.params["buttonLabel"], size = self.params["buttonSize"]);
