@@ -15,12 +15,12 @@ class CacheManager(object):
         self.__tkeyMap = {};
     
     def initNamespace(self, curPath):
-        m = re.match(f"^.*/([^/]+)/tool/MainView.*$", curPath.replace("\\", "/"));
+        m = re.match(f"^.*/([^/]+)/tool$", curPath.replace("\\", "/"));
         if not m:
             return;
         for frame in inspect.stack():
             filename = frame[0].f_code.co_filename;
-            mt = re.match(f"^.*/tool_([^/]+)/tool/MainView.*$", filename.replace("\\", "/"));
+            mt = re.match(f"^.*/tool_([^/]+)/tool/.*$", filename.replace("\\", "/"));
             if mt and mt.group(1) != m.group(1):
                 self.__tkeyMap[mt.group(1)] = m.group(1);
                 _GG("Log").i("initNamespace:", mt.group(1), m.group(1));
