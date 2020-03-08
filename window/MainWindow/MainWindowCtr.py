@@ -161,3 +161,6 @@ class MainWindowCtr(object):
 
 	def checkTreeItemKey(self, itemKey):
 		return self.getCtrByKey("WindowLeftViewCtr").checkItemKey(itemKey);
+		
+	def getItemDataByKey(self, itemKey):
+		return self.getCtrByKey("WindowLeftViewCtr").getItemData(itemKey);

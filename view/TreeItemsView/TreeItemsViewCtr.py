@@ -250,7 +250,6 @@ class TreeItemsViewCtr(object):
 				"description" : {
 					"value" : itemData["description"],
 				},
-				"download" : {},
 			});
 		else:
 			self.showMessageDialog("显示工具【%s】信息失败！"%itemText);

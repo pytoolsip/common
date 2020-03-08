@@ -224,6 +224,9 @@ class WindowLeftViewCtr(object):
 
 	def checkItemKey(self, itemKey):
 		return self.getCtrByKey("TreeItemsViewCtr").getItem(itemKey) != None;
+		
+	def getItemData(self, itemKey):
+		return self.getCtrByKey("TreeItemsViewCtr").getItemPageData(itemKey);
 
 	def saveFixedPageData(self, data):
 		if "pageKeyList" in data:

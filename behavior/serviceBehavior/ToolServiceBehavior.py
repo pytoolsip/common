@@ -110,8 +110,9 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 				if not respData:
 					_GG("WindowObject").CreateMessageDialog("网络请求失败！", "下载工具", style = wx.OK|wx.ICON_ERROR);
 				elif respData.code == 0:
-					if _GG("WindowObject").MainWindowCtr.checkTreeItemKey(tkey):
-						if CheckVersion(respData.toolInfo.version, data.get("version", "")) and callable(callback):
+					itemData = _GG("WindowObject").MainWindowCtr.getItemDataByKey(tkey);
+					if itemData:
+						if CheckVersion(respData.toolInfo.version, itemData.get("version", "")) and callable(callback):
 							callback(True);
 					elif callable(callback):
 						callback();
