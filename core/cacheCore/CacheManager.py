@@ -12,6 +12,20 @@ class CacheManager(object):
         super(CacheManager, self).__init__();
         self._className_ = CacheManager.__name__;
         self.__cache = {};
+        self.__tkeyMap = {};
+    
+    def initNamespace(self, curPath):
+        m = re.match(f"^.*/([^/]+)/tool/MainView.*$", curPath.replace("\\", "/"));
+        if not m:
+            return;
+        for frame in inspect.stack():
+            filename = frame[0].f_code.co_filename;
+            mt = re.match(f"^.*/tool_([^/]+)/tool/MainView.*$", filename.replace("\\", "/"));
+            if mt and mt.group(1) != m.group(1):
+                self.__tkeyMap[mt.group(1)] = m.group(1);
+                _GG("Log").i("initNamespace:", mt.group(1), m.group(1));
+                return;
+        pass;
 
     def getNamespace(self):
         toolsDataPath = os.path.join(_GG("g_DataPath"), "tools").replace("\\", "/");
@@ -20,7 +34,10 @@ class CacheManager(object):
             mt = re.match(f"^{toolsDataPath}/((local/)?[^/]+)/.*$", filename.replace("\\", "/"));
             if mt:
                 return mt.group(1).replace("/", "-");
-        return "pytoolsip-common"; # 返回默认的命名空间
+            mt = re.match(f"^.*/tool_([^/]+)/tool/.*$", filename.replace("\\", "/"));
+            if mt and mt.group(1) in self.__tkeyMap:
+                return self.__tkeyMap[mt.group(1)];
+        return "pytoolsip-default"; # 返回默认的命名空间
 
     def setCache(self, key, value):
         namespace = self.getNamespace();

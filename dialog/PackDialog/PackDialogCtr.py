@@ -8,6 +8,7 @@ import wx;
 import hashlib, json, shutil;
 
 from _Global import _GG;
+from function.random import *;
 
 from PackDialogUI import *;
 
@@ -110,7 +111,7 @@ class PackDialogCtr(object):
 		fileName = os.path.basename(dirPath);
 		if not os.path.exists(_GG("g_DataPath")+"temp/zip"):
 			os.makedirs(_GG("g_DataPath")+"temp/zip");
-		filePath = _GG("g_DataPath") + "temp/zip/" + "%s_%d"%(fileName, int(time.time()));
+		filePath = _GG("g_DataPath") + "temp/zip/" + "%s_%d%s"%(fileName, int(time.time()), randomMulti(12));
 		# 压缩文件夹
 		def zipFile(tgtPath):
 			# 生成MD5文件列表
