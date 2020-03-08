@@ -143,7 +143,7 @@ class WindowLeftViewCtr(object):
 				"key" : pageInfo["key"],
 			});
 			# 移除工具文件夹
-			toolPath = os.path.dirname(pageInfo["pagePath"]);
+			toolPath = os.path.dirname(os.path.dirname(pageInfo["pagePath"])); # 中间还有一层tool
 			if os.path.exists(toolPath):
 				shutil.rmtree(toolPath);
 			pass;

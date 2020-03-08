@@ -134,7 +134,7 @@ class TreeItemsViewCtr(object):
 			self.__itemPageDataDict[item] = {
 				"item" : item,
 				"key" : itemInfo["key"],
-				"pagePath" : (basePath + itemInfo["path"]).replace("/", "/"),
+				"pagePath" : (basePath + itemInfo["path"]).replace("\\", "/"),
 				"category" : "/".join(pathList),
 				"title" : itemInfo.get("title", itemInfo["name"]),
 				"description" : itemInfo.get("description", ""),
