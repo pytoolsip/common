@@ -17,9 +17,9 @@ class CacheManager(object):
         toolsDataPath = os.path.join(_GG("g_DataPath"), "tools").replace("\\", "/");
         for frame in inspect.stack():
             filename = frame[0].f_code.co_filename;
-            mt = re.match(f"^{toolsDataPath}/([^/]+)/.*$", filename.replace("\\", "/"));
+            mt = re.match(f"^{toolsDataPath}/((local/)?[^/]+)/.*$", filename.replace("\\", "/"));
             if mt:
-                return mt.group(1);
+                return mt.group(1).replace("/", "-");
         return "pytoolsip-common"; # 返回默认的命名空间
 
     def setCache(self, key, value):
