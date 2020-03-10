@@ -27,10 +27,10 @@ def __getExposeMethod__(DoType):
 
 def __getDepends__():
 	return [
-		# {
-		# 	"path" : "tempBehavior", 
-		# 	"basePath" : _GG("g_CommonPath") + "behavior/",
-		# },
+		{
+			"path" : "ConfigParseBehavior/JsonConfigBehavior", 
+			"basePath" : _GG("g_CommonPath") + "behavior/",
+		},
 	];
 
 class InstallPythonPackageBehavior(_GG("BaseBehavior")):

@@ -91,6 +91,7 @@ class MenuBarViewCtr(object):
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/UserServiceBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/ToolServiceBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/ServiceBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "ConfigParseBehavior/JsonConfigBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 		
 	def unbindBehaviors(self):
@@ -101,6 +102,13 @@ class MenuBarViewCtr(object):
 
 	def showMessageDialog(self, message, caption = "提示", style = wx.OK):
 		return wx.MessageDialog(self.getUI(), message, caption = caption, style = style).ShowModal();
+
+	def getPipInstallImage(self):
+		if os.path.exists(_GG("g_DataPath")+"config/setting_cfg.json"):
+			cfg = self.readJsonFile(_GG("g_DataPath")+"config/setting_cfg.json");
+			if cfg:
+				return cfg.get("pip_install_image", "");
+		return "";
 
 	def initToolDevelopment(self, toolPath = ""):
 		assetsPath = VerifyPath(toolPath + "/assets");
@@ -121,6 +129,7 @@ class MenuBarViewCtr(object):
 				"pyexe="+VerifyPath(_GG("g_PythonPath")+"/python.exe"),
 				"mainfile=" + VerifyPath(getFileName("main")),
 				"buildfile=" + VerifyPath(getFileName("build")),
+				"pii=" + self.getPipInstallImage(),
 			]));
 		return True;
 
