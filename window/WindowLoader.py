@@ -116,6 +116,11 @@ class WindowLoader(object):
 					pythonPath = os.path.abspath(os.path.join(_GG("g_PythonPath"), "python.exe"));
 				os.system(" ".join(["start", "/d", os.path.abspath(_GG("g_ProjectPath")), pythonPath, pyName])); # 启动app
 				return;
+			# 运行run.bat脚本
+			batName = "run.bat";
+			if os.path.exists(os.path.join(_GG("g_ProjectPath"), batName)):
+				os.system(" ".join(["start", "/d", os.path.abspath(_GG("g_ProjectPath")), batName])); # 启动run.bat
+				return;
 			# 运行失败
 			_GG("Log").e("Failed to start App!");
 
