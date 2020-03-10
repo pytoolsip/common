@@ -115,21 +115,13 @@ class MenuBarViewCtr(object):
 				if os.path.isfile(fPath) and re.search(f"{name}\.?.*\.*", fname):
 					return fname;
 			return f"{name}.py";
-		# 更新start.bat文件
-		startFilePath = VerifyPath(os.path.join(toolPath, "start.bat"));
-		if os.path.exists(startFilePath):
-			content = "";
-			with open(startFilePath, "r", encoding = "utf-8") as f:
-				for line in f.readlines():
-					if re.search("set pyexe.*=.*", line):
-						line = "set pyexe=" + VerifyPath(_GG("g_PythonPath")+"/python.exe") + "\n";
-					elif re.search("set mainfile.*=.*", line):
-						line = "set mainfile=" + VerifyPath(getFileName("main")) + "\n";
-					elif re.search("set buildfile.*=.*", line):
-						line = "set buildfile=" + VerifyPath(getFileName("build")) + "\n";
-					content += line;
-			with open(startFilePath, "w", encoding = "utf-8") as f:
-				f.write(content);
+		# 更新_tool.env文件
+		with open(os.path.abspath(os.path.join(toolPath, "_tool.env")), "w", encoding = "utf-8") as f:
+			f.write("\n".join([
+				"pyexe="+VerifyPath(_GG("g_PythonPath")+"/python.exe"),
+				"mainfile=" + VerifyPath(getFileName("main")),
+				"buildfile=" + VerifyPath(getFileName("build")),
+			]));
 		return True;
 
 	def onClickToolDevelopment(self, menuItem, event):
