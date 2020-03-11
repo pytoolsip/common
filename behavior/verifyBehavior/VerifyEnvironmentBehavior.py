@@ -38,7 +38,7 @@ class VerifyEnvironmentBehavior(_GG("BaseBehavior")):
 	# 校验python环境
 	def verifyPythonEnvironment(self, obj, pythonPath = None, _retTuple = None):
 		if pythonPath:
-			if os.system(pythonPath.replace("\\", "/") + "/python.exe -V") == 0:
+			if os.system(os.path.abspath(os.path.join(pythonPath, "python.exe")) + " -V") == 0:
 				return True;
 		else:
 			if os.system("python -V") == 0:
@@ -49,7 +49,7 @@ class VerifyEnvironmentBehavior(_GG("BaseBehavior")):
 	def verifyPythonVersion(self, obj, fVer = 3, sVer = 4, pythonPath = None, _retTuple = None):
 		ret = "";
 		if pythonPath:
-			ret = os.popen(pythonPath.replace("\\", "/") + "/python.exe -V").read();
+			ret = os.popen(os.path.abspath(os.path.join(pythonPath, "python.exe")) + " -V").read();
 		else:
 			ret = os.popen("python -V").read();
 		if ret:
@@ -64,7 +64,7 @@ class VerifyEnvironmentBehavior(_GG("BaseBehavior")):
 
 	def verifyPipEnvironment(self, obj, pythonPath = None, _retTuple = None):
 		if pythonPath:
-			if os.system(pythonPath.replace("\\", "/") + "/python.exe -m pip -V") == 0:
+			if os.system(os.path.abspath(os.path.join(pythonPath, "python.exe")) + " -m pip -V") == 0:
 				return True;
 		else:
 			if os.system("pip -V") == 0:

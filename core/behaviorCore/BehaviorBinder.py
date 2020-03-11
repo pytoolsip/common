@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-24 22:31:21
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-16 14:55:15
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2019-09-23 21:55:07
 
 from behaviorCore.BaseBehavior import DoType;
+
+from _Global import _GG;
+from function.base import *;
 
 class BehaviorBinder(object):
 	def __init__(self):
@@ -114,7 +117,6 @@ class BehaviorBinder(object):
 				frontBehaviorInfoList, overrideBehaviorInfoList, rearBehaviorInfoList = self.splitBehaviorInfosByMethodType(methodInfo["behaviorInfos"]);
 				# 判断是否有覆写函数
 				if len(overrideBehaviorInfoList) > 0:
-					_GG("Log").w("The behavior(id : \"{0}\") would override the method key of \"{1}\"!".format(overrideBehaviorInfoList[0]["behaviorId"], obj._className_));
 					return overrideBehaviorInfoList[0]["function"](obj, *argList, **argDict);
 				# 返回值
 				_retTuple = None;
@@ -147,7 +149,7 @@ class BehaviorBinder(object):
 				if dataKey in obj.behavior_exposeDataDict__: # obj.behavior_exposeDataDict__.has_key(dataKey)
 					# 移除相应的组件数据信息
 					behaviorInfoList = obj.behavior_exposeDataDict__[dataKey]["behaviorInfos"];
-					for idx in behaviorInfoList:
+					for idx in range(len(behaviorInfoList)-1, -1, -1):
 						if behaviorInfoList[idx]["behaviorId"] == behavior.getBehaviorId():
 							behaviorInfoList.pop(idx);
 					# 根据dataKey更新导出数据
@@ -161,11 +163,11 @@ class BehaviorBinder(object):
 				if methodKey in obj.behavior_exposeMethodDict__: # obj.behavior_exposeMethodDict__.has_key(methodKey)
 					# 移除相应的组件函数信息
 					behaviorInfoList = obj.behavior_exposeMethodDict__[methodKey]["behaviorInfos"];
-					for idx in behaviorInfoList:
+					for idx in range(len(behaviorInfoList)-1, -1, -1):
 						if behaviorInfoList[idx]["behaviorId"] == behavior.getBehaviorId():
 							behaviorInfoList.pop(idx);
 					# 根据dataKey更新导出函数
-					self.updateExposeMethodByMethodKey(obj, dataKey);
+					self.updateExposeMethodByMethodKey(obj, methodKey);
 
 	# 根据dataKey更新导出数据
 	def updateExposeDataByDataKey(self, obj, dataKey):

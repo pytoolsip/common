@@ -5,14 +5,11 @@ package pbcommon;
 service Common {
 	rpc Request(Req) returns (Resp);
 	rpc Login(LoginReq) returns (LoginResp);
-	rpc Register(RegisterReq) returns (Resp);
-	rpc Upload(UploadReq) returns (UploadResp);
-	rpc Uploaded(UploadReq) returns (Resp);
 	rpc Download(DownloadReq) returns (DownloadResp);
-	rpc Update(UpdateReq) returns (UpdateResp);
-	rpc Comment(CommentReq) returns (Resp);
-	rpc Collect(CollectReq) returns (Resp);
+	rpc Update(UpdateReq) returns (DownloadResp);
 	rpc UpdateIP(UpdateIPReq) returns (UpdateIPResp);
+	rpc ReqToolInfo(ToolReq) returns (ToolInfoResp);
+	rpc DownloadRecord(DownloadRecordReq) returns (Resp);
 };
 
 // 通用请求
@@ -23,123 +20,93 @@ message Req{
 
 // 通用回应
 message Resp{
-	bool isSuccess = 1; // 返回请求是否成功
+	int32 code = 1; // 请求应答码
 	bytes data = 2; // 返回内容
 }
 
 // 登录请求
 message LoginReq{
 	string name = 1; // 用户名
-	string password = 2; // 密码
+	string pwd = 2; // 密码
+	bool isAuto = 3; // 是否自动登陆
 }
 
 // 用户信息
 message UserInfo{
-	int32 uid = 1; // 玩家ID
+	int64 uid = 1; // 用户ID
 	string name = 2; // 用户名
-	string email = 3; // 用户邮箱
+	string pwd = 3; // 密码[已转成md5]
+	string email = 4; // 用户邮箱
 }
 
 // 登录回应
 message LoginResp{
-	bool isSuccess = 1; // 是否登录成功
+	int32 code = 1; // 登录应答码
 	UserInfo userInfo = 2; // 玩家信息
-}
-
-// 注册请求
-message RegisterReq{
-	string name = 1; // 用户名
-	string password = 2; // 密码
-	string email = 3; // 用户邮箱
-	string veriCode = 4; // 校验码
-}
-
-// 上传请求
-message UploadReq{
-	int32 uid = 1; // 玩家ID
-	string name = 2; // 工具名
-	string version = 3; // 工具版本号
-	string IPVersion = 4; // 平台版本号
-	string description = 5; // 工具简述
-	string category = 6; // 工具分类
-	string changelog = 7; // 工具更新日志
-}
-
-// 上传回应
-message UploadResp{
-	bool isPermit = 1; // 是否允许上传
-	bytes token = 2; // 上传口令
+	int64 expire = 3; // 登陆有效期
 }
 
 // 下载请求
 message DownloadReq{
-	int32 uid = 1; // 玩家ID
-	string key = 2; // 工具键值
-	string IPVersion = 3; // 平台版本号
+	string key = 1; // 工具键值
+	string IPBaseVer = 2; // 平台基础版本号
+}
+
+// 工具信息
+message ToolInfo{
+	string tkey = 1; // 工具键值
+	string name = 2; // 工具名
+	string category = 3; // 工具所属分类
+	string description = 4; // 工具描述
+	string version = 5; // 工具版本
+	string changelog = 6; // 更新日志
+	string author = 7; // 工具作者
+	float score = 8; // 工具评分
+	int64 download = 9; // 工具下载量
 }
 
 // 下载回应
 message DownloadResp{
-	message ToolInfo{
-		string name = 1; // 工具名
-		string category = 2; // 工具所属分类
-		string description = 3; // 工具描述
-		string version = 4; // 工具版本
-		string author = 5; // 工具作者
-		string changelog = 6; // 更新日志
-	}
-	bool isExist = 1; // 是否存在
+	int32 code = 1; // 应答码
 	string url = 2; // 下载地址
 	int64 totalSize = 3; // 下载文件总大小
 	ToolInfo toolInfo = 4; // 工具信息
+	string downloadKey = 5; // 下载键值
 }
 
 // 更新请求
 message UpdateReq{
-	int32 uid = 1; // 玩家ID
-	string key = 2; // 工具键值
-	string version = 3; // 当前版本号
-	string IPVersion = 4; // 平台版本号
-}
-
-// 更新回应
-message UpdateResp{
-	bool isUpToDate = 1; // 是否为最新版本
-	DownloadResp updateInfo = 2; // 更新信息
-}
-
-// 评论请求
-message CommentReq{
-	int32 uid = 1; // 玩家ID
-	string key = 2; // 工具键值
-	string IPVersion = 3; // 平台版本号
-	float score = 4; // 评分
-	string content = 5; // 评论内容
-}
-
-// 收藏请求
-message CollectReq{
-	int32 uid = 1; // 玩家ID
-	string key = 2; // 工具键值
-	string version = 3; // 当前版本号
-	string IPVersion = 4; // 平台版本号
+	string key = 1; // 工具键值
+	string version = 2; // 当前版本号
+	string IPBaseVer = 3; // 平台基础版本号
 }
 
 // 更新平台请求
 message UpdateIPReq{
-	int32 uid = 1; // 玩家ID
-	string version = 2; // 当前版本号
-	string updateExeVersion = 3; // 当前更新程序版本号
+	string version = 1; // 当前版本号
 }
 
 // 更新平台应答
 message UpdateIPResp{
-	message UpdateInfo{
-		bool isUpToDate = 1; // 是否为最新版本
-		string url = 2; // 下载地址
-		int64 totalSize = 3; // 下载文件总大小
-	}
-	bool isAllowQuit = 1; // 是否允许放弃升级
-	UpdateInfo IPInfo = 2; // 平台更新信息
-	UpdateInfo exeInfo = 3; // 更新程序信息
+	int32 code = 1; // 应答码
+	string version = 2; // 更新版本
+}
+
+// 请求工具信息
+message ToolReq{
+	string key = 1; // 工具键值
+	string IPBaseVer = 2; // 平台基础版本
+}
+
+// 工具信息列表
+message ToolInfoResp{
+	int32 code = 1; // 应答码
+	ToolInfo toolInfo = 2; // 工具信息
+	repeated ToolInfo toolList = 3; // 工具信息列表
+}
+
+// 下载记录
+message DownloadRecordReq{
+	string key = 1; // 工具键值
+	string downloadKey = 2; // 下载键值
 }

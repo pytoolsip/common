@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 17:27:44
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-06 11:38:57
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-07 00:51:58
 
 import wx;
 from enum import Enum, unique;
@@ -122,15 +122,19 @@ class TreeItemsViewCtr(object):
 		self.__popupMenuItem = None;
 		pass;
 
+	@property
+	def itemPageDataDict(self):
+		return self.__itemPageDataDict;
+
 	def bindEventToItem(self, item, itemInfo, pathList):
 		if "key" in itemInfo:
-			basePath = _GG("g_ProjectPath") + itemInfo["trunk"] + "/";
+			basePath = _GG(itemInfo["trunk"]);
 			if "branch" in itemInfo:
 				basePath += itemInfo["branch"] + "/";
 			self.__itemPageDataDict[item] = {
 				"item" : item,
 				"key" : itemInfo["key"],
-				"pagePath" : (basePath + itemInfo["path"]).replace("/", "/"),
+				"pagePath" : (basePath + itemInfo["path"]).replace("\\", "/"),
 				"category" : "/".join(pathList),
 				"title" : itemInfo.get("title", itemInfo["name"]),
 				"description" : itemInfo.get("description", ""),
@@ -206,7 +210,7 @@ class TreeItemsViewCtr(object):
 			if self.showMessageDialog("是否确认删除工具【%s】？"%(itemData["category"]+"/"+itemText)) == wx.ID_YES:
 				self.removeItem(itemData["key"]);
 		else:
-			itemDataList = self.getItemDataListByItem(self.__popupMenuItem);
+			itemDataList = self.getItemDataListByItem(self.__popupMenuItem, itemDataList = []);
 			if len(itemDataList) == 0:
 				return;
 			idx = itemDataList[0]["category"].find(itemText);
@@ -217,7 +221,7 @@ class TreeItemsViewCtr(object):
 			toolNamePathList = [];
 			for itemData in itemDataList:
 				toolNamePathList.append("/".join([itemData["category"][itemData["category"].find(itemText):], itemData["title"]]));
-			if self.showMessageDialog("是否确认删除分类【%s】？\n该分类包含工具：\n%s"%(category, "/".join(toolNamePathList))) == wx.ID_YES:
+			if self.showMessageDialog("是否确认删除分类【%s】？\n该分类包含工具：\n%s"%(category, "\n".join(toolNamePathList))) == wx.ID_YES:
 				for itemData in itemDataList:
 					self.removeItem(itemData["key"]);
 
@@ -238,14 +242,14 @@ class TreeItemsViewCtr(object):
 		itemData = self.__itemPageDataDict.get(self.__popupMenuItem, None);
 		if itemData:
 			self._showToolInfo_({
+				"key" : itemData["key"],
 				"name" : itemText,
 				"path" : itemData["category"],
-				"author" : itemData["author"],
 				"version" : itemData["version"],
+				"author" : itemData["author"],
 				"description" : {
 					"value" : itemData["description"],
 				},
-				"download" : {},
 			});
 		else:
 			self.showMessageDialog("显示工具【%s】信息失败！"%itemText);

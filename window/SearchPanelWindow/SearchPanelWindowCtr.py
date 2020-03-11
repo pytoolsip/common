@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-05 21:14:16
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:46:22
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-03 22:15:09
 
 import wx;
 
@@ -116,7 +116,19 @@ class SearchPanelWindowCtr(object):
 		if searchText != "":
 			mainWinLeftViewCtr = _GG("WindowObject").MainWindowCtr.getCtrByKey("WindowLeftViewCtr");
 			treeItemsViewCtr = mainWinLeftViewCtr.getCtrByKey("TreeItemsViewCtr");
-			for _,v in treeItemsViewCtr.itemPageDataDict.items():
+			for v in treeItemsViewCtr.itemPageDataDict.values():
 				if "title" in v and v["title"].find(searchText) >= 0:
-					searchData.append({"name" : v["title"], "path" : v["keyPath"], "id" : v["id"], "pagePath" : v["pagePath"]});
+					searchData.append(self.convertSearchData(v));
 		return searchData;
+
+	def convertSearchData(self, data):
+		toolPath = data["title"];
+		if data["category"]:
+			toolPath = "/".join([data["category"], data["title"]])
+		return {
+			"name" : data["title"],
+			"path" : toolPath,
+			"key" : data["key"],
+			"pagePath" : data["pagePath"],
+			"category" : data["category"],
+		};

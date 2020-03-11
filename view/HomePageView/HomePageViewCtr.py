@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 19:05:42
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-20 00:00:41
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-03 10:49:14
 
 import wx;
 
 from _Global import _GG;
+from function.base import *;
 
 from HomePageViewUI import *;
 
@@ -101,31 +102,41 @@ class HomePageViewCtr(object):
 		self.getCtrByKey("RankingPagesViewCtr").addDownPage(_GG("g_CommonPath") + "view/RankingListView",
 		 "download", "下载", params = {"size" : (self.__ui.getRankingSizeX(), self.__ui.GetSize()[1])});
 
-	def updateRankingPage(self, toolInfos, onClickItem):
-		listData, index = [], 1;
+	def getListData(self, toolInfos, onClickItem, numFunc):
+		listData, index = [], 0;
 		for info in toolInfos:
+			index += 1;
 			listData.append({
 				"index" : index,
-				"num" : 0,
-				"title" : info["title"],
-				"detail" : info["author"],
+				"num" : numFunc(info),
+				"title" : info.name,
+				"detail" : info.author,
 				"toolInfo" : {
-					"key" : info["key"],
-					"title" : info["title"],
-					"category" : info["category"],
-					"description" : info["description"],
-					"version" : info["version"],
-					"author" : info["author"],
+					"key" : info.tkey,
+					"title" : info.name,
+					"category" : info.category,
+					"description" : info.description,
+					"version" : info.version,
+					"author" : info.author,
 				},
 				"onClick" : onClickItem,
 			});
-		self.getUIByKey("RankingPagesViewCtr").pageDict["popularity"].getCtr().updateView({"listData" : listData});
-		self.getUIByKey("RankingPagesViewCtr").pageDict["praise"].getCtr().updateView({"listData" : listData});
-		self.getUIByKey("RankingPagesViewCtr").pageDict["download"].getCtr().updateView({"listData" : listData});
+		return listData;
+
+	def updateRankingPage(self, toolInfos, onClickItem):
+		def popularity(toolInfo):
+			return toolInfo.download * toolInfo.score;
+		self.getUIByKey("RankingPagesViewCtr").pageDict["popularity"].getCtr().updateView({"listData" : self.getListData(toolInfos, onClickItem, popularity)});
+		def download(toolInfo):
+			return toolInfo.download;
+		self.getUIByKey("RankingPagesViewCtr").pageDict["download"].getCtr().updateView({"listData" : self.getListData(toolInfos, onClickItem, download)});
+		def score(toolInfo):
+			return toolInfo.download;
+		self.getUIByKey("RankingPagesViewCtr").pageDict["praise"].getCtr().updateView({"listData" : self.getListData(toolInfos, onClickItem, score)});
 
 	# 请求工具信息列表的回调
 	def onRequestToolInfos(self, retData):
-		if not retData or not retData.isSuccess:
+		if not retData or retData.code != 0:
 			return;
 		def onClickItem(item, itemData):
 			toolInfo = itemData["toolInfo"];
@@ -140,31 +151,32 @@ class HomePageViewCtr(object):
 				},
 			});
 		# 处理返回的工具信息列表
-		infos = _GG("CommonClient").decodeBytes(retData.data);
+		infos = retData.toolList;
 		gridsData = [];
 		for info in infos:
 			gridsData.append({
-				"title" : info["title"],
-				"version" : info["version"],
-				"detail" : info["description"],
-				"name" : info["author"],
+				"title" : info.name,
+				"version" : info.version,
+				"detail" : info.description,
+				"name" : info.author,
 				"toolInfo" : {
-					"key" : info["key"],
-					"title" : info["title"],
-					"category" : info["category"],
-					"description" : info["description"],
-					"version" : info["version"],
-					"author" : info["author"],
+					"key" : info.tkey,
+					"title" : info.name,
+					"category" : info.category,
+					"description" : info.description,
+					"version" : info.version,
+					"author" : info.author,
 				},
 				"onClick" : onClickItem,
 			});
 		self.getCtrByKey("NewestGridsViewCtr").updateView({"gridsData" : gridsData});
 		self.getCtrByKey("RecommendToolsCtr").updateView({"gridsData" : gridsData});
 		self.updateRankingPage(infos, onClickItem);
+		# 更新大小
+		self.getUI().onToolWinSize();
 
 	def callService(self):
 		# 请求工具信息列表
-		_GG("CommonClient").callService("Request", "Req", {
-			"key" : "RequestToolInfos",
-			"data" : _GG("CommonClient").encodeBytes({"IPVersion" : _GG("AppConfig")["version"]}),
+		_GG("CommonClient").callService("ReqToolInfo", "ToolReq", {
+			"IPBaseVer" : GetBaseVersion(_GG("ClientConfig").UrlConfig().GetIPVersion()),
 		}, asynCallback = self.onRequestToolInfos);

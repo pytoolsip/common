@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 18:09:36
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-31 00:43:36
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-07 00:34:38
 
 import wx;
 
@@ -13,6 +13,8 @@ from WindowRightViewUI import *;
 def getRegisterEventMap(G_EVENT):
 	return {
 		G_EVENT.UPDATE_WINDOW_RIGHT_VIEW : "updateView",
+		G_EVENT.CREATE_FIXED_PAGE : "createFixedPage",
+		G_EVENT.SAVE_IP_CONFIG : "onSaveIPConfig",
 	};
 
 class WindowRightViewCtr(object):
@@ -22,9 +24,9 @@ class WindowRightViewCtr(object):
 		self._className_ = WindowRightViewCtr.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
-		self.initUI(parent); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
 		self.bindBehaviors(); # 绑定组件
+		self.initUI(parent); # 初始化视图UI
 
 	def __del__(self):
 		self.__dest__();
@@ -83,6 +85,7 @@ class WindowRightViewCtr(object):
 			_GG("EventDispatcher").unregister(eventId, self, callbackName);
 
 	def bindBehaviors(self):
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "ConfigParseBehavior/JsonConfigBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 		
 	def unbindBehaviors(self):
@@ -104,4 +107,24 @@ class WindowRightViewCtr(object):
 	def destroyPageByPageKey(self, data):
 		if "key" in data:
 			self.getCtrByKey("NoteBookViewCtr").destroyPageByPageKey(data["key"]);
+		pass;
+
+	def createFixedPage(self, data):
+		for pageData in data.get("pageDataList", []):
+			if "key" in pageData:
+				self.createPageToNoteBook(pageData);
+				self.getCtrByKey("NoteBookViewCtr").setFixPageByKey(pageData["key"]);
+		pass;
+
+	def getPageCountLimit(self):
+		defaultVal = _GG("AppConfig").get("fixedPageCntLimit", 8);
+		if os.path.exists(_GG("g_DataPath")+"config/setting_cfg.json"):
+			cfg = self.readJsonFile(_GG("g_DataPath")+"config/setting_cfg.json");
+			if cfg:
+				return cfg.get("fixed_page_count_limit", defaultVal);
+		return defaultVal;
+
+	def onSaveIPConfig(self, cfg):
+		if "fixed_page_count_limit" in cfg:
+			self.getCtrByKey("NoteBookViewCtr").setPageCountLimit(cfg["fixed_page_count_limit"]);
 		pass;

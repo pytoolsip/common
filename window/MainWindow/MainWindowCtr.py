@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-07-29 10:53:54
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-28 21:02:39
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-06 22:21:06
 
 import wx;
 
@@ -109,6 +109,8 @@ class MainWindowCtr(object):
 	def createHomePage(self):
 		itemPageData = self.getCtrByKey("WindowLeftViewCtr").getFirstItemPageData();
 		if itemPageData:
+			# 先销毁后创建
+			self.getCtrByKey("WindowRightViewCtr").destroyPageByPageKey(itemPageData);
 			self.getCtrByKey("WindowRightViewCtr").createPageToNoteBook(itemPageData);
 
 	def getToolWinSize(self):
@@ -159,3 +161,6 @@ class MainWindowCtr(object):
 
 	def checkTreeItemKey(self, itemKey):
 		return self.getCtrByKey("WindowLeftViewCtr").checkItemKey(itemKey);
+		
+	def getItemDataByKey(self, itemKey):
+		return self.getCtrByKey("WindowLeftViewCtr").getItemData(itemKey);

@@ -1,31 +1,38 @@
 # -*- coding: utf-8 -*-
-# @Author: JimZhang
-# @Date:   2019-01-26 18:49:31
-# @Last Modified by:   JimZhang
-# @Last Modified time: 2019-03-19 23:55:09
+# @Author: Administrator
+# @Date:   2020-02-28 16:29:02
+# @Last Modified by:   Administrator
+# @Last Modified time: 2020-02-28 16:29:02
 import os;
 import wx;
-import re;
 
 from _Global import _GG;
 
-from RegisterDialogUI import *;
+from ScreenshotDialogUI import *;
 
 def getRegisterEventMap(G_EVENT):
 	return {
 		# G_EVENT.TO_UPDATE_VIEW : "updateDialog",
 	};
 
-class RegisterDialogCtr(object):
-	"""docstring for RegisterDialogCtr"""
+fileFormatCfg = {
+	".png" : wx.BITMAP_TYPE_PNG,
+	".jpg" : wx.BITMAP_TYPE_JPEG,
+	".bmp" : wx.BITMAP_TYPE_BMP,
+	".tif" : wx.BITMAP_TYPE_TIF,
+}
+
+class ScreenshotDialogCtr(object):
+	"""docstring for ScreenshotDialogCtr"""
 	def __init__(self, parent, params = {}):
-		super(RegisterDialogCtr, self).__init__();
-		self._className_ = RegisterDialogCtr.__name__;
+		super(ScreenshotDialogCtr, self).__init__();
+		self._className_ = ScreenshotDialogCtr.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
 		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
 		self.bindBehaviors(); # 绑定组件
+		self.initPopupMenu(); # 初始化弹出菜单
 
 	def __del__(self):
 		self.__dest__();
@@ -47,7 +54,7 @@ class RegisterDialogCtr(object):
 
 	def initUI(self, parent, params):
 		# 创建视图UI类
-		self.__ui = RegisterDialogUI(parent, curPath = self._curPath, viewCtr = self, params = params);
+		self.__ui = ScreenshotDialogUI(parent, curPath = self._curPath, viewCtr = self, params = params);
 		self.__ui.initDialog();
 
 	def getUI(self):
@@ -91,18 +98,48 @@ class RegisterDialogCtr(object):
 			
 	def updateDialog(self, data):
 		self.__ui.updateDialog(data);
+	
+	def onSave(self, event):
+		dlg = wx.FileDialog(self.getUI(), "保存截屏图片", defaultFile = "screenshot", wildcard = "PNG files (.png)|.png|JPEG files (.jpg)|.jpg|BMP files (.bmp)|.bmp|TIF files (.tif)|.tif", style=wx.FD_SAVE);
+		if dlg.ShowModal() == wx.ID_OK:
+			filePath = dlg.GetPath();
+			_, ext = os.path.splitext(filePath);
+			if ext in fileFormatCfg:
+				self.getUI().saveAs(filePath, fileFormatCfg[ext]);
+			else:
+				self.getUI().showMessageDialog(f"保存截屏图片（{filePath}）文件格式错误！", "保存截屏图片", style = wx.OK|wx.ICON_ERROR);
+		pass;
+	
+	def onFullScreen(self, event):
+		self.getUI().fullScreenSelectedArea();
+	
+	def onCancel(self, event):
+		self.getUI().resetSelectedArea();
 
-	def checkEmailFormat(self, email):
-		if re.match(r"^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$", email):
-			return True;
-		return False;
-
-	def checkNameFormat(self, name):
-		if re.match(r"^[_a-zA-Z0-9\u4e00-\u9fa5]+$", name):
-			return True;
-		return False;
-
-	def checkPwdFormat(self, pwd):
-		if re.match(r"(?=.*[A-Za-z])(?=.*\d)[a-zA-Z\d]{8,16}", pwd):
-			return True;
-		return False;
+	def initPopupMenu(self):
+		self.getCtrByKey("PopupMenuViewCtr").createNewMenu("Screenshot", {"itemsData" : [
+			{
+				"title" : "保存",
+				"callback" : self.onSave,
+			},
+			{
+				"isSeparator" : True,
+			},
+			{
+				"title" : "全屏截图",
+				"callback" : self.onFullScreen,
+			},
+			{
+				"isSeparator" : True,
+			},
+			{
+				"title" : "取消",
+				"callback" : self.onCancel,
+			},
+		]});
+	
+	def onPopupMenu(self, pos):
+		popupMenu = self.getCtrByKey("PopupMenuViewCtr").getMenu("Screenshot");
+		if popupMenu:
+			self.getUI().PopupMenu(popupMenu, pos);
+		pass;

@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2019-03-16 11:25:09
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-23 15:55:26
+# @Last Modified time: 2020-02-05 20:15:19
 import wx;
 
 from _Global import _GG;
@@ -16,7 +16,6 @@ def __getExposeData__():
 def __getExposeMethod__(DoType):
 	return {
 		"_loginIP_" : DoType.AddToRear,
-		"_registerIP_" : DoType.AddToRear,
 		"_logoutIP_" : DoType.AddToRear,
 	};
 
@@ -40,125 +39,37 @@ class UserServiceBehavior(_GG("BaseBehavior")):
 	# 	pass;
 
 	def _loginIP_(self, obj, _retTuple = None):
-		def onBlurName(name, callback):
-			# 请求服务的回调
-			def checkName(respData):
-				if not respData:
-					callback("网络请求失败！", False);
-				elif not respData.isSuccess:
-					callback("该用户名不存在！", False);
-				else:
-					callback("");
-			# 请求服务
-			_GG("CommonClient").callService("Request", "Req", {
-				"key" : "VertifyUserName",
-				"data" : _GG("CommonClient").encodeBytes({"name" : name}),
-			}, asynCallback = checkName);
 		def onLogin(loginInfo):
-			respData = _GG("CommonClient").callService("Login", "LoginReq", loginInfo);
-			if respData and respData.isSuccess:
-				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").LOGIN_SUCCESS_EVENT, respData.userInfo);
-				def setIPInfoConfig(msgDialog, status):
-					if status == wx.ID_OK:
-						obj.setIPInfoConfig("user", "name", loginInfo["name"]);
-						obj.setIPInfoConfig("user", "password", loginInfo["password"]);
-						obj.setIPInfoConfig("user", "time_stamp", time.time());
-				_GG("WindowObject").CreateMessageDialog("登录成功，是否保存账户密码到本地？", "登录账号", callback = setIPInfoConfig, style = wx.OK|wx.CANCEL|wx.ICON_QUESTION)
+			respData = _GG("CommonClient").callService("Login", "LoginReq", {
+				"name" : loginInfo["name"],
+				"pwd" : obj.encodeStrByPublicKey(loginInfo["password"]),
+			});
+			if respData and respData.code == 0:
+				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").LOGIN_SUCCESS_EVENT, {"userInfo" : respData.userInfo, "expire" : respData.expire});
+				# 保存用户信息
+				obj.setIPInfoConfig("user", "name", respData.userInfo.name);
+				obj.setIPInfoConfig("user", "pwd", respData.userInfo.pwd);
+				obj.setIPInfoConfig("user", "email", respData.userInfo.email);
+				obj.setIPInfoConfig("user", "expire", respData.expire);
+				obj.setIPInfoConfig("user", "time_stamp", time.time());
 			else:
-				_GG("WindowObject").CreateMessageDialog("登录失败，请重新登录！", "登录账号", style = wx.OK|wx.ICON_INFORMATION);
-			return respData and respData.isSuccess or False;
+				_GG("WindowObject").CreateMessageDialog("登录失败，请重新登录！", "登录平台", style = wx.OK|wx.ICON_INFORMATION);
+			return respData and respData.code == 0 or False;
+		def onReqLogin(loginInfo):
+			# 请求公钥数据
+			respData = _GG("CommonClient").callService("Request", "Req", {
+				"key" : "ReqPublicKey",
+				"data" : _GG("CommonClient").encodeBytes({}),
+			});
+			if respData and respData.code == 0:
+				msgData = _GG("CommonClient").decodeBytes(respData.data);
+				obj.setEncodePublicKey(msgData["key"]); # 保存公钥数据
+			return onLogin(loginInfo); # 登陆平台
 		# 显示弹窗
 		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/LoginDialog", params = {
-			# "name" : {
-			# 	"onBlur" : onBlurName,
-			# },
-			"onOk" : onLogin,
+			"onOk" : onReqLogin,
 		});
 
-	def _registerIP_(self, obj, _retTuple = None):
-		def onBlurName(name, callback):
-			# 请求服务的回调
-			def checkName(respData):
-				if not respData:
-					callback("网络请求失败！", False);
-				elif respData.isSuccess:
-					callback("该用户名已存在！", False);
-				else:
-					callback("用户名校验通过！");
-			# 请求服务
-			_GG("CommonClient").callService("Request", "Req", {
-				"key" : "VertifyUserName",
-				"data" : _GG("CommonClient").encodeBytes({"name" : name}),
-			}, asynCallback = checkName);
-		def onBlurEmail(email, callback):
-			# 请求服务的回调
-			def checkEmail(respData):
-				if not respData:
-					callback("网络请求失败！", False);
-				elif respData.isSuccess:
-					callback("该邮箱已被使用！", False);
-				else:
-					callback("邮箱校验通过！");
-			# 请求服务
-			_GG("CommonClient").callService("Request", "Req", {
-				"key" : "VertifyUserEmail",
-				"data" : _GG("CommonClient").encodeBytes({"email" : email}),
-			}, asynCallback = checkEmail);
-		def onBlurVeriCode(email, code, callback):
-			# 请求服务的回调
-			def checkCode(respData):
-				if not respData:
-					callback("网络请求失败！", False);
-				elif not respData.isSuccess:
-					callback("验证码输入错误！", False);
-				else:
-					callback("验证码校验通过！");
-			# 请求服务
-			_GG("CommonClient").callService("Request", "Req", {
-				"key" : "VertifyVerificationCode",
-				"data" : _GG("CommonClient").encodeBytes({"email" : email, "code" : code}),
-			}, asynCallback = checkCode);
-		def onSendVeriCode(email, callback):
-			# 请求服务的回调
-			def checkResp(respData):
-				if respData and respData.isSuccess:
-					data = _GG("CommonClient").decodeBytes(respData.data);
-					callback(data["expire"]);
-				else:
-					_GG("WindowObject").CreateMessageDialog("发送失败，请检测邮箱是否正确！", "发送校验码", style = wx.OK|wx.ICON_ERROR);
-					callback(0); # 清除倒计时
-			# 请求服务
-			_GG("CommonClient").callService("Request", "Req", {
-				"key" : "SendVerificationCode",
-				"data" : _GG("CommonClient").encodeBytes({"email" : email}),
-			}, asynCallback = checkResp);
-		def onRegister(registerInfo):
-			respData = _GG("CommonClient").callService("Register", "RegisterReq", registerInfo);
-			if respData and respData.isSuccess:
-				_GG("WindowObject").CreateMessageDialog("注册成功。", "注册账号", style = wx.OK|wx.ICON_INFORMATION);
-			else:
-				if respData and respData.data:
-					data = _GG("CommonClient").decodeBytes(respData.data);
-					if "content" in data:
-						_GG("WindowObject").CreateMessageDialog(data["content"], "注册账号", style = wx.OK|wx.ICON_INFORMATION);
-						return False;
-				_GG("WindowObject").CreateMessageDialog("注册失败，请重新注册！", "注册账号", style = wx.OK|wx.ICON_INFORMATION);
-			return respData and respData.isSuccess or False;
-		# 显示弹窗
-		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/RegisterDialog", params = {
-			"name" : {
-				"onBlur" : onBlurName,
-			},
-			"email" : {
-				"onBlur" : onBlurEmail,
-			},
-			"veriCode" : {
-				"onBlur" : onBlurVeriCode,
-				"onBtn" : onSendVeriCode,
-			},
-			"onOk" : onRegister,
-		});
-	
 	def _logoutIP_(self, obj, _retTuple = None):
 		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").LOGOUT_SUCCESS_EVENT, {
 			"userName" : obj.getIPInfoConfig("user", "name"),

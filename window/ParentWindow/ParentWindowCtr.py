@@ -15,6 +15,8 @@ def getRegisterEventMap(G_EVENT):
 	return {
 		G_EVENT.SHOW_SEARCH_PANEL_EVENT : "showSearchPanelWindow",
 		G_EVENT.ESC_DOWN_EVENT : "onEscDownEvent",
+		G_EVENT.SCREENSHOT : "onScreenshot",
+		G_EVENT.SCREENSHOT_AFTER_HIDING_WIN : "onScreenshotAfterHidingWin",
 	};
 
 class ParentWindowCtr(object):
@@ -182,3 +184,24 @@ class ParentWindowCtr(object):
 					escDownEvent["function"](escDownEvent["data"]);
 				else:
 					escDownEvent["function"]();
+		pass;
+	
+	# 截屏
+	def __onScreenshot__(self, data):
+		if data.get("isHideWin", False):
+			self.getUI().Hide();
+		ssDialogCtr = CreateCtr(_GG("g_CommonPath") + "dialog/ScreenshotDialog", None);
+		ssDialogCtr.getUI().ShowModal();
+		ssDialogCtr.getUI().Destroy();
+		if not self.getUI().IsShown():
+			self.getUI().Show();
+		pass;
+	
+	# 截屏
+	def onScreenshot(self, data):
+		wx.CallLater(300, self.__onScreenshot__, data);
+
+	# 隐藏窗口后截屏
+	def onScreenshotAfterHidingWin(self, data):
+		self.onScreenshot({"isHideWin" : True});
+		

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 14:46:20
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-20 00:59:10
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-06 20:21:34
 
 import wx, os, shutil;
 
@@ -15,6 +15,7 @@ def getRegisterEventMap(G_EVENT):
 		G_EVENT.LOGIN_SUCCESS_EVENT : "updateUserNameView",
 		G_EVENT.UPDATE_WINDOW_LEFT_VIEW : "updateTreeView",
 		G_EVENT.LOGOUT_SUCCESS_EVENT : "resetUserNameView",
+		G_EVENT.SAVE_FIXED_PAGE_DATA : "saveFixedPageData",
 	};
 
 class WindowLeftViewCtr(object):
@@ -28,6 +29,7 @@ class WindowLeftViewCtr(object):
 		self.bindBehaviors(); # 绑定组件
 		self.initTreeItemsData(); # 初始化树节点数据
 		self.initUI(parent); # 初始化视图UI
+		wx.CallAfter(self.initFixedPage); # 初始化固定标签页
 
 	def __del__(self):
 		self.__dest__();
@@ -98,17 +100,17 @@ class WindowLeftViewCtr(object):
 
 	def initTreeItemsData(self):
 		self.__treeItemsData = [];
-		if os.path.exists(_GG("g_DataPath")+"tools_tree.json"):
-			self.__treeItemsData = self.readJsonFile(_GG("g_DataPath")+"tools_tree.json");
+		if os.path.exists(_GG("g_DataPath")+"config/tools_tree.json"):
+			self.__treeItemsData = self.readJsonFile(_GG("g_DataPath")+"config/tools_tree.json");
 
 	def saveTreeItemsData(self):
-		self.writeJsonFile(_GG("g_DataPath")+"tools_tree.json", self.__treeItemsData);
+		self.writeJsonFile(_GG("g_DataPath")+"config/tools_tree.json", self.__treeItemsData);
 
 	def updateUserNameView(self, data):
 		def onClick(event):
 			# 显示玩家信息的弹窗
 			pass;
-		self.getCtrByKey("UserNameTextViewCtr").updateView({"name" : data.name, "onClick" : onClick});
+		self.getCtrByKey("UserNameTextViewCtr").updateView({"name" : data["userInfo"].name, "onClick" : onClick});
 
 	def resetUserNameView(self, data):
 		self.getCtrByKey("UserNameTextViewCtr").updateView({"name" : "点击登录", "onClick" : self.onClickLogin});
@@ -141,7 +143,7 @@ class WindowLeftViewCtr(object):
 				"key" : pageInfo["key"],
 			});
 			# 移除工具文件夹
-			toolPath = os.path.dirname(pageInfo["pagePath"]);
+			toolPath = os.path.dirname(os.path.dirname(pageInfo["pagePath"])); # 中间还有一层tool
 			if os.path.exists(toolPath):
 				shutil.rmtree(toolPath);
 			pass;
@@ -222,3 +224,26 @@ class WindowLeftViewCtr(object):
 
 	def checkItemKey(self, itemKey):
 		return self.getCtrByKey("TreeItemsViewCtr").getItem(itemKey) != None;
+		
+	def getItemData(self, itemKey):
+		return self.getCtrByKey("TreeItemsViewCtr").getItemPageData(itemKey);
+
+	def saveFixedPageData(self, data):
+		if "pageKeyList" in data:
+			self.writeJsonFile(_GG("g_DataPath")+"config/fixed_page_key_list.json", data["pageKeyList"]);
+		pass;
+
+	def initFixedPage(self):
+		pageKeyList = [];
+		if os.path.exists(_GG("g_DataPath")+"config/fixed_page_key_list.json"):
+			pageKeyList = self.readJsonFile(_GG("g_DataPath")+"config/fixed_page_key_list.json");
+		if pageKeyList:
+			pageDataList = [];
+			for key in pageKeyList:
+				pageData = self.getCtrByKey("TreeItemsViewCtr").getItemPageData(key);
+				if pageData:
+					pageDataList.append(pageData);
+			_GG("EventDispatcher").dispatch(_GG("EVENT_ID").CREATE_FIXED_PAGE, {
+				"pageDataList" : pageDataList,
+			});
+		pass;

@@ -18,6 +18,7 @@ class DirInputView(wx.Panel):
 		self.params = {
 			"size" : (-1,-1),
 			"inputSize" : (-1,20),
+			"inputValue" : "",
 			"buttonSize" : (30,20),
 			"buttonLabel" : "选择",
 			"onInput" : None,
@@ -37,7 +38,11 @@ class DirInputView(wx.Panel):
 		self.SetSizerAndFit(box);
 
 	def createInput(self):
-		self.__input = wx.TextCtrl(self, -1, "", size = self.params["inputSize"]);
+		self.__input = wx.TextCtrl(self, -1, value = self.params["inputValue"], size = self.params["inputSize"]);
+		def onKillFocus(event):
+			self.setInputValue(self.__input.GetValue());
+			event.Skip();
+		self.__input.Bind(wx.EVT_KILL_FOCUS, onKillFocus);
 
 	def createButton(self):
 		self.__button = wx.Button(self, -1, self.params["buttonLabel"], size = self.params["buttonSize"]);

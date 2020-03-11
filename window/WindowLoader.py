@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 # @Author: JinZhang
 # @Date:   2018-04-19 14:19:46
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-19 22:06:27
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-06 22:17:08
 
+import os;
+import shutil;
 import wx;
 from ProjectConfig import ProjectConfig;
 from _Global import _GG;
@@ -81,33 +83,84 @@ class WindowLoader(object):
 		self._mainApp.Unbind(wx.EVT_CHAR_HOOK);
 
 	def registerEvent(self):
+		_GG("EventDispatcher").register(_GG("EVENT_ID").STOP_APP_EVENT, self, "toStopApp");
 		_GG("EventDispatcher").register(_GG("EVENT_ID").RESTART_APP_EVENT, self, "restartApp");
 		_GG("EventDispatcher").register(_GG("EVENT_ID").UPDATE_APP_EVENT, self, "updateApp");
 
 	def unregisterEvent(self):
+		_GG("EventDispatcher").unregister(_GG("EVENT_ID").STOP_APP_EVENT, self, "toStopApp");
 		_GG("EventDispatcher").unregister(_GG("EVENT_ID").RESTART_APP_EVENT, self, "restartApp");
 		_GG("EventDispatcher").unregister(_GG("EVENT_ID").UPDATE_APP_EVENT, self, "updateApp");
+	
+	def toStopApp(self, data):
+		if self.createMessageDialog("是否确认退出？", "退出平台", style = wx.YES_NO|wx.ICON_QUESTION, isShow = False).ShowModal() != wx.ID_YES:
+			return; # 取消退出
+		self.stopApp(data); # 停止App
 
-	def restartApp(self, data):
+	def stopApp(self, data):
 		self._mainApp.ExitMainLoop(); # 退出App的主循环
 		self.__dest__(); # 销毁回调
+
+	def startApp(self, data):
 		if sys.platform == "win32":
-			if ProjectConfig["isOpenLogWin"] :
-				os.system("start ../run/run.bat"); # 启动app【有日志窗口】
-			else :
-				os.system("cd ../run/&&run.vbs"); # 启动app【无日志窗口】
+			# 运行执行程序
+			exeName = "pytoolsip.exe";
+			if os.path.exists(os.path.join(_GG("g_ProjectPath"), exeName)):
+				os.system(" ".join(["start", "/d", os.path.abspath(_GG("g_ProjectPath")), exeName])); # 启动app
+				return;
+			# 直接运行脚本
+			pyName = "pytoolsip.py";
+			if os.path.exists(os.path.join(_GG("g_ProjectPath"), pyName)):
+				pythonPath = "python";
+				if os.path.exists(_GG("g_PythonPath")):
+					pythonPath = os.path.abspath(os.path.join(_GG("g_PythonPath"), "python.exe"));
+				os.system(" ".join(["start", "/d", os.path.abspath(_GG("g_ProjectPath")), pythonPath, pyName])); # 启动app
+				return;
+			# 运行run.bat脚本
+			batName = "run.bat";
+			if os.path.exists(os.path.join(_GG("g_ProjectPath"), batName)):
+				os.system(" ".join(["start", "/d", os.path.abspath(_GG("g_ProjectPath")), batName])); # 启动run.bat
+				return;
+			# 运行失败
+			_GG("Log").e("Failed to start App!");
+
+	def restartApp(self, data):
+		if self.createMessageDialog("是否确认重启？", "重启平台", style = wx.YES_NO|wx.ICON_QUESTION, isShow = False).ShowModal() != wx.ID_YES:
+			return; # 取消重启
+		self.stopApp(data); # 停止App
+		self.startApp(data); # 开始App
 
 	def updateApp(self, data):
-		exePath =  _GG("g_ProjectPath")+"run/update.exe";
-		if "updatePath" not in data or sys.platform != "win32" or not os.path.exists(exePath):
+		if sys.platform != "win32" or "version" not in data or "updateFile" not in data:
 			self.createMessageDialog("更新平台失败！", "更新平台", style = wx.OK|wx.ICON_ERROR);
-			return;
-		# 退出App的主循环
-		self._mainApp.ExitMainLoop();
-		# 销毁回调
-		self.__dest__();
-		# 启动更新程序
-		os.system(" ".join(["start", exePath, data["updatePath"]]));
+			return; # 平台更新失败
+		if not self.copyUpdateVbs():
+			self.createMessageDialog("更新平台失败！", "更新平台", style = wx.OK|wx.ICON_ERROR);
+			return; # 平台更新失败
+		# 停止App
+		self.stopApp(data);
+		# 调用更新脚本
+		projectPath, updatePath, runPath = os.path.abspath(_GG("g_ProjectPath")), os.path.abspath(_GG("g_DataPath")+"update"), os.path.abspath(_GG("GetDependPath")("run"));
+		RunCmd(" ".join([os.path.join(runPath, "update.bat"), os.path.join(_GG("g_PythonPath"), "python.exe"), os.path.abspath(data["updateFile"]), data["version"], projectPath, updatePath, updatePath]));
+
+	def copyUpdateVbs(self):
+		updateName = "update.vbs";
+		runPath = os.path.abspath(_GG("GetDependPath")("run"));
+		updatePath = os.path.abspath(_GG("g_DataPath")+"update");
+		# 拷贝更新文件
+		updateVbs = os.path.join(runPath, updateName);
+		if not os.path.exists(updateVbs):
+			_GG("Log").w("Failed to update IP! Not Exists updateVbs!");
+			return False;
+		try:
+			filePath = os.path.join(updatePath, updateName);
+			if os.path.exists(filePath):
+				os.remove(filePath);
+			shutil.copyfile(updateVbs, filePath);
+			return True;
+		except Exception as e:
+			_GG("Log").e(f"Failed to update IP! Err[{e}]!");
+		return False;
 
 	def runWindows(self):
 		self._parentWindowUI.Tile();
@@ -118,7 +171,7 @@ class WindowLoader(object):
 		self._mainApp.MainLoop();
 
 	def createViews(self):
-		wx.CallLater(100, self.onCreateViews);
+		wx.CallLater(1000, self.onCreateViews);
 
 	def onCreateViews(self):
 		self.createHomePage();

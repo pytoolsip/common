@@ -1,30 +1,35 @@
 # -*- coding: utf-8 -*-
-# @Author: JimDreamHeart
-# @Date:   2018-03-29 22:19:40
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-16 13:45:52
+# @Author: Administrator
+# @Date:   2020-01-11 17:27:27
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-07 00:14:24
 import os;
 import wx;
+from copy import deepcopy;
 
 from _Global import _GG;
 
-from TemplateDialogUI import *;
+from SettingDialogUI import *;
 
 def getRegisterEventMap(G_EVENT):
 	return {
 		# G_EVENT.TO_UPDATE_VIEW : "updateDialog",
 	};
 
-class TemplateDialogCtr(object):
-	"""docstring for TemplateDialogCtr"""
+class SettingDialogCtr(object):
+	"""docstring for SettingDialogCtr"""
 	def __init__(self, parent, params = {}):
-		super(TemplateDialogCtr, self).__init__();
-		self._className_ = TemplateDialogCtr.__name__;
+		super(SettingDialogCtr, self).__init__();
+		self._className_ = SettingDialogCtr.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
-		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
 		self.bindBehaviors(); # 绑定组件
+		self.init(); # 初始化变量
+		self.initUI(parent, params); # 初始化视图UI
+	
+	def init(self):
+		self.__settingCfg = {}; # 设置配置
 
 	def __del__(self):
 		self.__dest__();
@@ -46,7 +51,7 @@ class TemplateDialogCtr(object):
 
 	def initUI(self, parent, params):
 		# 创建视图UI类
-		self.__ui = TemplateDialogUI(parent, curPath = self._curPath, viewCtr = self, params = params);
+		self.__ui = SettingDialogUI(parent, curPath = self._curPath, viewCtr = self, params = params);
 		self.__ui.initDialog();
 
 	def getUI(self):
@@ -83,6 +88,7 @@ class TemplateDialogCtr(object):
 			_GG("EventDispatcher").unregister(eventId, self, callbackName);
 
 	def bindBehaviors(self):
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "ConfigParseBehavior/JsonConfigBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 		
 	def unbindBehaviors(self):
@@ -90,3 +96,23 @@ class TemplateDialogCtr(object):
 			
 	def updateDialog(self, data):
 		self.__ui.updateDialog(data);
+		
+	def resetDialog(self):
+		self.__settingCfg = {};
+		self.__ui.resetDialog();
+
+	def getSettingCfg(self, key, default = None):
+		if not self.__settingCfg and os.path.exists(_GG("g_DataPath")+"config/setting_cfg.json"):
+			cfg = self.readJsonFile(_GG("g_DataPath")+"config/setting_cfg.json");
+			if cfg:
+				self.__settingCfg = cfg;
+		return self.__settingCfg.get(key, default);
+
+	def setSettingCfg(self, key, val):
+		self.__settingCfg[key] = val;
+		self.getUI().activeSaveBtn();
+	
+	# 保存设置
+	def saveSettingCfg(self):
+		self.writeJsonFile(_GG("g_DataPath")+"config/setting_cfg.json", self.__settingCfg);
+		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").SAVE_IP_CONFIG, deepcopy(self.__settingCfg));

@@ -14,32 +14,29 @@ class CommonClient(object):
 	"""docstring for CommonClient"""
 	def __init__(self):
 		super(CommonClient, self).__init__();
-		conf = _GG("ClientConfig").Config();
-		_HOST, _PORT = conf.Get("server", "host"), conf.Get("server", "port");
-		_GG("Log").i("channel =>", _HOST+':'+_PORT);
-		self.__client = common_pb2_grpc.CommonStub(channel = grpc.insecure_channel(_HOST+':'+_PORT)); #客户端建立连接
-		self.__uid = -1; # 玩家ID
+		self.__client = None; #客户端建立连接
 		pass;
 
-	def __setUserInfo__(self, userInfo):
-		self.__uid = userInfo.uid;
-
-	def getUserId(self):
-		return self.__uid;
+	# 初始化客户端
+	def initClient(self):
+		if not self.__client:
+			conf = _GG("ClientConfig").Config();
+			_HOST, _PORT = conf.Get("server", "host"), conf.Get("server", "port");
+			_GG("Log").i("channel =>", _HOST+':'+_PORT);
+			self.__client = common_pb2_grpc.CommonStub(channel = grpc.insecure_channel(_HOST+':'+_PORT)); #客户端建立连接
 
 	def rawCallService(self, methodName, req, asynCallback = None):
 		resp = None;
-		if hasattr(self.__client, methodName):
-			try:
-				resp = getattr(self.__client, methodName)(req);
-				if methodName == "Login" and resp.isSuccess:
-					self.__setUserInfo__(resp.userInfo);
-			except Exception as e:
-				_GG("Log").w("Failed to request server by key[{}] !".format(methodName), e);
-		else:
-			_GG("Log").w("Invalid caller[{}] in client !".format(methodName));
-		if callable(asynCallback):
-			wx.CallAfter(asynCallback, resp);
+		if self.__client:
+			if hasattr(self.__client, methodName):
+				try:
+					resp = getattr(self.__client, methodName)(req);
+				except Exception as e:
+					_GG("Log").w("Failed to request server by key[{}] !".format(methodName), e);
+			else:
+				_GG("Log").w("Invalid caller[{}] in client !".format(methodName));
+			if callable(asynCallback):
+				wx.CallAfter(asynCallback, resp);
 		return resp;
 
 	def callService(self, methodName, dataKey, data = {}, asynCallback = None):

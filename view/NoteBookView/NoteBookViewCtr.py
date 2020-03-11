@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2018-08-11 18:27:07
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-03-31 00:41:43
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-07 00:36:53
 
 from enum import Enum, unique;
 
@@ -35,6 +35,7 @@ class NoteBookViewCtr(object):
 		self.registerEventMap(); # 注册事件
 		self.bindBehaviors(); # 绑定组件
 
+		self.__pageCountLimit = params.get("pageCountLimit", 999); # 页面数限制
 		self.__pageInfoDict = {}; # 页面信息字典
 		self.__relievedPageKey = -1; # 已释放页面Id
 		self.initPopupMenus(); # 创建弹出菜单
@@ -122,6 +123,7 @@ class NoteBookViewCtr(object):
 			if pageKey in self.__pageInfoDict:
 				pageInfo = self.__pageInfoDict.pop(pageKey);
 				DelCtr(pageInfo["pageViewCtr"]); # 销毁页面视图控制类
+				self.onUpdateFixedPage(pageInfo["pageType"]); # 更新固定页
 			if self.__relievedPageKey == pageKey:
 				self.__relievedPageKey = -1;
 		pass;
@@ -145,7 +147,7 @@ class NoteBookViewCtr(object):
 		page._PAGE_KEY = key;
 
 	def createPageViewCtr(self, path):
-		return CreateCtr(path, self.__ui, modulePathBase = os.path.dirname(path));
+		return CreateCtr(path, self.__ui);
 
 	def addPageToNoteBook(self, pageKey = -1, pageInfo = None):
 		if not pageInfo:
@@ -219,18 +221,22 @@ class NoteBookViewCtr(object):
 			return self.getCtrByKey("PopupMenuViewCtr").getMenu(pageType);
 
 	def onFixCurPage(self, event):
+		if len(self.__pageInfoDict) > self.__pageCountLimit:
+			_GG("WindowObject").CreateMessageDialog(f"固定标签页失败，当前页面数已超过限制[{self.__pageCountLimit}]！\n（页面数限制可在配置中修改）", "固定标签页", style = wx.OK|wx.ICON_ERROR);
+			return;
 		curPageKey = self.getPageKey(self.getCurrentPage());
 		if self.__relievedPageKey == curPageKey:
-			self.__pageInfoDict[curPageKey]["pageType"] = PageType.Fix;
+			self.updatePageType(curPageKey, PageType.Fix);
 			self.adjustPageTitle(curPageKey);
 			self.setPageTitle(curPageKey, self.getCurrentPageInt());
 			self.__relievedPageKey = -1;
+			self.onUpdateFixedPage(); # 更新固定页
 		pass;
 
 	def onRelieveCurPage(self, event):
 		curPageKey = self.getPageKey(self.getCurrentPage());
 		if self.checkRelievedPageKey(isDeleteOldPage = True):
-			self.__pageInfoDict[curPageKey]["pageType"] = PageType.Relieve;
+			self.updatePageType(curPageKey, PageType.Relieve);
 			self.adjustPageTitle(curPageKey);
 			self.setPageTitle(curPageKey, self.getCurrentPageInt());
 			self.__relievedPageKey = curPageKey;
@@ -244,9 +250,25 @@ class NoteBookViewCtr(object):
 			self.resetData(curPageKey);
 		pass;
 
+	def onCloseOtherPage(self, event):
+		curPageKey = self.getPageKey(self.getCurrentPage());
+		UI = self.getUI();
+		delDataList = [];
+		for pageKey, pageInfo in self.__pageInfoDict.items():
+			if pageKey != curPageKey:
+				delDataList.append([pageKey, pageInfo]);
+		for pageKey, pageInfo in delDataList:
+			page = pageInfo["pageViewCtr"].getUI();
+			pageInt = self.getUI().FindPage(page);
+			if UI.DeletePage(pageInt):
+				self.resetData(pageKey);
+		self.onUpdateFixedPage(); # 更新固定页
+		pass;
+
 	def onCloseAllPage(self, event):
 		UI = self.getUI();
-		UI.DeleteAllPages();
+		if UI.DeleteAllPages():
+			self.resetData();
 		pass;
 
 	def getFixedPopupMenuItemsData(self):
@@ -258,6 +280,13 @@ class NoteBookViewCtr(object):
 			{
 				"title" : "关闭当前标签页",
 				"callback" : self.onCloseCurPage,
+			},
+			{
+				"isSeparator" : True,
+			},
+			{
+				"title" : "关闭其他标签页",
+				"callback" : self.onCloseOtherPage,
 			},
 			{
 				"isSeparator" : True,
@@ -282,7 +311,42 @@ class NoteBookViewCtr(object):
 				"isSeparator" : True,
 			},
 			{
+				"title" : "关闭其他标签页",
+				"callback" : self.onCloseOtherPage,
+			},
+			{
+				"isSeparator" : True,
+			},
+			{
 				"title" : "关闭所有标签页",
 				"callback" : self.onCloseAllPage,
 			},
 		];
+
+	def updatePageType(self, pageKey, pageType):
+		if pageKey in self.__pageInfoDict:
+			self.__pageInfoDict[pageKey]["pageType"] = pageType;
+			self.onUpdateFixedPage(pageType); # 更新固定页
+		pass;
+
+	def setFixPageByKey(self, pageKey):
+		if self.__relievedPageKey == pageKey:
+			self.__pageInfoDict[pageKey]["pageType"] = PageType.Fix;
+			self.adjustPageTitle(pageKey);
+			self.setPageTitle(pageKey, self.getCurrentPageInt());
+			self.__relievedPageKey = -1;
+		pass;
+
+	def onUpdateFixedPage(self, pageType = PageType.Fix):
+		if pageType == PageType.Fix:
+			pageKeyList = [];
+			for pageKey, pageInfo in self.__pageInfoDict.items():
+				if pageInfo["pageType"] == PageType.Fix:
+					pageKeyList.append(pageKey);
+			_GG("EventDispatcher").dispatch(_GG("EVENT_ID").SAVE_FIXED_PAGE_DATA, {
+				"pageKeyList" : pageKeyList,
+			});
+		pass;
+
+	def setPageCountLimit(self, count):
+		self.__pageCountLimit = count;

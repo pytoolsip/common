@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-03-21 22:31:37
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-14 19:05:07
+# @Last Modified by:   JimDreamHeart
+# @Last Modified time: 2020-02-02 19:50:48
 
 import sys;
 import os;
 import re;
 import time;
+import subprocess;
 
 # 动态加载模块
 def require(filePath, moduleName, subModuleName = None, isReload = False, isReserve = False, modulePathBase = ""):
-	modulePath = "/".join([filePath, moduleName]).replace("\\", "/");
+	filePath = os.path.abspath(filePath);
+	modulePath = os.path.join(filePath, moduleName);
 	# 判断是否重新加载模块
 	if isReload and modulePath in sys.modules:
 		oldModule = sys.modules.pop(modulePath);
@@ -66,12 +68,12 @@ def GetPathByRelativePath(path, basePath = ""):
 	return "/".join(basePathList).strip();
 
 # 创建控制类（视图或窗口）
-def CreateCtr(path, parent, params = {}, isReload = False, isReserve = False, modulePathBase = ""):
+def CreateCtr(path, parent, params = {}, isReload = False, isReserve = False):
 	path = re.sub(r"\\", r"/", path);
 	if path[-1] == "/":
 		path = path[:-1];
 	ctrName = path.split("/")[-1] + "Ctr";
-	Ctr = require(path, ctrName, ctrName, isReload, isReserve, modulePathBase = modulePathBase);
+	Ctr = require(path, ctrName, ctrName, isReload, isReserve, modulePathBase = os.path.dirname(os.path.abspath(path)));
 	return Ctr(parent, params = params);
 
 # 销毁控制类【需先销毁UI】（视图或窗口）
@@ -104,3 +106,16 @@ def CheckVersion(v1, v2, isCheckFirst = True, isIncludeEqu = False):
 	if vList1[2] != vList2[2]:
 		return vList1[2] > vList2[2];
 	return isIncludeEqu;
+
+def GetBaseVersion(version):
+	vList = version.replace(" ", "").split(".");
+	if len(vList) >= 2:
+		return ".".join(vList[:2]);
+	return version;
+
+# 无日志打印运行命令
+def RunCmd(cmd, cwd=os.getcwd(), funcName="call", argDict = {}):
+	startupinfo = subprocess.STARTUPINFO();
+	startupinfo.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW;
+	startupinfo.wShowWindow = subprocess.SW_HIDE;
+	return getattr(subprocess, funcName)(cmd, cwd = cwd, startupinfo = startupinfo, **argDict);

@@ -2,27 +2,8 @@
 	{
 		"name":"首页",
 		"key":"db1c89e0f6e62f9642018cbb531bbd4f",
-		"trunk":"assets/common",
+		"trunk":"g_AssetsPath",
+		"branch":"common",
 		"path":"view/HomePageView"
-	},
-	{
-		"name":"娱乐工具",
-		"items":[
-			{
-				"name":"小游戏",
-				"items":[
-					{
-						"name":"华容道",
-						"key":"652c6d94d954c5412fffb91b2f5b82ce",
-						"trunk":"assets/tools",
-						"branch":"games/klotskiGame",
-						"path":"MainView",
-						"description":"自制小游戏",
-						"version":"1.0.0",
-						"author":"梦心DH"
-					}
-				]
-			}
-		]
 	}
 ]

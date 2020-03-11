@@ -2,7 +2,7 @@
 # @Author: JimZhang
 # @Date:   2018-08-11 12:45:04
 # @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-20 13:34:20
+# @Last Modified time: 2020-02-05 21:17:32
 import os;
 import wx;
 import time;
@@ -90,6 +90,7 @@ class MenuBarViewCtr(object):
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "copyBehavior/ShutilCopyBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/UserServiceBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/ToolServiceBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/ServiceBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 		
 	def unbindBehaviors(self):
@@ -101,16 +102,27 @@ class MenuBarViewCtr(object):
 	def showMessageDialog(self, message, caption = "提示", style = wx.OK):
 		return wx.MessageDialog(self.getUI(), message, caption = caption, style = style).ShowModal();
 
-	def linkToolCommon(self, toolPath = ""):
-		if os.path.exists(toolPath + "/assets"):
-			toolCommonPath = VerifyPath(toolPath + "/assets/common");
-			if sys.platform == "win32":
-				if os.system(" ".join(["mklink /J", toolCommonPath, VerifyPath(_GG("g_CommonPath"))])) != 0:
-					raise Exception("<" + " ".join(["mklink /J", toolCommonPath, VerifyPath(_GG("g_CommonPath"))]) + "> fail !");
-			else:
-				os.system("ln -sf " + toolCommonPath + _GG("g_CommonPath"));
-			return True;
-		return False;
+	def initToolDevelopment(self, toolPath = ""):
+		assetsPath = VerifyPath(toolPath + "/assets");
+		if not os.path.exists(assetsPath):
+			return False;
+		# 拷贝common文件夹
+		self.copyPath(VerifyPath(_GG("g_CommonPath")), VerifyPath(assetsPath + "/common"));
+		# 获取main文件名称
+		def getFileName(name):
+			for fname in os.listdir(assetsPath):
+				fPath = os.path.join(assetsPath, fname);
+				if os.path.isfile(fPath) and re.search(f"{name}\.?.*\.*", fname):
+					return fname;
+			return f"{name}.py";
+		# 更新_tool.env文件
+		with open(os.path.abspath(os.path.join(toolPath, "_tool.env")), "w", encoding = "utf-8") as f:
+			f.write("\n".join([
+				"pyexe="+VerifyPath(_GG("g_PythonPath")+"/python.exe"),
+				"mainfile=" + VerifyPath(getFileName("main")),
+				"buildfile=" + VerifyPath(getFileName("build")),
+			]));
+		return True;
 
 	def onClickToolDevelopment(self, menuItem, event):
 		if not self.getCtrByKey("ToolDevelopInfoDialogCtr"):
@@ -118,12 +130,11 @@ class MenuBarViewCtr(object):
 		if self.getUIByKey("ToolDevelopInfoDialogCtr").ShowModal() == wx.ID_OK :
 			message = "创建工具开发项目模板失败！";
 			if hasattr(self, "copyPath"):
-				srcPath = _GG("g_ProjectPath") + "template";
+				srcPath = os.path.join(_GG("GetDependPath")("template"), "tool");
 				dstPath = self.getUIByKey("ToolDevelopInfoDialogCtr").getDirInputValue() + "/" + self.getUIByKey("ToolDevelopInfoDialogCtr").getTextCtrlValue();
 				dstPath = str(dstPath);
-				if self.copyPath(srcPath, dstPath):
-					if self.linkToolCommon(toolPath = dstPath):
-						message = "创建工具开发项目模板成功！\n创建路径为：" + VerifyPath(dstPath);
+				if self.copyPath(srcPath, dstPath) and self.initToolDevelopment(toolPath = dstPath):
+					message = "创建工具开发项目模板成功！\n创建路径为：" + VerifyPath(dstPath);
 			# 显示弹窗
 			self.showMessageDialog(message, "创建工具开发项目", style = wx.OK|wx.ICON_INFORMATION);
 
@@ -139,22 +150,16 @@ class MenuBarViewCtr(object):
 		except Exception as e:
 			_GG("Log").w(e);
 		# 尝试打开文件浏览器
-		if curTabPage and hasattr(curTabPage, "curPath"):
-			os.system("explorer " + curTabPage._curPath);
+		if curTabPage and hasattr(curTabPage, "_curPath"):
+			os.system("explorer " + os.path.abspath(curTabPage._curPath));
 		else:
 			self.showMessageDialog("打开当前标签页目录失败！", "提示", style = wx.OK|wx.ICON_INFORMATION);
 
 	def onClickLogin(self, menuItem, event):
 		self._loginIP_();
 
-	def onClickRegister(self, menuItem, event):
-		self._registerIP_();
-
 	def onDownloadTool(self, menuItem, event):
 		self._downloadTool_();
-
-	def onUploadTool(self, menuItem, event):
-		self._uploadTool_();
 
 	def onAddLocalTool(self, menuItem, event):
 		def onOk(localToolInfo):
@@ -162,8 +167,8 @@ class MenuBarViewCtr(object):
 			_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_LEFT_VIEW, {
 				"action" : "add",
 				"key" : localToolInfo["tkey"],
-				"trunk" : "data/tools/local",
-				"branch" : localToolInfo["tkey"],
+				"trunk" : "g_DataPath",
+				"branch" : "/".join(["tools", "local", localToolInfo["tkey"], "tool"]),
 				"path" : "MainView",
 				"name" : localToolInfo["name"],
 				"category" : localToolInfo["category"],
@@ -180,22 +185,20 @@ class MenuBarViewCtr(object):
 		});
 
 	def onSearchTool(self, menuItem, event):
-		if self.showMessageDialog("搜索工具需要打开浏览器，是否确认打开？", "打开浏览器提示", style = wx.OK|wx.CANCEL|wx.ICON_QUESTION) == wx.ID_OK:
+		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").SHOW_SEARCH_PANEL_EVENT, {});
+		pass;
+
+	def onOpenToolList(self, menuItem, event):
+		if self.showMessageDialog("查看工具列表需要打开浏览器，是否确认打开？", "打开浏览器提示", style = wx.OK|wx.CANCEL|wx.ICON_QUESTION) == wx.ID_OK:
 			wx.LaunchDefaultBrowser(_GG("AppConfig")["SearchToolUrl"]);
-		# _GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_RIGHT_VIEW, {
-		# 	"createPage" : True,
-		# 	"key" : "e3a0dfe5561d51fdfb75c3b7d2909b47",
-		# 	"pagePath" : _GG("g_CommonPath") + "view/SearchToolView",
-		# 	"category" : "菜单/",
-		# 	"title" : "工具-搜索工具"
-		# });
+		pass;
 
 	def onClickLogout(self, menuItem, event):
 		self._logoutIP_();
 
 	def loginSuccessEvent(self, data):
 		topMenu = self.getUI().getTopMenu();
-		itemIdList = [topMenu.FindMenuItem("用户", "登录"), topMenu.FindMenuItem("用户", "注册")];
+		itemIdList = [topMenu.FindMenuItem("用户", "登录")];
 		for itemId in itemIdList:
 			topMenu.Enable(itemId, False);
 		itemId = topMenu.FindMenuItem("用户", "登出");
@@ -206,41 +209,112 @@ class MenuBarViewCtr(object):
 		topMenu = self.getUI().getTopMenu();
 		itemId = topMenu.FindMenuItem("用户", "登出");
 		topMenu.Enable(itemId, False);
-		itemIdList = [topMenu.FindMenuItem("用户", "登录"), topMenu.FindMenuItem("用户", "注册")];
+		itemIdList = [topMenu.FindMenuItem("用户", "登录")];
 		for itemId in itemIdList:
 			topMenu.Enable(itemId, True);
+		pass;
+
+	def onPackTool(self, menuItem, event):
+		if not self.getCtrByKey("PackDialogCtr"):
+			self.createCtrByKey("PackDialogCtr", _GG("g_CommonPath") + "dialog/PackDialog");
+		self.getUIByKey("PackDialogCtr").ShowModal();
+
+	def onOpenProjectPath(self, menuItem, event):
+		try:
+			os.system("explorer " + os.path.abspath(_GG("g_ProjectPath")));
+		except Exception as e:
+			_GG("Log").w(e);
+			self.showMessageDialog("打开安装目录失败！", "提示", style = wx.OK|wx.ICON_INFORMATION);
+
+	def onOpenSettingDialog(self, menuItem, event):
+		if not self.getCtrByKey("SettingDialogCtr"):
+			self.createCtrByKey("SettingDialogCtr", _GG("g_CommonPath") + "dialog/SettingDialog");
+		self.getCtrByKey("SettingDialogCtr").resetDialog();
+		self.getUIByKey("SettingDialogCtr").ShowModal();
+	
+	def onCreateTemplate(self, menuItem, event):
+		def onOk(targetPath):
+			try:
+				os.system("explorer " + os.path.abspath(targetPath));
+			except Exception as e:
+				_GG("Log").w(e);
+				self.showMessageDialog("打开所创建模板的目录失败！", "提示", style = wx.OK|wx.ICON_INFORMATION);
+		if not self.getCtrByKey("CreateTemplateDialogCtr"):
+			self.createCtrByKey("CreateTemplateDialogCtr", _GG("g_CommonPath") + "dialog/CreateTemplateDialog", params={
+				"onOk" : onOk,
+			});
+		self.getCtrByKey("CreateTemplateDialogCtr").resetDialog();
+		self.getUIByKey("CreateTemplateDialogCtr").ShowModal();
+		pass;
+
+	def onCheckUpdateIP(self, menuItem, event):
+		def callback(resp):
+			if resp and resp.code == 0:
+				if self.showMessageDialog("检测有更新版本，是否确认更新？", "平台更新", style = wx.YES_NO|wx.ICON_QUESTION) == wx.ID_YES:
+					self.updateIP(resp.version);
+			else:
+				self.showMessageDialog("平台版本已是最新！", "提示", style = wx.OK|wx.ICON_INFORMATION);
+		self.requestUpdateIP(callback = callback);
+		pass;
+	
+	def onRestartIP(self, menuItem, event):
+		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").RESTART_APP_EVENT, {});
+		pass;
+
+	def onExitIP(self, menuItem, event):
+		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").STOP_APP_EVENT, {});
+		pass;
+
+	def onScreenshot(self, menuItem, event):
+		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").SCREENSHOT, {});
+		pass;
+
+	def onScreenshotAfterHidingWin(self, menuItem, event):
+		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").SCREENSHOT_AFTER_HIDING_WIN, {});
 		pass;
 
 	def getMenuItemsData(self):
 		return [
 			{"name" : "文件", "items" : [
 				{"name" : "打开", "id" : wx.ID_OPEN, "items" : [
+					{"name" : "平台安装目录", "params" : {"helpString" : "打开平台安装路径..."}, "callback" : self.onOpenProjectPath},
 					{"name" : "当前标签页目录", "params" : {"helpString" : "打开当前标签页目录的文件路径..."}, "callback" : self.onOpenCurTabPagePath},
 				]},
+				{"name" : "设置", "params" : {"helpString" : "打开平台设置..."}, "callback" : self.onOpenSettingDialog},
 				{},
-				{"name" : "退出", "id" : wx.ID_EXIT, "enable" : False},
+				{"name" : "重启(Ctrl+F5)", "callback" : self.onRestartIP},
+				{},
+				{"name" : "退出(Shift+Esc)", "id" : wx.ID_EXIT, "callback" : self.onExitIP},
+			]},
+			{"name" : "功能", "items" : [
+				{"name" : "新建模板", "callback" : self.onCreateTemplate},
+				{"name" : "截屏", "items" : [
+					{"name" : "直接截屏(Alt+P)", "callback" : self.onScreenshot},
+					{"name" : "隐藏窗口后截屏(Ctrl+Alt+P)", "callback" : self.onScreenshotAfterHidingWin},
+				]},
 			]},
 			{"name" : "工具", "items" : [
-				{"name" : "搜索工具", "items" : [], "callback" : self.onSearchTool},
+				{"name" : "搜索工具(Ctrl+P)", "items" : [], "callback" : self.onSearchTool},
+				{},
+				{"name" : "工具列表", "items" : [], "callback" : self.onOpenToolList},
 				{"name" : "下载工具", "items" : [], "callback" : self.onDownloadTool},
-				{"name" : "上传工具", "items" : [], "callback" : self.onUploadTool},
+				{},
+				{"name" : "打包工具", "items" : [], "callback" : self.onPackTool},
 				{},
 				{"name" : "从本地添加工具", "items" : [], "callback" : self.onAddLocalTool},
-				{"name" : "进行工具开发", "items" : [], "callback" : self.onClickToolDevelopment},
+				{},
+				{"name" : "开发工具", "items" : [], "callback" : self.onClickToolDevelopment},
 			]},
 			{"name" : "升级", "items" : [
 				{"name" : "工具升级", "items" : [], "enable" : False},
-				{"name" : "平台升级", "items" : [], "enable" : False},
+				{"name" : "平台升级", "items" : [], "callback" : self.onCheckUpdateIP},
 			]},
 			{"name" : "用户", "items" : [
-				# {"name" : "用户详情", "items" : []},
-				# {"name" : "需求开发", "items" : []},
-				{"name" : "登出", "items" : [], "callback" : self.onClickLogout, "enable" : False},
 				{"name" : "登录", "items" : [], "callback" : self.onClickLogin},
-				{"name" : "注册", "items" : [], "callback" : self.onClickRegister},
+				{"name" : "登出", "items" : [], "callback" : self.onClickLogout, "enable" : False},
 			]},
 			{"name" : "帮助", "items" : [
 				{"name" : "开发工具事项", "items" : [], "enable" : False},
-				{"name" : "关于", "id" : wx.ID_ABOUT, "items" : [], "callback" : self.onClickAboutIP},
+				{"name" : "关于平台", "id" : wx.ID_ABOUT, "items" : [], "callback" : self.onClickAboutIP},
 			]},
 		];

@@ -21,6 +21,7 @@ class ParentWindowUI(wx.MDIParentFrame):
 		return self.__windowCtr;
 
 	def initWindow(self):
+		self.initIcon();
 		self.createViewCtrs();
 		self.initWindowLayout();
 		pass;
@@ -34,3 +35,6 @@ class ParentWindowUI(wx.MDIParentFrame):
 
 	def updateWindow(self, data):
 		pass;
+
+	def initIcon(self):
+		self.SetIcon(wx.Icon(_GG("g_AssetsPath")+"resource/img/pytoolsip.ico", wx.BITMAP_TYPE_ICO));

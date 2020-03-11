@@ -3,6 +3,8 @@
 # @Date:   2019-02-24 05:57:41
 # @Last Modified by:   JimDreamHeart
 # @Last Modified time: 2019-03-09 16:40:47
+import os;
+import json;
 
 try:
 	import ConfigParser;
@@ -15,14 +17,25 @@ from function.base import *;
 def GetConfigKeyMap():
 	return {
 		"Config" : _GG("g_CommonPath") + "config/ini/config.ini",
+		"UrlConfig" : [_GG("g_DataPath") + "update/pytoolsip/data/url_list.json", _GG("g_DataPath") + "url_list.json"],
 	};
 
 class Config(object):
 	"""docstring for Config"""
-	def __init__(self, path):
+	def __init__(self, pathCfg):
 		super(Config, self).__init__();
-		self.__path = path;
+		self.__initPath__(pathCfg);
 		self.__initConfig__();
+	
+	def __initPath__(self, pathCfg):
+		self.__path = "";
+		if isinstance(pathCfg, list):
+			for path in pathCfg:
+				if os.path.exists(path):
+					self.__path = path;
+					return;
+		else:
+			self.__path = pathCfg;
 
 	def __initConfig__(self):
 		self.__config = ConfigParser.RawConfigParser();
@@ -39,6 +52,38 @@ class Config(object):
 			return self.__config.get(section, option);
 		return defaultValue;
 
+class UrlConfig(object):
+	"""docstring for UrlConfig"""
+	def __init__(self, pathCfg):
+		super(UrlConfig, self).__init__();
+		self.__initPath__(pathCfg);
+		self.__initConfig__();
+	
+	def __initPath__(self, pathCfg):
+		self.__path = "";
+		if isinstance(pathCfg, list):
+			for path in pathCfg:
+				if os.path.exists(path):
+					self.__path = path;
+					return;
+		else:
+			self.__path = pathCfg;
+
+	def __initConfig__(self):
+		self.__config = {};
+		if os.path.exists(self.__path):
+			with open(self.__path, "r") as f:
+				self.__config = json.loads(f.read());
+
+	def Get(self, t, name, key):
+		for urlInfo in self.__config.get("urlList", []):
+			if urlInfo.get("type", "") == t and urlInfo.get("name", "") == name:
+				return urlInfo.get(key, "");
+		return "";
+
+	def GetIPVersion(self):
+		return self.Get("ptip", "assets", "version");
+
 
 class ClientConfig(object):
 	"""docstring for ClientConfig"""
@@ -47,7 +92,11 @@ class ClientConfig(object):
 		# 初始化配置对象
 		confKeyMap = GetConfigKeyMap();
 		self.__config = Config(confKeyMap["Config"]);
+		self.__urlConfig = UrlConfig(confKeyMap["UrlConfig"]);
 		pass;
 
 	def Config(self):
 		return self.__config;
+
+	def UrlConfig(self):
+		return self.__urlConfig;

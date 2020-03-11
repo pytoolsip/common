@@ -14,7 +14,7 @@ from enum import Enum, unique;
 @unique
 class EventState(Enum):
 	NormalState = 0;
-	UnRegisterState = 1;
+	UnregisterState = 1;
 
 class EventDispatcher(object):
 	"""docstring for EventDispatcher"""
@@ -54,9 +54,9 @@ class EventDispatcher(object):
 			registerIdsDict[targetObjId] = [callbackName];
 		pass;
 
-	def removeRegisterId(self, eventId, targetObjId, callbackId):
+	def removeRegisterId(self, eventId, targetObjId, callbackName):
 		registerIdsDict = self.__registerIds[eventId];
-		registerIdsDict[targetObjId].pop(callbackId);
+		registerIdsDict[targetObjId].remove(callbackName);
 
 	def register(self, event, targetObj, callbackName):
 		try:
@@ -73,22 +73,22 @@ class EventDispatcher(object):
 		eventId = event.value;
 		targetObjId = id(targetObj);
 		listeners = self.__listeners[eventId];
-		for i in range(len(listeners)-1, 0 ,-1):
+		for i in range(len(listeners)-1, -1, -1):
 			listener = listeners[i];
 			if targetObjId == id(listener["target"]) and callbackName == listener["callbackName"]:
-				listener["state"] = EventState.UnRegisterState;
+				listener["state"] = EventState.UnregisterState;
 				if self.__dispatchDepth == 0:
-					self.removeRegisterId(eventId, targetObjId, callbackId);
+					self.removeRegisterId(eventId, targetObjId, callbackName);
 					listeners.pop(i);
 
 	def unregisterByTaget(self, event, targetObj):
 		eventId = event.value;
 		targetObjId = id(targetObj);
 		listeners = self.__listeners[eventId];
-		for i in range(len(listeners)-1, 0 ,-1):
+		for i in range(len(listeners)-1, -1, -1):
 			listener = listeners[i];
 			if targetObjId == id(listener["target"]):
-				listener["state"] = EventState.UnRegisterState;
+				listener["state"] = EventState.UnregisterState;
 				if self.__dispatchDepth == 0:
 					listeners.pop(i);
 
@@ -109,9 +109,13 @@ class EventDispatcher(object):
 						if eventKey not in targetObj._EventKeyListByDispatched_:
 							targetObj._EventKeyListByDispatched_.append(eventKey);
 							# 执行所注册事件的方法
-							getattr(targetObj, listener["callbackName"])(data);
-							# 移除targetObj的EventKeyListByDispatched_属性
-							targetObj._EventKeyListByDispatched_.remove(eventKey);
+							try:
+								getattr(targetObj, listener["callbackName"])(data);
+							except Exception as e:
+								raise e;
+							finally:
+								# 移除targetObj的EventKeyListByDispatched_属性
+								targetObj._EventKeyListByDispatched_.remove(eventKey);
 						else:
 							raise Exception("It calls the function(\"{0}\") of object(id:\"{1}\") in recursion !".format(listener["callbackName"], id(targetObj)));
 			else:

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimDreamHeart
 # @Date:   2018-04-01 10:56:10
-# @Last Modified by:   JinZhang
-# @Last Modified time: 2019-03-29 17:34:37
+# @Last Modified by:   JimZhang
+# @Last Modified time: 2020-02-07 00:12:36
 
 from enum import Enum, unique;
 
@@ -31,6 +31,8 @@ class EVENT_ID(Enum):
 	SHOW_SEARCH_PANEL_EVENT = getNewEventId(); # 显示搜索面板事件
 
 	ESC_DOWN_EVENT = getNewEventId(); # ESC按键事件
+	
+	STOP_APP_EVENT = getNewEventId(); # 停止APP事件
 
 	RESTART_APP_EVENT = getNewEventId(); # 重启APP事件
 
@@ -43,3 +45,13 @@ class EVENT_ID(Enum):
 	LOGOUT_SUCCESS_EVENT = getNewEventId(); # 注销成功事件
 
 	UPDATE_APP_EVENT = getNewEventId(); # 更新APP事件
+
+	SAVE_IP_CONFIG = getNewEventId(); # 保存平台配置
+	
+	CREATE_FIXED_PAGE = getNewEventId(); # 创建已固定的标签页
+	
+	SAVE_FIXED_PAGE_DATA = getNewEventId(); # 保存已固定的标签页数据
+	
+	SCREENSHOT = getNewEventId(); # 截屏
+
+	SCREENSHOT_AFTER_HIDING_WIN = getNewEventId(); # 隐藏窗口后截屏

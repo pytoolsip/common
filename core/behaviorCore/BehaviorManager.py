@@ -94,9 +94,13 @@ class BehaviorManager(object):
 	def unbindBehavior(self, obj, behavior):
 		try:
 			if isinstance(behavior, _GG("BaseBehavior")):
-				self.unbindDependBehaviors(obj, behavior);
-				self.__behaviorBinder__.unbindBehaviorToObj(behavior, obj);
-				return True;
+				bhFilePath = behavior.getBehaviorFilePath();
+				if hasattr(obj, "_BEHAVIOR_DICT_") and bhFilePath in obj._BEHAVIOR_DICT_:
+					self.unbindDependBehaviors(obj, behavior);
+					self.__behaviorBinder__.unbindBehaviorToObj(behavior, obj);
+					# 删除组件索引
+					obj._BEHAVIOR_DICT_.pop(bhFilePath);
+					return True;
 			else:
 				_GG("Log").w("UnBind behavior[name:{}, file path:{}] fail ! Because behavior is not base on BaseBehavior .".format(behavior.getBehaviorName(), behavior.getBehaviorFilePath()));
 		except Exception as e:

@@ -6,6 +6,7 @@
 import wx;
 import hashlib;
 import os, shutil;
+import threading;
 
 from _Global import _GG;
 from function.base import *;
@@ -17,15 +18,19 @@ def __getExposeData__():
 
 def __getExposeMethod__(DoType):
 	return {
-		"_uploadTool_" : DoType.AddToRear,
 		"_showToolInfo_" : DoType.AddToRear,
 		"_downloadTool_" : DoType.AddToRear,
+		"_dealDepends_" : DoType.AddToRear,
 	};
 
 def __getDepends__():
 	return [
 		{
 			"path" : "serviceBehavior/UpDownloadBehavior", 
+			"basePath" : _GG("g_CommonPath") + "behavior/",
+		},
+		{
+			"path" : "verifyBehavior/VerifyDependsBehavior",
 			"basePath" : _GG("g_CommonPath") + "behavior/",
 		},
 	];
@@ -41,150 +46,80 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 	# 	_GG("Log").i(obj._className_);
 	# 	pass;
 
-	def _uploadTool_(self, obj, _retTuple = None):
-		if _GG("CommonClient").getUserId() < 0:
-			_GG("WindowObject").CreateMessageDialog("请先登录账号！", "上传工具", style = wx.OK|wx.ICON_INFORMATION);
-			return;
-		def onBlurName(fullName, callback):
-			# 请求服务的回调
-			def checkName(respData):
-				if not respData:
-					callback("网络请求失败！", False);
-				else:
-					data = _GG("CommonClient").decodeBytes(respData.data);
-					print("data::", data)
-					if respData.isSuccess:
-						if "version" in data:
-							callback("", onlineVersion = data["version"]);
-						else:
-							callback("");
-					else:
-						callback(data.get("tips", "本次上传出错，请稍后上传！"), False);
-			# 请求服务
-			_GG("CommonClient").callService("Request", "Req", {
-				"key" : "VertifyToolName",
-				"data" : _GG("CommonClient").encodeBytes({"fullName" : fullName, "uid" : _GG("CommonClient").getUserId()}),
-			}, asynCallback = checkName);
-		def onUpload(uploadInfo):
-			respData = _GG("CommonClient").callService("Upload", "UploadReq", {
-				"uid" : _GG("CommonClient").getUserId(),
-				"category" : uploadInfo["category"],
-				"name" : uploadInfo["name"],
-				"version" : uploadInfo["version"],
-				"IPVersion" : uploadInfo["IPVersion"],
-				"description" : uploadInfo["description"],
-			});
-			if not respData:
-				_GG("WindowObject").CreateMessageDialog("网络请求失败！", "上传工具", style = wx.OK|wx.ICON_ERROR);
-			elif not respData.isPermit:
-				_GG("WindowObject").CreateMessageDialog("上传失败，请检测上传信息！", "上传工具", style = wx.OK|wx.ICON_ERROR);
-			else:
-				msgDlg = _GG("WindowObject").CreateMessageDialog("正在上传工具【%s】..."%uploadInfo["name"], "上传工具", isShow = False, style = wx.OK|wx.ICON_INFORMATION)
-				token = _GG("CommonClient").decodeBytes(respData.token);
-				def callback():
-					def asynCallback(respData):
-						msgDlg.Destroy();
-						if not respData:
-							_GG("WindowObject").CreateMessageDialog("网络连接失败！", "上传工具", style = wx.OK|wx.ICON_ERROR)
-						elif respData.isSuccess:
-							_GG("WindowObject").CreateMessageDialog("上传工具【%s】成功。"%uploadInfo["name"], "上传工具", style = wx.OK|wx.ICON_INFORMATION);
-						else:
-							_GG("WindowObject").CreateMessageDialog("保存工具【%s】包数据失败！"%uploadInfo["name"], "上传工具", style = wx.OK|wx.ICON_ERROR)
-					_GG("CommonClient").callService("Uploaded", "UploadReq", {
-						"uid" : _GG("CommonClient").getUserId(),
-						"category" : uploadInfo["category"],
-						"name" : uploadInfo["name"],
-						"version" : uploadInfo["version"],
-						"IPVersion" : uploadInfo["IPVersion"],
-						"description" : uploadInfo["description"],
-					}, asynCallback = asynCallback);
-				try:
-					obj.upload(uploadInfo["filePath"], token, callback = callback);
-					msgDlg.ShowModal();
-				except Exception as e:
-					msgDlg.Destroy();
-					_GG("WindowObject").CreateMessageDialog("上传失败！%s"%e, "上传工具", style = wx.OK|wx.ICON_ERROR)
-			return respData and respData.isPermit or False;
-		# 显示弹窗
-		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/UploadDialog", params = {
-			"name" : {
-				"onBlur" : onBlurName,
-			},
-			"category" : {
-				"choicesInfo" : {
-					"cols" : 2,
-					"firstChoices" : [u"开发工具", u"产品工具", u"娱乐工具"],
-					"choiceDict" : {
-						u"开发工具" : [u"文件处理", u"数据处理"],
-						u"产品工具" : [u"文件处理", u"数据处理"],
-						u"娱乐工具" : [u"小游戏"],
-					},
-				},
-			},
-			"onOk" : onUpload,
-		});
-
 	def _showToolInfo_(self, obj, data, _retTuple = None):
 		if "key" not in data:
 			return;
 		tkey = data.get("key", "");
-		def onDownload():
+		def onDownload(isUpdate = False):
 			def onResp(respData):
 				if not respData:
 					_GG("WindowObject").CreateMessageDialog("网络请求失败！", "下载工具", style = wx.OK|wx.ICON_ERROR);
-				elif not respData.isExist:
+				elif respData.code != 0:
+					_GG("Log").d("Download resp ->", respData);
 					_GG("WindowObject").CreateMessageDialog("所要下载的工具不存在！", "下载工具", style = wx.OK|wx.ICON_ERROR);
 				else:
 					toolsPath = _GG("g_DataPath")+"tools/";
 					fileName = os.path.basename(respData.url);
 					def onComplete(filePath):
 						# 重置文件夹【会移除原有文件夹】
-						dirpath = toolsPath + tkey;
+						dirpath = toolsPath + tkey + "_temp";
 						if os.path.exists(dirpath):
 							shutil.rmtree(dirpath);
-						os.mkdir(dirpath);
+						os.makedirs(dirpath);
 						# 解压文件
 						def afterUnzip():
 							# 删除压缩文件
 							os.remove(filePath);
-							# 更新左侧工具树
-							_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_LEFT_VIEW, {
-								"action" : "add",
-								"key" : tkey,
-								"trunk" : "data/tools",
-								"branch" : tkey,
-								"path" : "MainView",
-								"name" : respData.toolInfo.name,
-								"category" : respData.toolInfo.category,
-								"description" : respData.toolInfo.description,
-								"version" : respData.toolInfo.version,
-								"author" : respData.toolInfo.author,
-							});
+							# 处理依赖模块
+							tgtDirPath = toolsPath + tkey;
+							def afterDealDepends():
+								if os.path.exists(tgtDirPath):
+									shutil.rmtree(tgtDirPath);
+								shutil.move(dirpath, tgtDirPath);
+								# 更新左侧工具树
+								_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_LEFT_VIEW, {
+									"action" : "add",
+									"key" : tkey,
+									"trunk" : "g_DataPath",
+									"branch" : "/".join(["tools", tkey, "tool"]),
+									"path" : "MainView",
+									"name" : respData.toolInfo.name,
+									"category" : respData.toolInfo.category,
+									"description" : respData.toolInfo.description,
+									"version" : respData.toolInfo.version,
+									"author" : respData.toolInfo.author,
+								});
+							obj._dealDepends_(tgtDirPath, dirpath, finishCallback = afterDealDepends);
 						obj.unzipFile(filePath, dirpath, finishCallback = afterUnzip);
+						# 记录下载数据
+						_GG("CommonClient").callService("DownloadRecord", "DownloadRecordReq", {
+							"key" : tkey,
+							"downloadKey" : respData.downloadKey,
+						});
 						pass;
 					# 下载文件
 					obj.download(respData.url, toolsPath+fileName, respData.totalSize, onComplete = onComplete);
 				pass;
 			_GG("CommonClient").callService("Download", "DownloadReq", {
 				"key" : tkey,
-				"IPVersion" : _GG("AppConfig")["version"],
+				"IPBaseVer" : GetBaseVersion(_GG("ClientConfig").UrlConfig().GetIPVersion()),
 			}, asynCallback = onResp);
 			pass;
 		def checkDownload(callback = None):
 			def onRequestToolInfo(respData):
 				if not respData:
 					_GG("WindowObject").CreateMessageDialog("网络请求失败！", "下载工具", style = wx.OK|wx.ICON_ERROR);
-				elif respData.isSuccess:
-					if _GG("WindowObject").MainWindowCtr.checkTreeItemKey(tkey):
-						msgData = _GG("CommonClient").decodeBytes(respData.data);
-						if CheckVersion(msgData.get("version", ""), data.get("version", "")) and callable(callback):
+				elif respData.code == 0:
+					itemData = _GG("WindowObject").MainWindowCtr.getItemDataByKey(tkey);
+					if itemData:
+						if CheckVersion(respData.toolInfo.version, itemData.get("version", "")) and callable(callback):
 							callback(True);
 					elif callable(callback):
 						callback();
 				pass;
-			_GG("CommonClient").callService("Request", "Req", {
-				"key" : "RequestToolInfo",
-				"data" : _GG("CommonClient").encodeBytes({"key" : tkey, "IPVersion" : _GG("AppConfig")["version"]}),
+			_GG("CommonClient").callService("ReqToolInfo", "ToolReq", {
+				"key" : tkey,
+				"IPBaseVer" : GetBaseVersion(_GG("ClientConfig").UrlConfig().GetIPVersion()),
 			}, asynCallback = onRequestToolInfo);
 			pass;
 		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/ToolInfoDialog", params = {
@@ -206,23 +141,49 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 			def onRequestToolInfo(respData):
 				if not respData:
 					_GG("WindowObject").CreateMessageDialog("网络请求失败！", "下载工具", style = wx.OK|wx.ICON_ERROR);
-				elif respData.isSuccess:
-					data = _GG("CommonClient").decodeBytes(respData.data);
+				elif respData.code == 0:
+					toolInfo = respData.toolInfo;
 					obj._showToolInfo_({
 						"key" : tkey,
-						"name" : data.get("title", ""),
-						"path" : data.get("category", ""),
-						"version" : data.get("version", ""),
-						"author" : data.get("author", ""),
+						"name" : toolInfo.name,
+						"path" : toolInfo.category,
+						"version" : toolInfo.version,
+						"author" : toolInfo.author,
 						"description" : {
-							"value" : data.get("description", ""),
+							"value" : toolInfo.description,
 						},
 					});
 				else:
 					if _GG("WindowObject").CreateMessageDialog("输入的工具ID不存在！\n请重新输入!", "下载工具", style = wx.OK|wx.ICON_ERROR) == wx.ID_OK:
 						wx.CallAfter(obj._downloadTool_);
 			# 请求服务
-			_GG("CommonClient").callService("Request", "Req", {
-				"key" : "RequestToolInfo",
-				"data" : _GG("CommonClient").encodeBytes({"key" : tkey, "IPVersion" : _GG("AppConfig")["version"]}),
+			_GG("CommonClient").callService("ReqToolInfo", "ToolReq", {
+				"key" : tkey,
+				"IPBaseVer" : GetBaseVersion(_GG("ClientConfig").UrlConfig().GetIPVersion()),
 			}, asynCallback = onRequestToolInfo);
+
+	# 处理依赖模块
+	def _dealDepends_(self, obj, srcPath, targetPath, finishCallback = None, _retTuple = None):
+		dependMapFile = _GG("g_DataPath") + "depend_map.json";
+		proDialog = wx.ProgressDialog("处理依赖模块", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME|wx.PD_AUTO_HIDE);
+		def onInstall(modvalue, value, isEnd = False):
+			if not isEnd:
+				wx.CallAfter(proDialog.Update, value, f"正在安装模块【{mode}】...");
+			else:
+				wx.CallAfter(proDialog.Update, value, f"成功安装模块【{mode}】。");
+			pass;
+		def onUninstall(modvalue, value, isEnd = False):
+			if not isEnd:
+				wx.CallAfter(proDialog.Update, value, f"正在卸载模块【{mode}】...");
+			else:
+				wx.CallAfter(proDialog.Update, value, f"成功卸载模块【{mode}】。");
+			pass;
+		def onFinish(isChange, dependMap):
+			wx.CallAfter(proDialog.Update, 1, f"完成依赖模块的处理。");
+			if isChange:
+				wx.CallAfter(obj._updateDependMap_, dependMap, dependMapFile);
+			if callable(finishCallback):
+				wx.CallAfter(finishCallback);
+		threading.Thread(target = obj._checkDependMap_, args = (srcPath, targetPath, dependMapFile, _GG("g_PythonPath"), onInstall, onUninstall, onFinish)).start();
+		proDialog.Update(0, "开始处理依赖模块...");
+		proDialog.ShowModal();
