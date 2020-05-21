@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JimZhang
 # @Date:   2019-03-20 19:39:49
-# @Last Modified by:   JimDreamHeart
-# @Last Modified time: 2019-04-20 00:33:26
+# @Last Modified by:   JinZhang
+# @Last Modified time: 2020-05-21 17:22:39
 import wx;
 import hashlib;
 import os, shutil;
@@ -89,7 +89,9 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 									"version" : respData.toolInfo.version,
 									"author" : respData.toolInfo.author,
 								});
-							obj._dealDepends_(tgtDirPath, dirpath, finishCallback = afterDealDepends);
+							def failDealDepends():
+								_GG("WindowObject").CreateMessageDialog("工具安装失败！工具所依赖的模块版本不匹配！", "安装工具", style = wx.OK|wx.ICON_ERROR);
+							obj._dealDepends_(tgtDirPath, dirpath, finishCallback = afterDealDepends, failedCallback = );
 						obj.unzipFile(filePath, dirpath, finishCallback = afterUnzip);
 						# 记录下载数据
 						_GG("CommonClient").callService("DownloadRecord", "DownloadRecordReq", {
@@ -163,7 +165,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 			}, asynCallback = onRequestToolInfo);
 
 	# 处理依赖模块
-	def _dealDepends_(self, obj, srcPath, targetPath, finishCallback = None, _retTuple = None):
+	def _dealDepends_(self, obj, srcPath, targetPath, finishCallback = None, failedCallback = None, _retTuple = None):
 		dependMapFile = _GG("g_DataPath") + "depend_map.json";
 		proDialog = wx.ProgressDialog("处理依赖模块", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME|wx.PD_AUTO_HIDE);
 		def onInstall(modvalue, value, isEnd = False):
@@ -178,7 +180,12 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 			else:
 				wx.CallAfter(proDialog.Update, value, f"成功卸载模块【{mode}】。");
 			pass;
-		def onFinish(isChange, dependMap):
+		def onFinish(isChange, dependMap, isSuccess = True):
+			if not isSuccess:
+				wx.CallAfter(proDialog.Update, 0, f"依赖模块处理失败！");
+				if callable(failedCallback):
+					wx.CallAfter(failedCallback);
+				return;
 			wx.CallAfter(proDialog.Update, 1, f"完成依赖模块的处理。");
 			if isChange:
 				wx.CallAfter(obj._updateDependMap_, dependMap, dependMapFile);
