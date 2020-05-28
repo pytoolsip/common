@@ -91,7 +91,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 								});
 							def failDealDepends():
 								_GG("WindowObject").CreateMessageDialog("工具安装失败！工具所依赖的模块版本不匹配！", "安装工具", style = wx.OK|wx.ICON_ERROR);
-							obj._dealDepends_(tgtDirPath, dirpath, finishCallback = afterDealDepends, failedCallback = );
+							obj._dealDepends_(tgtDirPath, dirpath, finishCallback = afterDealDepends, failedCallback = failDealDepends);
 						obj.unzipFile(filePath, dirpath, finishCallback = afterUnzip);
 						# 记录下载数据
 						_GG("CommonClient").callService("DownloadRecord", "DownloadRecordReq", {
@@ -140,10 +140,14 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 		teDialog = _GG("WindowObject").CreateWxDialog("TextEntryDialog", "请输入工具ID：", "下载工具");
 		if teDialog.ShowModal() == wx.ID_OK:
 			tkey = teDialog.GetValue();
+			if not tkey:
+				_GG("WindowObject").CreateMessageDialog("输入的工具ID不能为空！\n请重新输入!", "下载工具", style = wx.OK|wx.ICON_ERROR);
+				wx.CallAfter(obj._downloadTool_);
+				return;
 			def onRequestToolInfo(respData):
 				if not respData:
 					_GG("WindowObject").CreateMessageDialog("网络请求失败！", "下载工具", style = wx.OK|wx.ICON_ERROR);
-				elif respData.code == 0:
+				elif respData.code == 0 and respData.toolInfo:
 					toolInfo = respData.toolInfo;
 					obj._showToolInfo_({
 						"key" : tkey,
@@ -156,8 +160,8 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 						},
 					});
 				else:
-					if _GG("WindowObject").CreateMessageDialog("输入的工具ID不存在！\n请重新输入!", "下载工具", style = wx.OK|wx.ICON_ERROR) == wx.ID_OK:
-						wx.CallAfter(obj._downloadTool_);
+					_GG("WindowObject").CreateMessageDialog("输入的工具ID不存在！\n请重新输入!", "下载工具", style = wx.OK|wx.ICON_ERROR);
+					wx.CallAfter(obj._downloadTool_);
 			# 请求服务
 			_GG("CommonClient").callService("ReqToolInfo", "ToolReq", {
 				"key" : tkey,

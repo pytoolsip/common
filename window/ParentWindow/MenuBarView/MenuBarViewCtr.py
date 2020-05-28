@@ -305,7 +305,7 @@ class MenuBarViewCtr(object):
 			{"name" : "工具", "items" : [
 				{"name" : "搜索工具(Ctrl+P)", "items" : [], "callback" : self.onSearchTool},
 				{},
-				{"name" : "工具列表", "items" : [], "callback" : self.onOpenToolList},
+				{"name" : "浏览器查看工具列表", "items" : [], "callback" : self.onOpenToolList},
 				{"name" : "下载工具", "items" : [], "callback" : self.onDownloadTool},
 				{},
 				{"name" : "打包工具", "items" : [], "callback" : self.onPackTool},
