@@ -90,8 +90,11 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 									"author" : respData.toolInfo.author,
 								});
 							def failDealDepends():
+								if os.path.exists(tgtDirPath):
+									shutil.rmtree(tgtDirPath);
+								shutil.rmtree(dirpath);
 								_GG("WindowObject").CreateMessageDialog("工具安装失败！工具所依赖的模块版本不匹配！", "安装工具", style = wx.OK|wx.ICON_ERROR);
-							obj._dealDepends_(tgtDirPath, dirpath, finishCallback = afterDealDepends, failedCallback = failDealDepends);
+							obj._dealDepends_(tkey, tgtDirPath, dirpath, finishCallback = afterDealDepends, failedCallback = failDealDepends);
 						obj.unzipFile(filePath, dirpath, finishCallback = afterUnzip);
 						# 记录下载数据
 						_GG("CommonClient").callService("DownloadRecord", "DownloadRecordReq", {
@@ -169,32 +172,29 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 			}, asynCallback = onRequestToolInfo);
 
 	# 处理依赖模块
-	def _dealDepends_(self, obj, srcPath, targetPath, finishCallback = None, failedCallback = None, _retTuple = None):
-		dependMapFile = _GG("g_DataPath") + "depend_map.json";
+	def _dealDepends_(self, obj, tkey, srcPath, targetPath, finishCallback = None, failedCallback = None, _retTuple = None):
 		proDialog = wx.ProgressDialog("处理依赖模块", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME|wx.PD_AUTO_HIDE);
-		def onInstall(modvalue, value, isEnd = False):
+		def onInstall(mod, value, isEnd = False):
 			if not isEnd:
-				wx.CallAfter(proDialog.Update, value, f"正在安装模块【{mode}】...");
+				wx.CallAfter(proDialog.Update, value, f"正在安装模块【{mod}】...");
 			else:
-				wx.CallAfter(proDialog.Update, value, f"成功安装模块【{mode}】。");
+				wx.CallAfter(proDialog.Update, value, f"成功安装模块【{mod}】。");
 			pass;
-		def onUninstall(modvalue, value, isEnd = False):
+		def onUninstall(mod, value, isEnd = False):
 			if not isEnd:
-				wx.CallAfter(proDialog.Update, value, f"正在卸载模块【{mode}】...");
+				wx.CallAfter(proDialog.Update, value, f"正在卸载模块【{mod}】...");
 			else:
-				wx.CallAfter(proDialog.Update, value, f"成功卸载模块【{mode}】。");
+				wx.CallAfter(proDialog.Update, value, f"成功卸载模块【{mod}】。");
 			pass;
-		def onFinish(isChange, dependMap, isSuccess = True):
+		def onFinish(isSuccess = True):
 			if not isSuccess:
 				wx.CallAfter(proDialog.Update, 0, f"依赖模块处理失败！");
 				if callable(failedCallback):
 					wx.CallAfter(failedCallback);
 				return;
 			wx.CallAfter(proDialog.Update, 1, f"完成依赖模块的处理。");
-			if isChange:
-				wx.CallAfter(obj._updateDependMap_, dependMap, dependMapFile);
 			if callable(finishCallback):
 				wx.CallAfter(finishCallback);
-		threading.Thread(target = obj._checkDependMap_, args = (srcPath, targetPath, dependMapFile, _GG("g_PythonPath"), onInstall, onUninstall, onFinish)).start();
+		threading.Thread(target = obj._dealDependMap_, args = (tkey, srcPath, targetPath, _GG("g_PythonPath"), onInstall, onUninstall, onFinish)).start();
 		proDialog.Update(0, "开始处理依赖模块...");
 		proDialog.ShowModal();

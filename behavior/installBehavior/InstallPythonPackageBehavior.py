@@ -54,8 +54,8 @@ class InstallPythonPackageBehavior(_GG("BaseBehavior")):
 		installedPackageReader.close();
 		return installedPackageDict;
 
-	def installPackageByPip(self, obj, packageName, pythonPath = None, _retTuple = None):
-		cmd = self.getPipInstallCmd(packageName, pythonPath = pythonPath);
+	def installPackageByPip(self, obj, packageName, version = "", pythonPath = None, _retTuple = None):
+		cmd = self.getPipInstallCmd(packageName, version = "", pythonPath = pythonPath);
 		if os.system(cmd) == 0:
 			return True;
 		return False;
@@ -96,8 +96,10 @@ class InstallPythonPackageBehavior(_GG("BaseBehavior")):
 				return cfg.get("pip_install_image", "");
 		return "";
 	
-	def getPipInstallCmd(self, packageName, pythonPath = None):
+	def getPipInstallCmd(self, packageName, version = "", pythonPath = None):
 		cmd = "pip install " + packageName;
+		if version:
+			cmd += f"=={version}";
 		if pythonPath:
 			cmd = os.path.abspath(os.path.join(pythonPath, "python.exe")) + " -m pip install " + packageName;
 		# 获取镜像

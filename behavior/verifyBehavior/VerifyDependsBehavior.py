@@ -17,8 +17,11 @@ def __getExposeMethod__(DoType):
 	return {
 		"_getDependMods_" : DoType.AddToRear,
 		"_diffDependMods_" : DoType.AddToRear,
-		"_checkDependMap_" : DoType.AddToRear,
-		"_updateDependMap_" : DoType.AddToRear,
+		"_dealDependMap_" : DoType.AddToRear,
+		"_getDependMap_" : DoType.AddToRear,
+		"_saveDependMap_" : DoType.AddToRear,
+		"_checkDependMods_" : DoType.AddToRear,
+		"_uninstallDependMods_" : DoType.AddToRear,
 	};
 
 def __getDepends__():
@@ -82,51 +85,138 @@ class VerifyDependsBehavior(_GG("BaseBehavior")):
 		srcModMap, tgtModMap = self.__convertModListToMap__(srcModList), self.__convertModListToMap__(tgtModList);
 		for mod, ver in srcModList:
 			if mod not in tgtModMap:
-				rmModList.append(mod);
+				rmModList.append((mod, ver));
 		for mod, ver in tgtModList:
-			if mod not in srcModMap:
-				addModList.append(mod);
+			if mod not in srcModMap or (ver and not srcModMap[mod]):
+				addModList.append((mod, ver));
 			elif ver and srcModMap[mod] and ver != srcModMap[mod]:
 				return False, addModList, rmModList;
 		return True, addModList, rmModList;
 
-	# 检测依赖模块表
-	def _checkDependMap_(self, obj, srcPath, targetPath, dependMapFile, pythonPath, onInstall = None, onUninstall = None, onFinish = None, _retTuple = None):
-		dependMap = self.__getJsonData__(dependMapFile);
+	# 处理依赖模块表
+	def _dealDependMap_(self, obj, tkey, srcPath, targetPath, pythonPath, onInstall = None, onUninstall = None, onFinish = None, _retTuple = None):
+		dependMap = self._getDependMap_(obj);
 		ret, addModList, rmModList = self._diffDependMods_(obj, srcPath, targetPath);
 		if ret:
 			curIdx, totalCnt = 0, len(addModList) + len(rmModList);
-			for mod in addModList:
-				isInstallMod = False;
-				if dependMap.get(mod, 0) <= 0:
-					if callable(onInstall):
-						onInstall(mod, curIdx/totalCnt);
-					obj.installPackageByPip(mod, pythonPath = pythonPath);
-					dependMap[mod] = 0;
-					isInstallMod = True;
-				dependMap[mod] = dependMap.get(mod, 0) + 1;
+			def installCallback(mod):
+				onInstall(mod, curIdx/totalCnt);
+			for mod, ver in addModList:
+				isInstallMod = self._addDependMod_(obj, tkey, mod, version = ver, pythonPath = pythonPath, dependMap = dependMap, callback = installCallback);
 				# 调用安装回调
 				curIdx += 1;
 				if isInstallMod and callable(onInstall):
 					onInstall(mod, curIdx/totalCnt, isEnd = True);
-			for mod in rmModList:
-				isUninstallMod = False;
-				dependMap[mod] = dependMap.get(mod, 0) - 1;
-				if dependMap.get(mod, 0) <= 0:
-					if callable(onUninstall):
-						onUninstall(mod, curIdx/totalCnt);
-					obj.uninstallPackageByPip(mod, pythonPath = pythonPath);
-					dependMap.pop(mod);
-					isUninstallMod = True;
+			def uninstallCallback(mod):
+				onUninstall(mod, curIdx/totalCnt);
+			for mod, ver in rmModList:
+				isUninstallMod = self._removeDependMod_(obj, tkey, mod, pythonPath = pythonPath, dependMap = dependMap, callback = uninstallCallback);
 				# 调用卸载回调
 				curIdx += 1;
 				if isUninstallMod and callable(onUninstall):
 					onUninstall(mod, curIdx/totalCnt, isEnd = True);
+			if totalCnt > 0:
+				wx.CallAfter(obj._saveDependMap_, dependMap);
 		# 成功回调
 		if callable(onFinish):
-			onFinish(totalCnt > 0, dependMap, ret);
-		return totalCnt > 0, dependMap;
+			onFinish(ret);
+		return ret;
 
-	def _updateDependMap_(self, obj, dependMap, dependMapFile, _retTuple = None):
+	def _getDependMap_(self, obj, _retTuple = None):
+		dependMapFile = _GG("g_DataPath") + "depend_map.json";
+		return self.__getJsonData__(dependMapFile);
+
+	def _saveDependMap_(self, obj, dependMap, _retTuple = None):
+		dependMapFile = _GG("g_DataPath") + "depend_map.json";
 		with open(dependMapFile, "w") as f:
 			f.write(json.dumps(dependMap));
+
+	def _checkDependMods_(self, obj, dependsPath, isAllowMiss = False, _retTuple = None):
+		dependMap = self._getDependMap_(obj);
+		modList = self._getDependMods_(obj, dependsPath);
+		_GG("Log").d("_checkDependMods_", dependMap, modList);
+		for mod, ver in modList:
+			if mod in dependMap:
+				dVer = dependMap[mod].get("ver", "");
+				if not dVer or not ver or dVer == ver:
+					continue;
+				return False;
+			elif not isAllowMiss:
+				return False;
+		return True;
+
+	def _addDependMod_(self, obj, tkey, mod, version = "", pythonPath = None, dependMap = None, callback = None, _retTuple = None):
+		isSaveNow = not isinstance(dependMap, dict);
+		if isSaveNow:
+			dependMap = self._getDependMap_(obj);
+		isInstall = False;
+		depend = dependMap.get(mod, {});
+		if depend:
+			if depend["ver"]:
+				if version and version != depend["ver"]:
+					return False;
+			elif version:
+				if callable(callback):
+					callback(mod);
+				obj.installPackageByPip(mod, version = version, pythonPath = pythonPath);
+				depend["ver"] = version;
+				isInstall = True;
+			depend["map"][tkey] = version;
+		else:
+			if callable(callback):
+				callback(mod);
+			obj.installPackageByPip(mod, version = version, pythonPath = pythonPath);
+			dependMap[mod] = {
+				"ver" : ver,
+				"map" : {
+					tkey : version,
+				},
+			};
+			isInstall = True;
+		if isSaveNow:
+			wx.CallAfter(obj._saveDependMap_, dependMap);
+		return isInstall;
+
+	def _removeDependMod_(self, obj, tkey, mod, pythonPath = None, dependMap = None, callback = None, _retTuple = None):
+		isSaveNow = not isinstance(dependMap, dict);
+		if isSaveNow:
+			dependMap = self._getDependMap_(obj);
+		isUninstall = False;
+		depend = dependMap.get(mod, {});
+		if depend:
+			if tkey in depend["map"]:
+				version = depend["map"][tkey];
+				depend["map"].pop(tkey);
+				if version and version == depend["ver"]:
+					depend["ver"] = "";
+					for ver in depend["map"].values():
+						if ver:
+							depend["ver"] = ver;
+			if not depend["map"]:
+				if callable(callback):
+					callback(mod);
+				obj.uninstallPackageByPip(mod, pythonPath = pythonPath);
+				dependMap.pop(mod);
+				isUninstall = True;
+			if isSaveNow:
+				wx.CallAfter(obj._saveDependMap_, dependMap);
+		return isUninstall;
+
+	# 卸载工具依赖模块
+	def _uninstallDependMods_(self, obj, tkey, assetsPath, pythonPath = None, onUninstall = None, onFinish = None, _retTuple = None):
+		dependMap = self._getDependMap_(obj);
+		modList = self._getDependMods_(obj, assetsPath);
+		curIdx, totalCnt = 0, len(modList);
+		def uninstallCallback(mod):
+			onInstall(mod, curIdx/totalCnt);
+		for mod, ver in modList:
+			isUninstallMod = self._removeDependMod_(obj, tkey, mod, pythonPath = pythonPath, dependMap = dependMap, callback = installCallback);
+			# 调用卸载回调
+			curIdx += 1;
+			if isUninstallMod and callable(onUninstall):
+				onUninstall(mod, curIdx/totalCnt, isEnd = True);
+		if totalCnt > 0:
+			wx.CallAfter(obj._saveDependMap_, dependMap);
+		# 完成回调
+		if callable(onFinish):
+			onFinish();

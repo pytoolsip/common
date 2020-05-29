@@ -5,6 +5,7 @@
 # @Last Modified time: 2020-02-06 20:21:34
 
 import wx, os, shutil;
+import threading;
 
 from _Global import _GG;
 
@@ -90,6 +91,7 @@ class WindowLeftViewCtr(object):
 	def bindBehaviors(self):
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "ConfigParseBehavior/JsonConfigBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/UserServiceBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "verifyBehavior/VerifyDependsBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 		
 	def unbindBehaviors(self):
@@ -121,13 +123,15 @@ class WindowLeftViewCtr(object):
 	# 创建树控件
 	def createTreeCtrl(self):
 		def onActivated(pageInfo):
-			_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_RIGHT_VIEW, {
-				"createPage" : True,
-				"key" : pageInfo["key"],
-				"pagePath" : pageInfo["pagePath"],
-				"category" : pageInfo["category"],
-				"title" : pageInfo["title"]
-			});
+			tkey = pageInfo["key"];
+			if self._checkDependMods_(_GG("g_DataPath")+f"tools/{tkey}"):
+				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_RIGHT_VIEW, {
+					"createPage" : True,
+					"key" : pageInfo["key"],
+					"pagePath" : pageInfo["pagePath"],
+					"category" : pageInfo["category"],
+					"title" : pageInfo["title"]
+				});
 			pass;
 		def onAddItem(pageInfo, itemInfo):
 			itemData = self.checkTreeItemsData(self.getNameList(pageInfo["category"], itemInfo["name"]), self.__treeItemsData);
@@ -146,6 +150,21 @@ class WindowLeftViewCtr(object):
 			toolPath = os.path.dirname(os.path.dirname(pageInfo["pagePath"])); # 中间还有一层tool
 			if os.path.exists(toolPath):
 				shutil.rmtree(toolPath);
+			# 移除依赖模块
+			proDialog = wx.ProgressDialog("卸载依赖模块", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME|wx.PD_AUTO_HIDE);
+			def onUninstall(mod, value, isEnd = False):
+				if not isEnd:
+					wx.CallAfter(proDialog.Update, value, f"正在卸载模块【{mod}】...");
+				else:
+					wx.CallAfter(proDialog.Update, value, f"成功卸载模块【{mod}】。");
+				pass;
+			def onFinish():
+				wx.CallAfter(proDialog.Update, 1, f"完成依赖模块的卸载。");
+			tkey = pageInfo["key"];
+			toolPath = _GG("g_DataPath")+f"tools/{tkey}";
+			threading.Thread(target = self._uninstallDependMods_, args = (tkey, toolPath, _GG("g_PythonPath"), onUninstall, onFinish)).start();
+			proDialog.Update(0, "开始卸载依赖模块...");
+			proDialog.ShowModal();
 			pass;
 		self.createCtrByKey("TreeItemsViewCtr", _GG("g_CommonPath") + "view/TreeItemsView", parent = self.getUI(), params = {
 			"itemsData" : self.__treeItemsData,
