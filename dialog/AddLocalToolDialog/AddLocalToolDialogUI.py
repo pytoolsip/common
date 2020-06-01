@@ -86,7 +86,7 @@ class AddLocalToolDialogUI(wx.Dialog):
 				callback = self.__params.get("onOk", None);
 				if not callback or callback(localToolInfo):
 					self.EndModal(wx.ID_OK);
-				wx.MessageDialog(self, "添加本地工具【%s%s】成功。"%(localToolInfo["category"], localToolInfo["name"]), caption = "添加本地工具", style = wx.OK|wx.ICON_INFORMATION).ShowModal();
+				wx.MessageDialog(self, "添加本地工具【%s/%s】成功。"%(localToolInfo["category"], localToolInfo["name"]), caption = "添加本地工具", style = wx.OK|wx.ICON_INFORMATION).ShowModal();
 			self.getCtr().addLocalTool(self.getLocalToolInfo(), callback = onBtn);
 		self.__okButton.Bind(wx.EVT_BUTTON, onOkButton);
 		self.__okButton.Enable(False);

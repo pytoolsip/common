@@ -123,8 +123,7 @@ class WindowLeftViewCtr(object):
 	# 创建树控件
 	def createTreeCtrl(self):
 		def onActivated(pageInfo):
-			tkey = pageInfo["key"];
-			if self._checkDependMods_(_GG("g_DataPath")+f"tools/{tkey}"):
+			if self._checkDependMods_(os.path.dirname(pageInfo["pagePath"])):
 				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_RIGHT_VIEW, {
 					"createPage" : True,
 					"key" : pageInfo["key"],
@@ -146,10 +145,7 @@ class WindowLeftViewCtr(object):
 				"destroyPage" : True,
 				"key" : pageInfo["key"],
 			});
-			# 移除工具文件夹
-			toolPath = os.path.dirname(os.path.dirname(pageInfo["pagePath"])); # 中间还有一层tool
-			if os.path.exists(toolPath):
-				shutil.rmtree(toolPath);
+			assetsPath = os.path.dirname(os.path.dirname(pageInfo["pagePath"])); # 中间还有一层tool
 			# 移除依赖模块
 			proDialog = wx.ProgressDialog("卸载依赖模块", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME|wx.PD_AUTO_HIDE);
 			def onUninstall(mod, value, isEnd = False):
@@ -159,10 +155,11 @@ class WindowLeftViewCtr(object):
 					wx.CallAfter(proDialog.Update, value, f"成功卸载模块【{mod}】。");
 				pass;
 			def onFinish():
+				# 移除工具文件夹
+				if os.path.exists(assetsPath):
+					shutil.rmtree(assetsPath);
 				wx.CallAfter(proDialog.Update, 1, f"完成依赖模块的卸载。");
-			tkey = pageInfo["key"];
-			toolPath = _GG("g_DataPath")+f"tools/{tkey}";
-			threading.Thread(target = self._uninstallDependMods_, args = (tkey, toolPath, _GG("g_PythonPath"), onUninstall, onFinish)).start();
+			threading.Thread(target = self._uninstallDependMods_, args = (pageInfo["key"], assetsPath+"/tool", _GG("g_PythonPath"), onUninstall, onFinish)).start();
 			proDialog.Update(0, "开始卸载依赖模块...");
 			proDialog.ShowModal();
 			pass;

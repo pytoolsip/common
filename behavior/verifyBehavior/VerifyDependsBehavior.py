@@ -3,6 +3,7 @@
 # @Date:   2019-08-24 19:15:38
 # @Last Modified by:   JinZhang
 # @Last Modified time: 2020-05-21 17:20:51
+import wx;
 import os, json;
 
 from _Global import _GG;
@@ -68,7 +69,7 @@ class VerifyDependsBehavior(_GG("BaseBehavior")):
 
 	# 获取依赖模块列表
 	def _getDependMods_(self, obj, assetsPath, _retTuple = None):
-		modList, modFile = [], os.path.join(assetsPath, "depends.mod");
+		modList, modFile = [], os.path.abspath(os.path.join(assetsPath, "depends.mod"));
 		if not os.path.exists(modFile):
 			return modList;
 		with open(modFile, "r") as f:
@@ -134,7 +135,6 @@ class VerifyDependsBehavior(_GG("BaseBehavior")):
 	def _checkDependMods_(self, obj, dependsPath, isAllowMiss = False, _retTuple = None):
 		dependMap = self._getDependMap_(obj);
 		modList = self._getDependMods_(obj, dependsPath);
-		_GG("Log").d("_checkDependMods_", dependMap, modList);
 		for mod, ver in modList:
 			if mod in dependMap:
 				dVer = dependMap[mod].get("ver", "");
@@ -167,7 +167,7 @@ class VerifyDependsBehavior(_GG("BaseBehavior")):
 				callback(mod);
 			obj.installPackageByPip(mod, version = version, pythonPath = pythonPath);
 			dependMap[mod] = {
-				"ver" : ver,
+				"ver" : version,
 				"map" : {
 					tkey : version,
 				},
@@ -208,9 +208,9 @@ class VerifyDependsBehavior(_GG("BaseBehavior")):
 		modList = self._getDependMods_(obj, assetsPath);
 		curIdx, totalCnt = 0, len(modList);
 		def uninstallCallback(mod):
-			onInstall(mod, curIdx/totalCnt);
+			onUninstall(mod, curIdx/totalCnt);
 		for mod, ver in modList:
-			isUninstallMod = self._removeDependMod_(obj, tkey, mod, pythonPath = pythonPath, dependMap = dependMap, callback = installCallback);
+			isUninstallMod = self._removeDependMod_(obj, tkey, mod, pythonPath = pythonPath, dependMap = dependMap, callback = uninstallCallback);
 			# 调用卸载回调
 			curIdx += 1;
 			if isUninstallMod and callable(onUninstall):

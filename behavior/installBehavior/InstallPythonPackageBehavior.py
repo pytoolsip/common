@@ -55,7 +55,7 @@ class InstallPythonPackageBehavior(_GG("BaseBehavior")):
 		return installedPackageDict;
 
 	def installPackageByPip(self, obj, packageName, version = "", pythonPath = None, _retTuple = None):
-		cmd = self.getPipInstallCmd(packageName, version = "", pythonPath = pythonPath);
+		cmd = self.getPipInstallCmd(obj, packageName, version = "", pythonPath = pythonPath);
 		if os.system(cmd) == 0:
 			return True;
 		return False;
@@ -82,28 +82,28 @@ class InstallPythonPackageBehavior(_GG("BaseBehavior")):
 
 	def uninstallPackageByPip(self, obj, packageName, pythonPath = None, _retTuple = None):
 		if pythonPath:
-			if os.system(os.path.abspath(os.path.join(pythonPath, "python.exe")) + " -m pip uninstall " + packageName) == 0:
+			if os.system(os.path.abspath(os.path.join(pythonPath, "python.exe")) + f" -m pip uninstall {packageName} -y") == 0:
 				return True;
 		else:
-			if os.system("pip uninstall " + packageName) == 0:
+			if os.system(f"pip uninstall {packageName} -y") == 0:
 				return True;
 		return False;
 	
-	def getPipInstallImage(self):
+	def getPipInstallImage(self, obj):
 		if os.path.exists(_GG("g_DataPath")+"config/setting_cfg.json"):
-			cfg = self.readJsonFile(_GG("g_DataPath")+"config/setting_cfg.json");
+			cfg = obj.readJsonFile(_GG("g_DataPath")+"config/setting_cfg.json");
 			if cfg:
 				return cfg.get("pip_install_image", "");
 		return "";
 	
-	def getPipInstallCmd(self, packageName, version = "", pythonPath = None):
+	def getPipInstallCmd(self, obj, packageName, version = "", pythonPath = None):
 		cmd = "pip install " + packageName;
 		if version:
 			cmd += f"=={version}";
 		if pythonPath:
 			cmd = os.path.abspath(os.path.join(pythonPath, "python.exe")) + " -m pip install " + packageName;
 		# 获取镜像
-		pii = self.getPipInstallImage();
+		pii = self.getPipInstallImage(obj);
 		if pii:
 			cmd += f" -i {pii}";
 			mtObj = re.match("^https?://(.*)/.*$", pii);

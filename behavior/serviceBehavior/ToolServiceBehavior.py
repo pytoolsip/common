@@ -94,7 +94,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 									shutil.rmtree(tgtDirPath);
 								shutil.rmtree(dirpath);
 								_GG("WindowObject").CreateMessageDialog("工具安装失败！工具所依赖的模块版本不匹配！", "安装工具", style = wx.OK|wx.ICON_ERROR);
-							obj._dealDepends_(tkey, tgtDirPath, dirpath, finishCallback = afterDealDepends, failedCallback = failDealDepends);
+							obj._dealDepends_(tkey, tgtDirPath+"/tool", dirpath+"/tool", finishCallback = afterDealDepends, failedCallback = failDealDepends);
 						obj.unzipFile(filePath, dirpath, finishCallback = afterUnzip);
 						# 记录下载数据
 						_GG("CommonClient").callService("DownloadRecord", "DownloadRecordReq", {

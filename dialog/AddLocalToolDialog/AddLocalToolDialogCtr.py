@@ -5,6 +5,7 @@
 # @Last Modified time: 2019-04-13 20:18:57
 import os;
 import wx;
+import shutil;
 import hashlib,threading;
 
 from _Global import _GG;
@@ -86,6 +87,7 @@ class AddLocalToolDialogCtr(object):
 	def bindBehaviors(self):		
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/UpDownloadBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		_GG("BehaviorManager").bindBehavior(self, {"path" : "CopyBehavior/ShutilCopyBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "serviceBehavior/ToolServiceBehavior", "basePath" : _GG("g_CommonPath") + "behavior/"});
 		pass;
 		
 	def unbindBehaviors(self):
@@ -127,14 +129,20 @@ class AddLocalToolDialogCtr(object):
 			localToolPath = _GG("g_DataPath")+"tools/local/";
 			filePath = localToolInfo["filePath"];
 			fullName = localToolInfo["category"] + "/" + localToolInfo["name"];
-			targetPath = localToolPath + localToolInfo["tkey"];
+			tkey = localToolInfo["tkey"];
+			targetPath = localToolPath + tkey;
 			if os.path.exists(targetPath):
-				wx.MessageDialog(self.getUI(), "已存在同名工具[%s]文件，无法创建该文件。"%fullName, caption = "添加本地工具", style = wx.OK|wx.ICON_ERROR).ShowModal();
-				return;
+				if wx.MessageDialog(self.getUI(), f"已存在同名工具[{fullName}]文件，是否覆盖该工具文件？", caption = "添加本地工具", style = wx.YES_NO|wx.ICON_QUESTION).ShowModal() != wx.ID_YES:
+					return;
+				shutil.rmtree(targetPath);
 			if os.path.splitext(filePath)[-1] == ".zip":
 				self.unzipFile(filePath, targetPath);
 			else:
 				self.copyPath(filePath, targetPath+"/tool");
-			if callable(callback):
-				wx.CallAfter(callback, localToolInfo);
+			def afterDealDepends():
+				if callable(callback):
+					wx.CallAfter(callback, localToolInfo);
+			def failDealDepends():
+				shutil.rmtree(targetPath);
+			wx.CallAfter(self._dealDepends_, tkey, "", targetPath + "/tool", finishCallback = afterDealDepends, failedCallback = failDealDepends);
 		threading.Thread(target = toAddTool, args = (toolInfo, callback)).start();
