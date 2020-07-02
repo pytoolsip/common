@@ -20,26 +20,36 @@ def GetConfigKeyMap():
 		"UrlConfig" : [_GG("g_DataPath") + "update/pytoolsip/data/url_list.json", _GG("g_DataPath") + "url_list.json"],
 	};
 
+def GetReadonlyKeyMap():
+	return {
+		"Config" : _GG("g_CommonPath") + "config/ini/secret.ini",
+	};
+
 class Config(object):
 	"""docstring for Config"""
-	def __init__(self, pathCfg):
+	def __init__(self, pathCfg, readonlyCfg = ""):
 		super(Config, self).__init__();
-		self.__initPath__(pathCfg);
+		self.__path = self.__verifyPathCfg__(pathCfg);
+		self.__readonlyPath = self.__verifyPathCfg__(readonlyCfg);
 		self.__initConfig__();
 	
-	def __initPath__(self, pathCfg):
-		self.__path = "";
+	def __verifyPathCfg__(self, pathCfg):
 		if isinstance(pathCfg, list):
 			for path in pathCfg:
 				if os.path.exists(path):
-					self.__path = path;
-					return;
-		else:
-			self.__path = pathCfg;
+					return path;
+		elif os.path.exists(pathCfg):
+			return pathCfg;
+		return ""
 
 	def __initConfig__(self):
 		self.__config = ConfigParser.RawConfigParser();
 		self.__config.read(self.__path);
+		# 初始化只读配置
+		self.__readonlyConfig = None;
+		if self.__readonlyPath:
+			self.__readonlyConfig = ConfigParser.RawConfigParser();
+			self.__readonlyConfig.read(self.__readonlyPath);
 
 	def Set(self, section, option, value):
 		if not self.__config.has_section(section):
@@ -48,6 +58,9 @@ class Config(object):
 		self.__config.write(open(self.__path, "w"), "w");
 
 	def Get(self, section, option, defaultValue = None):
+		# 先查找只读配置
+		if self.__readonlyConfig and self.__readonlyConfig.has_option(section, option):
+			return self.__readonlyConfig.get(section, option);
 		if self.__config.has_option(section, option):
 			return self.__config.get(section, option);
 		return defaultValue;
@@ -56,18 +69,17 @@ class UrlConfig(object):
 	"""docstring for UrlConfig"""
 	def __init__(self, pathCfg):
 		super(UrlConfig, self).__init__();
-		self.__initPath__(pathCfg);
+		self.__path = self.__verifyPathCfg__(pathCfg);
 		self.__initConfig__();
 	
-	def __initPath__(self, pathCfg):
-		self.__path = "";
+	def __verifyPathCfg__(self, pathCfg):
 		if isinstance(pathCfg, list):
 			for path in pathCfg:
 				if os.path.exists(path):
-					self.__path = path;
-					return;
+					return path;
 		else:
-			self.__path = pathCfg;
+			return pathCfg;
+		return ""
 
 	def __initConfig__(self):
 		self.__config = {};
@@ -91,7 +103,8 @@ class ClientConfig(object):
 		super(ClientConfig, self).__init__();
 		# 初始化配置对象
 		confKeyMap = GetConfigKeyMap();
-		self.__config = Config(confKeyMap["Config"]);
+		readonlyKeyMap = GetReadonlyKeyMap();
+		self.__config = Config(confKeyMap["Config"], readonlyKeyMap.get("Config", ""));
 		self.__urlConfig = UrlConfig(confKeyMap["UrlConfig"]);
 		pass;
 
