@@ -55,3 +55,5 @@ class EVENT_ID(Enum):
 	SCREENSHOT = getNewEventId(); # 截屏
 
 	SCREENSHOT_AFTER_HIDING_WIN = getNewEventId(); # 隐藏窗口后截屏
+
+	REVEAL_IN_WINDOW_LEFT_VIEW = getNewEventId(); # 定位到左窗口视图

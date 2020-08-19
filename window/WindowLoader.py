@@ -7,7 +7,6 @@
 import os;
 import shutil;
 import wx;
-from ProjectConfig import ProjectConfig;
 from _Global import _GG;
 from _Global import isExist_G;
 from function.base import *;
@@ -17,7 +16,7 @@ class WindowLoader(object):
 		super(WindowLoader, self).__init__();
 		self._className_ = WindowLoader.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
-		self._mainApp = wx.App(self.checkIsOpenLogWin());
+		self._mainApp = wx.App();
 		self.__CtrMap = {}; # 控制器列表
 		self.registerEvent(); # 注册事件
 
@@ -34,11 +33,6 @@ class WindowLoader(object):
 			self.unregisterEvent(); # 注销事件
 			self.unbindKeyDownEvent(); # 注销键盘点击事件
 		pass;
-
-	def checkIsOpenLogWin(self):
-		if "isOpenLogWin" in ProjectConfig:
-			return ProjectConfig["isOpenLogWin"];
-		return False;
 
 	def initWindowEvent(self):
 		self.bindKeyDownEvent();

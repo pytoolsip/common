@@ -181,6 +181,12 @@ class TreeItemsViewCtr(object):
 			self.getUI().removeTreeItem(item);
 			if callable(self.__onRemoveItem):
 				self.__onRemoveItem(pageData, itemText);
+				
+	def selectItem(self, itemKey):
+		item = self.getItem(itemKey);
+		if item:
+			self.getUI().EnsureVisible(item);
+			self.getUI().SelectItem(item);
 
 	def initPopupMenus(self):
 		self.getCtrByKey("PopupMenuViewCtr").createNewMenu(ItemType.Tool, {"itemsData" : self.getToolPopupMenuItemsData()});

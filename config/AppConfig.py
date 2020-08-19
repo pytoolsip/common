@@ -5,7 +5,6 @@
 # @Last Modified time: 2020-02-06 23:45:51
 
 import wx;
-from ProjectConfig import ProjectConfig;
 
 AppConfig = {
 	"AppTitle" : u"PyToolsIP【Python工具集成平台】",
@@ -29,11 +28,3 @@ AppConfig = {
 	],
 	"fixedPageCntLimit" : 8,
 };
-
-_ExcludeKey = ["AppTitle", "CopyrightInfo"];
-
-# 合并配置
-for k,v in ProjectConfig.items():
-	if k not in _ExcludeKey:
-		AppConfig[k] = v;
-

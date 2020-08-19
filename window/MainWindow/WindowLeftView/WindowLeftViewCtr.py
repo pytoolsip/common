@@ -17,6 +17,7 @@ def getRegisterEventMap(G_EVENT):
 		G_EVENT.UPDATE_WINDOW_LEFT_VIEW : "updateTreeView",
 		G_EVENT.LOGOUT_SUCCESS_EVENT : "resetUserNameView",
 		G_EVENT.SAVE_FIXED_PAGE_DATA : "saveFixedPageData",
+		G_EVENT.REVEAL_IN_WINDOW_LEFT_VIEW : "selectPageItem",
 	};
 
 class WindowLeftViewCtr(object):
@@ -263,3 +264,7 @@ class WindowLeftViewCtr(object):
 				"pageDataList" : pageDataList,
 			});
 		pass;
+	
+	def selectPageItem(self, data):
+		if "curPageKey" in data:
+			self.getCtrByKey("TreeItemsViewCtr").selectItem(data["curPageKey"]);

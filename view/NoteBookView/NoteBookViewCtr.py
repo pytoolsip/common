@@ -270,6 +270,12 @@ class NoteBookViewCtr(object):
 			self.resetData();
 		self.onUpdateFixedPage(); # 更新固定页
 		pass;
+	
+	def onRevealInLeftWin(self, event):
+		curPageKey = self.getPageKey(self.getCurrentPage());
+		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").REVEAL_IN_WINDOW_LEFT_VIEW, {
+			"curPageKey" : curPageKey,
+		});
 
 	def getFixedPopupMenuItemsData(self):
 		return [
@@ -280,6 +286,13 @@ class NoteBookViewCtr(object):
 			{
 				"title" : "关闭当前标签页",
 				"callback" : self.onCloseCurPage,
+			},
+			{
+				"isSeparator" : True,
+			},
+			{
+				"title" : "定位到左侧窗口",
+				"callback" : self.onRevealInLeftWin,
 			},
 			{
 				"isSeparator" : True,
@@ -306,6 +319,13 @@ class NoteBookViewCtr(object):
 			{
 				"title" : "关闭当前标签页",
 				"callback" : self.onCloseCurPage,
+			},
+			{
+				"isSeparator" : True,
+			},
+			{
+				"title" : "定位到左侧窗口",
+				"callback" : self.onRevealInLeftWin,
 			},
 			{
 				"isSeparator" : True,
