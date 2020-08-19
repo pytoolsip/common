@@ -123,7 +123,6 @@ class NoteBookViewCtr(object):
 			if pageKey in self.__pageInfoDict:
 				pageInfo = self.__pageInfoDict.pop(pageKey);
 				DelCtr(pageInfo["pageViewCtr"]); # 销毁页面视图控制类
-				self.onUpdateFixedPage(pageInfo["pageType"]); # 更新固定页
 			if self.__relievedPageKey == pageKey:
 				self.__relievedPageKey = -1;
 		pass;
@@ -230,7 +229,6 @@ class NoteBookViewCtr(object):
 			self.adjustPageTitle(curPageKey);
 			self.setPageTitle(curPageKey, self.getCurrentPageInt());
 			self.__relievedPageKey = -1;
-			self.onUpdateFixedPage(); # 更新固定页
 		pass;
 
 	def onRelieveCurPage(self, event):
@@ -248,6 +246,7 @@ class NoteBookViewCtr(object):
 		UI = self.getUI();
 		if UI.DeletePage(curPageInt):
 			self.resetData(curPageKey);
+		self.onUpdateFixedPage(); # 更新固定页
 		pass;
 
 	def onCloseOtherPage(self, event):
@@ -269,6 +268,7 @@ class NoteBookViewCtr(object):
 		UI = self.getUI();
 		if UI.DeleteAllPages():
 			self.resetData();
+		self.onUpdateFixedPage(); # 更新固定页
 		pass;
 
 	def getFixedPopupMenuItemsData(self):
@@ -326,7 +326,7 @@ class NoteBookViewCtr(object):
 	def updatePageType(self, pageKey, pageType):
 		if pageKey in self.__pageInfoDict:
 			self.__pageInfoDict[pageKey]["pageType"] = pageType;
-			self.onUpdateFixedPage(pageType); # 更新固定页
+			self.onUpdateFixedPage(); # 更新固定页
 		pass;
 
 	def setFixPageByKey(self, pageKey):
@@ -337,15 +337,14 @@ class NoteBookViewCtr(object):
 			self.__relievedPageKey = -1;
 		pass;
 
-	def onUpdateFixedPage(self, pageType = PageType.Fix):
-		if pageType == PageType.Fix:
-			pageKeyList = [];
-			for pageKey, pageInfo in self.__pageInfoDict.items():
-				if pageInfo["pageType"] == PageType.Fix:
-					pageKeyList.append(pageKey);
-			_GG("EventDispatcher").dispatch(_GG("EVENT_ID").SAVE_FIXED_PAGE_DATA, {
-				"pageKeyList" : pageKeyList,
-			});
+	def onUpdateFixedPage(self):
+		pageKeyList = [];
+		for pageKey, pageInfo in self.__pageInfoDict.items():
+			if pageInfo["pageType"] == PageType.Fix:
+				pageKeyList.append(pageKey);
+		_GG("EventDispatcher").dispatch(_GG("EVENT_ID").SAVE_FIXED_PAGE_DATA, {
+			"pageKeyList" : pageKeyList,
+		});
 		pass;
 
 	def setPageCountLimit(self, count):

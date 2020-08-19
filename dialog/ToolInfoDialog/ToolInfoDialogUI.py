@@ -48,6 +48,7 @@ class ToolInfoDialogUI(wx.Dialog):
 		self.createAuthor();
 		self.createDescription();
 		self.createDownloadBtn();
+		self.createOpenBtn();
 		
 	def initDialogLayout(self):
 		box = wx.BoxSizer(wx.VERTICAL);
@@ -57,6 +58,8 @@ class ToolInfoDialogUI(wx.Dialog):
 		box.Add(self.__author, 0, flag = wx.TOP|wx.LEFT|wx.RIGHT, border = 8);
 		box.Add(self.__desc, 0, flag = wx.EXPAND|wx.TOP|wx.BOTTOM|wx.LEFT|wx.RIGHT, border = 8);
 		box.Add(self.__download, 2, flag = wx.BOTTOM|wx.ALIGN_CENTER, border = 8);
+		if self.__open:
+			box.Add(self.__open, 2, flag = wx.BOTTOM|wx.ALIGN_CENTER, border = 8);
 		self.SetSizerAndFit(box);
 
 	def updatePosition(self):
@@ -156,3 +159,14 @@ class ToolInfoDialogUI(wx.Dialog):
 			self.__download.Enable(False);
 			checkDownload(callback = checkOnDownloadFunc);
 		
+	def createOpenBtn(self):
+		params = self.__params.get("open", {});
+		onOpen = params.get("onOpen", None);
+		self.__open = None;
+		if callable(onOpen):
+			# 创建按钮，并绑定事件
+			self.__open = wx.Button(self, label = params.get("label", "打开工具"));
+			def onBtn(event):
+				onOpen();
+				self.EndModal(wx.ID_OK);
+			self.__open.Bind(wx.EVT_BUTTON, onBtn);

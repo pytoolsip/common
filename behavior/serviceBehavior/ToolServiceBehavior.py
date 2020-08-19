@@ -112,9 +112,7 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 			pass;
 		def checkDownload(callback = None):
 			def onRequestToolInfo(respData):
-				if not respData:
-					_GG("WindowObject").CreateMessageDialog("网络请求失败！", "下载工具", style = wx.OK|wx.ICON_ERROR);
-				elif respData.code == 0:
+				if respData.code == 0:
 					itemData = _GG("WindowObject").MainWindowCtr.getItemDataByKey(tkey);
 					if itemData:
 						if CheckVersion(respData.toolInfo.version, itemData.get("version", "")) and callable(callback):
@@ -127,6 +125,19 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 				"IPBaseVer" : GetBaseVersion(_GG("ClientConfig").UrlConfig().GetIPVersion()),
 			}, asynCallback = onRequestToolInfo);
 			pass;
+		# 判断是否已有工具
+		itemData = _GG("WindowObject").MainWindowCtr.getItemDataByKey(tkey);
+		if itemData:
+			def onOpenToolView():
+				_GG("EventDispatcher").dispatch(_GG("EVENT_ID").UPDATE_WINDOW_RIGHT_VIEW, {
+					"createPage" : True,
+					"key" : tkey,
+					"pagePath" : itemData["pagePath"],
+					"category" : itemData["category"],
+					"title" : itemData["title"]
+				});
+		else:
+			onOpenToolView = None;
 		_GG("WindowObject").CreateDialogCtr(_GG("g_CommonPath") + "dialog/ToolInfoDialog", params = {
 			"name" : data.get("name", ""),
 			"path" : data.get("path", ""),
@@ -137,6 +148,9 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 				"onDownload" : onDownload,
 				"checkDownload" : checkDownload,
 			}),
+			"open" : {
+				"onOpen" : onOpenToolView,
+			},
 		}, isRecreate = True);
 
 	def _downloadTool_(self, obj, _retTuple = None):
