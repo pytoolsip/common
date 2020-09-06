@@ -188,27 +188,29 @@ class ToolServiceBehavior(_GG("BaseBehavior")):
 	# 处理依赖模块
 	def _dealDepends_(self, obj, tkey, srcPath, targetPath, finishCallback = None, failedCallback = None, _retTuple = None):
 		proDialog = wx.ProgressDialog("处理依赖模块", "", style = wx.PD_APP_MODAL|wx.PD_ELAPSED_TIME|wx.PD_ESTIMATED_TIME|wx.PD_REMAINING_TIME|wx.PD_AUTO_HIDE);
-		def onInstall(mod, value, isEnd = False):
-			if not isEnd:
-				wx.CallAfter(proDialog.Update, value, f"正在安装模块【{mod}】...");
-			else:
-				wx.CallAfter(proDialog.Update, value, f"成功安装模块【{mod}】。");
-			pass;
-		def onUninstall(mod, value, isEnd = False):
-			if not isEnd:
-				wx.CallAfter(proDialog.Update, value, f"正在卸载模块【{mod}】...");
-			else:
-				wx.CallAfter(proDialog.Update, value, f"成功卸载模块【{mod}】。");
-			pass;
-		def onFinish(isSuccess = True):
-			if not isSuccess:
-				wx.CallAfter(proDialog.Update, 0, f"依赖模块处理失败！");
-				if callable(failedCallback):
-					wx.CallAfter(failedCallback);
-				return;
-			wx.CallAfter(proDialog.Update, 1, f"完成依赖模块的处理。");
-			if callable(finishCallback):
-				wx.CallAfter(finishCallback);
-		threading.Thread(target = obj._dealDependMap_, args = (tkey, srcPath, targetPath, _GG("g_PythonPath"), onInstall, onUninstall, onFinish)).start();
+		def _onDealDepends():
+			def onInstall(mod, value, isEnd = False):
+				if not isEnd:
+					wx.CallAfter(proDialog.Update, value, f"正在安装模块【{mod}】...");
+				else:
+					wx.CallAfter(proDialog.Update, value, f"成功安装模块【{mod}】。");
+				pass;
+			def onUninstall(mod, value, isEnd = False):
+				if not isEnd:
+					wx.CallAfter(proDialog.Update, value, f"正在卸载模块【{mod}】...");
+				else:
+					wx.CallAfter(proDialog.Update, value, f"成功卸载模块【{mod}】。");
+				pass;
+			def onFinish(isSuccess = True):
+				if not isSuccess:
+					wx.CallAfter(proDialog.Update, 0, f"依赖模块处理失败！");
+					if callable(failedCallback):
+						wx.CallAfter(failedCallback);
+					return;
+				wx.CallAfter(proDialog.Update, 1, f"完成依赖模块的处理。");
+				if callable(finishCallback):
+					wx.CallAfter(finishCallback);
+			threading.Thread(target = obj._dealDependMap_, args = (tkey, srcPath, targetPath, _GG("g_PythonPath"), onInstall, onUninstall, onFinish)).start();
+		wx.CallLater(300, _onDealDepends);  # 延迟一段时间后处理
 		proDialog.Update(0, "开始处理依赖模块...");
 		proDialog.ShowModal();
